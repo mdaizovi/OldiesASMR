@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity, View, Image, Text } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { MaterialIcons } from '@expo/vector-icons'; 
 import { Audio } from 'expo-av'
 
 const audioBookPlaylist = [
@@ -10,6 +11,7 @@ const audioBookPlaylist = [
 		source: 'Librivox',
 		uri:
 			'https://ia800204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act1_shakespeare.mp3',
+    music_file: './assets/audio/music/1000/afghanis_64kb.mp3',
 		imageSource: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg'
 	},
 	{
@@ -18,29 +20,15 @@ const audioBookPlaylist = [
 		source: 'Librivox',
 		uri:
 			'https://ia600204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act2_shakespeare.mp3',
-		imageSource: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg'
+    music_file: './assets/audio/music/1000/bluerose_64kb.mp3',
+    imageSource: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg'
 	},
 	{
 		title: 'Hamlet - Act III',
 		author: 'William Shakespeare',
 		source: 'Librivox',
 		uri: 'http://www.archive.org/download/hamlet_0911_librivox/hamlet_act3_shakespeare.mp3',
-		imageSource: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg'
-	},
-	{
-		title: 'Hamlet - Act IV',
-		author: 'William Shakespeare',
-		source: 'Librivox',
-		uri:
-			'https://ia800204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act4_shakespeare.mp3',
-		imageSource: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg'
-	},
-	{
-		title: 'Hamlet - Act V',
-		author: 'William Shakespeare',
-		source: 'Librivox',
-		uri:
-			'https://ia600204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act5_shakespeare.mp3',
+    music_file: './assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3',
 		imageSource: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg'
 	}
 ]
@@ -79,6 +67,9 @@ export default class App extends React.Component {
 			const playbackInstance = new Audio.Sound()
 			const source = {
 				uri: audioBookPlaylist[currentIndex].uri
+        // those don't work, neither does putting require in the 
+        //uri: audioBookPlaylist[currentIndex].music_file
+        //uri: require(audioBookPlaylist[currentIndex].music_file)
 			}
 
 			const status = {
@@ -87,7 +78,8 @@ export default class App extends React.Component {
 			}
 
 			playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
-			await playbackInstance.loadAsync(source, status, false)
+			//await playbackInstance.loadAsync(source, status, false)
+      await playbackInstance.loadAsync(require("./assets/audio/music/1000/afghanis_64kb.mp3"), status, false)
 			this.setState({
 				playbackInstance
 			})
@@ -161,7 +153,7 @@ export default class App extends React.Component {
 				/>
 				<View style={styles.controls}>
 					<TouchableOpacity style={styles.control} onPress={this.handlePreviousTrack}>
-						<Ionicons name='ios-skip-backward' size={48} color='#444' />
+            <MaterialIcons name="navigate-before" size={48} color="#444" />
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.control} onPress={this.handlePlayPause}>
 						{this.state.isPlaying ? (
@@ -171,7 +163,7 @@ export default class App extends React.Component {
 						)}
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.control} onPress={this.handleNextTrack}>
-						<Ionicons name='ios-skip-forward' size={48} color='#444' />
+            <MaterialIcons name="navigate-next" size={48} color="#444" />
 					</TouchableOpacity>
 				</View>
 				{this.renderFileInfo()}
