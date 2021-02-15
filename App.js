@@ -8,28 +8,30 @@ const audioBookPlaylist = [
 	{
 		title: 'Hamlet - Act I',
 		author: 'William Shakespeare',
-		source: 'Librivox',
-		uri:
-			'https://ia800204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act1_shakespeare.mp3',
-    music_file: require('./assets/audio/music/1000/afghanis_64kb.mp3'),
-		imageSource: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg'
+		source: 'Free Sound Archive',
+    musicFile: require('./assets/audio/music/1000/afghanis_64kb.mp3'),
+    imageFile: require('./assets/images/record_columbia.jpg')
 	},
 	{
 		title: 'Hamlet - Act II',
 		author: 'William Shakespeare',
-		source: 'Librivox',
-		uri:
-			'https://ia600204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act2_shakespeare.mp3',
-    music_file: require('./assets/audio/music/1000/bluerose_64kb.mp3'),
-    imageSource: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg'
+		source: 'Free Sound Archive',
+    musicFile: require('./assets/audio/music/1000/bluerose_64kb.mp3'),
+    imageFile: require('./assets/images/victrola_color.jpg')
 	},
 	{
 		title: 'Hamlet - Act III',
 		author: 'William Shakespeare',
-		source: 'Librivox',
-		uri: 'http://www.archive.org/download/hamlet_0911_librivox/hamlet_act3_shakespeare.mp3',
-    music_file: require('./assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
-		imageSource: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg'
+		source: 'Free Sound Archive',
+    musicFile: require('./assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
+    imageFile: require('./assets/images/victrola_columbia.jpg')
+	},
+	{
+		title: 'Hamlet - Act III',
+		author: 'William Shakespeare',
+		source: 'Free Sound Archive',
+    musicFile: require('./assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3'),
+    imageFile: require('./assets/images/vinyl.jpg')
 	}
 ]
 
@@ -65,11 +67,7 @@ export default class App extends React.Component {
 
 		try {
 			const playbackInstance = new Audio.Sound()
-			// const source = {
-			// 	uri: audioBookPlaylist[currentIndex].uri
-      //   // those don't work, neither does putting require in the 
-			// }
-			const source = audioBookPlaylist[currentIndex].music_file
+			const source = audioBookPlaylist[currentIndex].musicFile
 
 			const status = {
 				shouldPlay: isPlaying,
@@ -149,7 +147,7 @@ export default class App extends React.Component {
 			<View style={styles.container}>
 				<Image
 					style={styles.albumCover}
-					source={{ uri: 'http://www.archive.org/download/LibrivoxCdCoverArt8/hamlet_1104.jpg' }}
+					source={require('./assets/images/victrola_columbia.jpg') }
 				/>
 				<View style={styles.controls}>
 					<TouchableOpacity style={styles.control} onPress={this.handlePreviousTrack}>
