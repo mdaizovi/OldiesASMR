@@ -166,12 +166,12 @@ export default class App extends React.Component {
                 resizeMode="cover"
                 shouldPlay
                 isLooping
-                style={styles.albumCover}
+                style={styles.recordBackground}
               />
 						) : (
               <Image
-              style={styles.albumCover}
-              source={require('./app/assets/images/victrola_columbia.jpg') }
+              style={styles.recordBackground}
+              source={require('./app/assets/images/record.jpg') }
             />
 						)}
 
@@ -205,6 +205,10 @@ const styles = StyleSheet.create({
 	},
 	albumCover: {
 		width: 250,
+		height: 250
+	},
+  recordBackground: {
+		width: 533,
 		height: 250
 	},
 	trackInfo: {
