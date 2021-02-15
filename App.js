@@ -3,36 +3,40 @@ import { StyleSheet, TouchableOpacity, View, Image, Text } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { Audio } from 'expo-av'
+//import { Playlist } from "./app/data/Playlist";
+//const Playlist = require('./app/data//Playlist.json');
+//import AppMusicPlayer from "./app/components/AppMusicPlayer";
+import AppPlayerButton from "./app/components/AppPlayerButton";
 
-const audioBookPlaylist = [
+const Playlist = [
 	{
-		title: 'Hamlet - Act I',
-		author: 'William Shakespeare',
+		title: 'Oldies',
 		source: 'Free Sound Archive',
-    musicFile: require('./assets/audio/music/1000/afghanis_64kb.mp3'),
-    imageFile: require('./assets/images/record_columbia.jpg')
+    musicFile: require('./app/assets/audio/music/1000/afghanis_64kb.mp3'),
+    musicPath: './app/assets/audio/music/1000/afghanis_64kb.mp3',
+    imageFile: require('./app/assets/images/record_columbia.jpg'),
 	},
 	{
-		title: 'Hamlet - Act II',
-		author: 'William Shakespeare',
+		title: 'Playing',
 		source: 'Free Sound Archive',
-    musicFile: require('./assets/audio/music/1000/bluerose_64kb.mp3'),
-    imageFile: require('./assets/images/victrola_color.jpg')
+    musicFile: require('./app/assets/audio/music/1000/bluerose_64kb.mp3'),
+    musicPath: './app/assets/audio/music/1000/bluerose_64kb.mp3',
+    imageFile: require('./app/assets/images/victrola_color.jpg'),
 	},
 	{
-		title: 'Hamlet - Act III',
-		author: 'William Shakespeare',
+		title: 'In Another',
 		source: 'Free Sound Archive',
-    musicFile: require('./assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
-    imageFile: require('./assets/images/victrola_columbia.jpg')
+    musicFile: require('./app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
+    musicPath: './app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3',
+    imageFile: require('./app/assets/images/victrola_columbia.jpg'),
 	},
 	{
-		title: 'Hamlet - Act III',
-		author: 'William Shakespeare',
+		title: 'Room',
 		source: 'Free Sound Archive',
-    musicFile: require('./assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3'),
-    imageFile: require('./assets/images/vinyl.jpg')
-	}
+    musicFile: require('./app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3'),
+    musicPath: './app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3',
+    imageFile: require('./app/assets/images/vinyl.jpg'),
+	},
 ]
 
 export default class App extends React.Component {
@@ -67,7 +71,17 @@ export default class App extends React.Component {
 
 		try {
 			const playbackInstance = new Audio.Sound()
-			const source = audioBookPlaylist[currentIndex].musicFile
+      // I do not understan why these don't work.
+
+      //const songPath = Playlist[currentIndex].musicPath
+      //const source = require(songPath)
+      
+      //const source = require(Playlist[currentIndex].musicPath)
+      //const source = Playlist[currentIndex].musicPath
+
+      // why does this work?!? looks same as others to me.
+      //const source = require('./app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3')
+      const source = Playlist[currentIndex].musicFile
 
 			const status = {
 				shouldPlay: isPlaying,
@@ -76,7 +90,7 @@ export default class App extends React.Component {
 
 			playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
       // accidentally got me simultaneous audio. Good to know
-      //let source = require('./assets/audio/music/1000/afghanis_64kb.mp3')
+      //let source = require('./app/assets/audio/music/1000/afghanis_64kb.mp3')
 			await playbackInstance.loadAsync(source, status, false)
 			this.setState({
 				playbackInstance
@@ -105,7 +119,7 @@ export default class App extends React.Component {
 		let { playbackInstance, currentIndex } = this.state
 		if (playbackInstance) {
 			await playbackInstance.unloadAsync()
-			currentIndex < audioBookPlaylist.length - 1 ? (currentIndex -= 1) : (currentIndex = 0)
+			currentIndex < Playlist.length - 1 ? (currentIndex -= 1) : (currentIndex = 0)
 			this.setState({
 				currentIndex
 			})
@@ -117,7 +131,7 @@ export default class App extends React.Component {
 		let { playbackInstance, currentIndex } = this.state
 		if (playbackInstance) {
 			await playbackInstance.unloadAsync()
-			currentIndex < audioBookPlaylist.length - 1 ? (currentIndex += 1) : (currentIndex = 0)
+			currentIndex < Playlist.length - 1 ? (currentIndex += 1) : (currentIndex = 0)
 			this.setState({
 				currentIndex
 			})
@@ -130,13 +144,10 @@ export default class App extends React.Component {
 		return playbackInstance ? (
 			<View style={styles.trackInfo}>
 				<Text style={[styles.trackInfoText, styles.largeText]}>
-					{audioBookPlaylist[currentIndex].title}
+					{Playlist[currentIndex].title}
 				</Text>
 				<Text style={[styles.trackInfoText, styles.smallText]}>
-					{audioBookPlaylist[currentIndex].author}
-				</Text>
-				<Text style={[styles.trackInfoText, styles.smallText]}>
-					{audioBookPlaylist[currentIndex].source}
+					{Playlist[currentIndex].source}
 				</Text>
 			</View>
 		) : null
@@ -147,23 +158,23 @@ export default class App extends React.Component {
 			<View style={styles.container}>
 				<Image
 					style={styles.albumCover}
-					source={require('./assets/images/victrola_columbia.jpg') }
+					source={require('./app/assets/images/victrola_columbia.jpg') }
 				/>
 				<View style={styles.controls}>
-					<TouchableOpacity style={styles.control} onPress={this.handlePreviousTrack}>
-            <MaterialIcons name="navigate-before" size={48} color="#444" />
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.control} onPress={this.handlePlayPause}>
+					
+          <AppPlayerButton iconName="navigate-before" onPress={this.handlePreviousTrack}/>
+					
+          <TouchableOpacity style={styles.control} onPress={this.handlePlayPause}>
 						{this.state.isPlaying ? (
 							<Ionicons name='ios-pause' size={48} color='#444' />
 						) : (
 							<Ionicons name='ios-play-circle' size={48} color='#444' />
 						)}
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.control} onPress={this.handleNextTrack}>
-            <MaterialIcons name="navigate-next" size={48} color="#444" />
-					</TouchableOpacity>
-				</View>
+					
+          <AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>
+				
+        </View>
 				{this.renderFileInfo()}
 			</View>
 		)
