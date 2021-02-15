@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity, View, Image, Text } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'; 
-import { Audio } from 'expo-av'
+import { Audio, Video } from 'expo-av'
 //import { Playlist } from "./app/data/Playlist";
 //const Playlist = require('./app/data//Playlist.json');
 //import AppMusicPlayer from "./app/components/AppMusicPlayer";
@@ -156,10 +156,25 @@ export default class App extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<Image
-					style={styles.albumCover}
-					source={require('./app/assets/images/victrola_columbia.jpg') }
-				/>
+
+            {this.state.isPlaying ? (
+              <Video
+                source={require('./app/assets/video/RecordLoop.mp4')}
+                // rate={1.0}
+                // volume={0}
+                // isMuted={false}
+                resizeMode="cover"
+                shouldPlay
+                isLooping
+                style={styles.albumCover}
+              />
+						) : (
+              <Image
+              style={styles.albumCover}
+              source={require('./app/assets/images/victrola_columbia.jpg') }
+            />
+						)}
+
 				<View style={styles.controls}>
 					
           <AppPlayerButton iconName="navigate-before" onPress={this.handlePreviousTrack}/>
