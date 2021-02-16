@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, View, Image, Text } from 'react-native'
+import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, Text } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { Audio, Video } from 'expo-av'
@@ -7,6 +7,8 @@ import { Audio, Video } from 'expo-av'
 //const Playlist = require('./app/data//Playlist.json');
 //import AppMusicPlayer from "./app/components/AppMusicPlayer";
 import AppPlayerButton from "./app/components/AppPlayerButton";
+import AppSoundButton from "./app/components/AppSoundButton";
+
 
 const Playlist = [
 	{
@@ -14,30 +16,31 @@ const Playlist = [
 		source: 'Free Sound Archive',
     musicFile: require('./app/assets/audio/music/1000/afghanis_64kb.mp3'),
     musicPath: './app/assets/audio/music/1000/afghanis_64kb.mp3',
-    imageFile: require('./app/assets/images/record_columbia.jpg'),
 	},
 	{
 		title: 'Playing',
 		source: 'Free Sound Archive',
     musicFile: require('./app/assets/audio/music/1000/bluerose_64kb.mp3'),
     musicPath: './app/assets/audio/music/1000/bluerose_64kb.mp3',
-    imageFile: require('./app/assets/images/victrola_color.jpg'),
 	},
 	{
 		title: 'In Another',
 		source: 'Free Sound Archive',
     musicFile: require('./app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
     musicPath: './app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3',
-    imageFile: require('./app/assets/images/victrola_columbia.jpg'),
 	},
 	{
 		title: 'Room',
 		source: 'Free Sound Archive',
     musicFile: require('./app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3'),
     musicPath: './app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3',
-    imageFile: require('./app/assets/images/vinyl.jpg'),
 	},
 ]
+
+const noiseSounds = {
+	cat: require('./app/assets/audio/sounds/cat.mp3'),
+	clock: require('./app/assets/audio/sounds/clock.mp3'),
+}
 
 export default class App extends React.Component {
 	state = {
@@ -153,16 +156,35 @@ export default class App extends React.Component {
 		) : null
 	}
 
+	handlePlaySound = async note => {
+		const soundObject = new Audio.Sound()
+
+		try {
+			let source = noiseSounds[note]
+			await soundObject.loadAsync(source)
+			await soundObject
+				.playAsync()
+				.then(async playbackStatus => {
+					setTimeout(() => {
+						soundObject.unloadAsync()
+					}, playbackStatus.playableDurationMillis)
+				})
+				.catch(error => {
+					console.log(error)
+				})
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+
 	render() {
 		return (
 			<View style={styles.container}>
-
+       		{this.renderFileInfo()}
             {this.state.isPlaying ? (
               <Video
                 source={require('./app/assets/video/RecordLoop.mp4')}
-                // rate={1.0}
-                // volume={0}
-                // isMuted={false}
                 resizeMode="cover"
                 shouldPlay
                 isLooping
@@ -172,26 +194,35 @@ export default class App extends React.Component {
               <Image
               style={styles.recordBackground}
               source={require('./app/assets/images/record.jpg') }
-            />
-						)}
-
-				<View style={styles.controls}>
+            	/>
+			)}
+			<View style={styles.controls}>
 					
-          <AppPlayerButton iconName="navigate-before" onPress={this.handlePreviousTrack}/>
-					
-          <TouchableOpacity style={styles.control} onPress={this.handlePlayPause}>
-						{this.state.isPlaying ? (
-							<Ionicons name='ios-pause' size={48} color='#444' />
-						) : (
-							<Ionicons name='ios-play-circle' size={48} color='#444' />
-						)}
-					</TouchableOpacity>
-					
-          <AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>
+			<AppPlayerButton iconName="navigate-before" onPress={this.handlePreviousTrack}/>
+						{/* prob the answer to my blinking problem
+			https://stackoverflow.com/a/42348010 
+			or this
+			https://stackoverflow.com/a/56883227
+			*/}
+			<TouchableOpacity style={styles.control}  onPress={this.handlePlayPause}>
+							{this.state.isPlaying ? (
+								<Ionicons name='ios-pause' size={48} color='#444' />
+							) : (
+								<Ionicons name='ios-play-circle' size={48} color='#444' />
+							)}
+						</TouchableOpacity>
+						
+			<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>
 				
-        </View>
-				{this.renderFileInfo()}
+        	</View>
+				<View style={styles.buttonContainer}>
+					<AppSoundButton name="cat" onPress={() => this.handlePlaySound('cat')}/>
+				</View>
+				<View style={styles.buttonContainer}>
+				<AppSoundButton name="clock" onPress={() => this.handlePlaySound('clock')}/>
+				</View>
 			</View>
+
 		)
 	}
 }
@@ -201,13 +232,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: '#fff',
 		alignItems: 'center',
-		justifyContent: 'center'
+    top:20,
+		//justifyContent: 'center'
 	},
-	albumCover: {
-		width: 250,
-		height: 250
-	},
-  recordBackground: {
+  	recordBackground: {
 		width: 533,
 		height: 250
 	},
@@ -232,5 +260,19 @@ const styles = StyleSheet.create({
 	},
 	controls: {
 		flexDirection: 'row'
+	},
+	buttonContainer: {
+		height: 40,
+		margin: 5
+	},
+	button: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: 'red'
+	},
+	buttonText: {
+		color: '#fff',
+		fontSize: 18
 	}
 })
