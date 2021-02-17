@@ -7,6 +7,7 @@ import { Audio, Video } from 'expo-av'
 //const Playlist = require('./app/data//Playlist.json');
 //import AppMusicPlayer from "./app/components/AppMusicPlayer";
 import AppPlayerButton from "./app/components/AppPlayerButton";
+import AppPlayPauseButton from "./app/components/AppPlayPauseButton";
 import AppSoundButton from "./app/components/AppSoundButton";
 
 
@@ -14,26 +15,26 @@ const Playlist = [
 	{
 		title: 'Oldies',
 		source: 'Free Sound Archive',
-    musicFile: require('./app/assets/audio/music/1000/afghanis_64kb.mp3'),
-    musicPath: './app/assets/audio/music/1000/afghanis_64kb.mp3',
+    	musicFile: require('./app/assets/audio/music/1000/afghanis_64kb.mp3'),
+    	musicPath: './app/assets/audio/music/1000/afghanis_64kb.mp3',
 	},
 	{
 		title: 'Playing',
 		source: 'Free Sound Archive',
-    musicFile: require('./app/assets/audio/music/1000/bluerose_64kb.mp3'),
-    musicPath: './app/assets/audio/music/1000/bluerose_64kb.mp3',
+    	musicFile: require('./app/assets/audio/music/1000/bluerose_64kb.mp3'),
+    	musicPath: './app/assets/audio/music/1000/bluerose_64kb.mp3',
 	},
 	{
 		title: 'In Another',
 		source: 'Free Sound Archive',
-    musicFile: require('./app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
-    musicPath: './app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3',
+    	musicFile: require('./app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
+    	musicPath: './app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3',
 	},
 	{
 		title: 'Room',
 		source: 'Free Sound Archive',
-    musicFile: require('./app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3'),
-    musicPath: './app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3',
+    	musicFile: require('./app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3'),
+    	musicPath: './app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3',
 	},
 ]
 
@@ -41,6 +42,22 @@ const noiseSounds = {
 	cat: require('./app/assets/audio/sounds/cat.mp3'),
 	clock: require('./app/assets/audio/sounds/clock.mp3'),
 }
+
+const Soundlist = [
+	{
+		key: 'cat',
+		name: 'Cat Purring',
+		soundFile: require('./app/assets/audio/sounds/cat.mp3'),
+		soundPath: './app/assets/audio/sounds/cat.mp3',
+	},
+	{	
+		key:'clock',
+		name: 'Clock Ticking',
+		soundFile: require('./app/assets/audio/sounds/clock.mp3'),
+		soundPath: './app/assets/audio/sounds/clock.mp3',
+	},
+]
+
 
 export default class App extends React.Component {
 	state = {
@@ -92,8 +109,6 @@ export default class App extends React.Component {
 			}
 
 			playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
-      // accidentally got me simultaneous audio. Good to know
-      //let source = require('./app/assets/audio/music/1000/afghanis_64kb.mp3')
 			await playbackInstance.loadAsync(source, status, false)
 			this.setState({
 				playbackInstance
@@ -178,6 +193,7 @@ export default class App extends React.Component {
 	}
 
 
+
 	render() {
 		return (
 			<View style={styles.container}>
@@ -204,23 +220,20 @@ export default class App extends React.Component {
 			or this
 			https://stackoverflow.com/a/56883227
 			*/}
-			<TouchableOpacity style={styles.control}  onPress={this.handlePlayPause}>
-							{this.state.isPlaying ? (
-								<Ionicons name='ios-pause' size={48} color='#444' />
-							) : (
-								<Ionicons name='ios-play-circle' size={48} color='#444' />
-							)}
-						</TouchableOpacity>
-						
+			<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
 			<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>
 				
         	</View>
-				<View style={styles.buttonContainer}>
-					<AppSoundButton name="cat" onPress={() => this.handlePlaySound('cat')}/>
-				</View>
-				<View style={styles.buttonContainer}>
-				<AppSoundButton name="clock" onPress={() => this.handlePlaySound('clock')}/>
-				</View>
+
+
+			{Soundlist.map((soundInfo) => {
+				return (
+					<View key={soundInfo.key} style={styles.buttonContainer}>
+						<AppSoundButton name={soundInfo.name} onPress={() => this.handlePlaySound(soundInfo.key)}/>
+					</View>
+				);
+			})}
+			
 			</View>
 
 		)
