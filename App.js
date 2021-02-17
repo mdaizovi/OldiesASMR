@@ -38,23 +38,22 @@ const Playlist = [
 	},
 ]
 
-const noiseSounds = {
-	cat: require('./app/assets/audio/sounds/cat.mp3'),
-	clock: require('./app/assets/audio/sounds/clock.mp3'),
-}
-
 const Soundlist = [
 	{
 		key: 'cat',
 		name: 'Cat Purring',
 		soundFile: require('./app/assets/audio/sounds/cat.mp3'),
 		soundPath: './app/assets/audio/sounds/cat.mp3',
+		soundObject: new Audio.Sound(),
+		state: {isLoaded: false, isPlaying: false,volume: 1.0}
 	},
 	{	
 		key:'clock',
 		name: 'Clock Ticking',
 		soundFile: require('./app/assets/audio/sounds/clock.mp3'),
 		soundPath: './app/assets/audio/sounds/clock.mp3',
+		soundObject: new Audio.Sound(),
+		state: {isLoaded: false, isPlaying: false,volume: 1.0}
 	},
 ]
 
@@ -171,12 +170,24 @@ export default class App extends React.Component {
 		) : null
 	}
 
-	handlePlaySound = async note => {
-		const soundObject = new Audio.Sound()
-
+	handlePlaySound = async arrayObj => {
+		const soundObject = arrayObj.soundObject
 		try {
-			let source = noiseSounds[note]
-			await soundObject.loadAsync(source)
+
+			var soundState = arrayObj.state
+			console.log("soundState")
+			console.log(soundState.isLoaded)
+			if (soundState.isLoaded === false) {
+				console.log("soundState is false")
+				soundState.isLoaded = true;
+				this.setState({soundState})
+				console.log("soundState 2")
+				console.log(soundState.isLoaded)
+				await soundObject.loadAsync(arrayObj.soundFile)
+			}
+			console.log("soundState 3")
+			console.log(soundState.isLoaded)
+
 			await soundObject
 				.playAsync()
 				.then(async playbackStatus => {
@@ -229,7 +240,7 @@ export default class App extends React.Component {
 			{Soundlist.map((soundInfo) => {
 				return (
 					<View key={soundInfo.key} style={styles.buttonContainer}>
-						<AppSoundButton name={soundInfo.name} onPress={() => this.handlePlaySound(soundInfo.key)}/>
+						<AppSoundButton name={soundInfo.name} onPress={() => this.handlePlaySound(soundInfo)}/>
 					</View>
 				);
 			})}
