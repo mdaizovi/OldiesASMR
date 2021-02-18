@@ -45,7 +45,7 @@ const Soundlist = [
 		soundFile: require('./app/assets/audio/sounds/cat.mp3'),
 		soundPath: './app/assets/audio/sounds/cat.mp3',
 		soundObject: new Audio.Sound(),
-		state: {isLoaded: false, isPlaying: false,volume: 1.0}
+		state: {isLoaded: false, isPlaying: false, volume: 1.0}
 	},
 	{	
 		key:'clock',
@@ -53,7 +53,7 @@ const Soundlist = [
 		soundFile: require('./app/assets/audio/sounds/clock.mp3'),
 		soundPath: './app/assets/audio/sounds/clock.mp3',
 		soundObject: new Audio.Sound(),
-		state: {isLoaded: false, isPlaying: false,volume: 1.0}
+		state: {isLoaded: false, isPlaying: false, volume: 1.0}
 	},
 ]
 
@@ -172,32 +172,33 @@ export default class App extends React.Component {
 
 	handlePlaySound = async arrayObj => {
 		const soundObject = arrayObj.soundObject
+
 		try {
-
 			var soundState = arrayObj.state
-			console.log("soundState")
-			console.log(soundState.isLoaded)
 			if (soundState.isLoaded === false) {
-				console.log("soundState is false")
-				soundState.isLoaded = true;
-				this.setState({soundState})
-				console.log("soundState 2")
-				console.log(soundState.isLoaded)
 				await soundObject.loadAsync(arrayObj.soundFile)
-			}
-			console.log("soundState 3")
-			console.log(soundState.isLoaded)
-
-			await soundObject
-				.playAsync()
-				.then(async playbackStatus => {
-					setTimeout(() => {
-						soundObject.unloadAsync()
-					}, playbackStatus.playableDurationMillis)
-				})
 				.catch(error => {
 					console.log(error)
 				})
+				soundState.isLoaded = true;
+				this.setState({soundState})
+			}
+			if (soundState.isPlaying === true) {
+				await soundObject.pauseAsync()
+				.catch(error => {
+					console.log(error)
+				})
+				soundState.isPlaying = false;
+				this.setState({soundState})
+			}  else {
+				soundObject.setIsLoopingAsync(true)
+				await soundObject.playAsync()
+				.catch(error => {
+					console.log(error)
+				})
+				soundState.isPlaying = true;
+				this.setState({soundState})
+		   }
 		} catch (error) {
 			console.log(error)
 		}
