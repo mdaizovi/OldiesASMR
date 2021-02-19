@@ -1,11 +1,12 @@
 import React from "react";
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { StyleSheet, TouchableOpacity } from "react-native";
+import colors from "../config/colors";
 
 function AppPlayerButton({ iconName, onPress}) {
   return (
     <TouchableOpacity style={styles.control} onPress={onPress}>
-      <MaterialIcons name={iconName} size={48} color="#444" />
+      <MaterialIcons name={iconName} size={48} color={colors.slateGrey} />
     </TouchableOpacity>
   );
 }

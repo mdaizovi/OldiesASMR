@@ -9,34 +9,23 @@ import { Audio, Video } from 'expo-av'
 import AppPlayerButton from "./app/components/AppPlayerButton";
 import AppPlayPauseButton from "./app/components/AppPlayPauseButton";
 import AppSoundButton from "./app/components/AppSoundButton";
-
+import colors from "./app/config/colors";
 
 const Playlist = [
 	{
-		title: 'Oldies',
-		source: 'Free Sound Archive',
     	musicFile: require('./app/assets/audio/music/1000/afghanis_64kb.mp3'),
-    	musicPath: './app/assets/audio/music/1000/afghanis_64kb.mp3',
 	},
 	{
-		title: 'Playing',
-		source: 'Free Sound Archive',
     	musicFile: require('./app/assets/audio/music/1000/bluerose_64kb.mp3'),
-    	musicPath: './app/assets/audio/music/1000/bluerose_64kb.mp3',
 	},
 	{
-		title: 'In Another',
-		source: 'Free Sound Archive',
     	musicFile: require('./app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
-    	musicPath: './app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3',
 	},
 	{
-		title: 'Room',
-		source: 'Free Sound Archive',
     	musicFile: require('./app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3'),
-    	musicPath: './app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3',
 	},
 ]
+
 
 const Soundlist = [
 	{
@@ -64,7 +53,9 @@ export default class App extends React.Component {
 		playbackInstance: null,
 		currentIndex: 0,
 		volume: 1.0,
-		isBuffering: true
+		isBuffering: true,
+		tracksUnPlayed : Array.from({length: Playlist.length}, (_, index) => index),
+		tracksPlayed : [],
 	}
 
 	async componentDidMount() {
@@ -90,17 +81,7 @@ export default class App extends React.Component {
 
 		try {
 			const playbackInstance = new Audio.Sound()
-      // I do not understan why these don't work.
-
-      //const songPath = Playlist[currentIndex].musicPath
-      //const source = require(songPath)
-      
-      //const source = require(Playlist[currentIndex].musicPath)
-      //const source = Playlist[currentIndex].musicPath
-
-      // why does this work?!? looks same as others to me.
-      //const source = require('./app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3')
-      const source = Playlist[currentIndex].musicFile
+      		const source = Playlist[currentIndex].musicFile
 
 			const status = {
 				shouldPlay: isPlaying,
@@ -132,42 +113,51 @@ export default class App extends React.Component {
 		})
 	}
 
-	handlePreviousTrack = async () => {
-		let { playbackInstance, currentIndex } = this.state
-		if (playbackInstance) {
-			await playbackInstance.unloadAsync()
-			currentIndex < Playlist.length - 1 ? (currentIndex -= 1) : (currentIndex = 0)
-			this.setState({
-				currentIndex
-			})
-			this.loadAudio()
-		}
-	}
-
 	handleNextTrack = async () => {
 		let { playbackInstance, currentIndex } = this.state
 		if (playbackInstance) {
 			await playbackInstance.unloadAsync()
-			currentIndex < Playlist.length - 1 ? (currentIndex += 1) : (currentIndex = 0)
+
+			var tracksUnPlayed = this.state.tracksUnPlayed
+			var tracksPlayed = this.state.tracksPlayed
+			console.log(".")
+			console.log("------start")
+			console.log("tracksUnPlayed:")
+			console.log(tracksUnPlayed)
+
+			if (tracksUnPlayed.length === 0) {
+				// start over
+				tracksUnPlayed = Array.from({length: Playlist.length}, (_, index) => index),
+				tracksPlayed = []
+				console.log("tracksUnPlayed after reset (should be all):")
+				console.log(tracksUnPlayed)
+				console.log("tracksPlayed after reset (should be none):")
+				console.log(tracksPlayed)
+			}
+			const randomUnPlayedIndex = tracksUnPlayed[Math.floor(Math.random() * tracksUnPlayed.length)];
+			const randomIndex = randomUnPlayedIndex
+			console.log("randomIndex ")
+			console.log(randomIndex)
+
+			tracksPlayed.push(randomIndex);
+			const removeIndex = tracksUnPlayed.indexOf(randomIndex);
+			tracksUnPlayed.splice(removeIndex, 1);
+			
+			console.log("tracksUnPlayed, randomIndex should be removed")
+			console.log(tracksUnPlayed)
+			console.log("tracksPlayed, randomIndex should be added")
+			console.log(tracksPlayed)
+
+			currentIndex = randomIndex;
+			console.log("------end")
+			console.log(".")
 			this.setState({
-				currentIndex
+				currentIndex,
+				tracksPlayed,
+				tracksUnPlayed
 			})
 			this.loadAudio()
 		}
-	}
-
-	renderFileInfo() {
-		const { playbackInstance, currentIndex } = this.state
-		return playbackInstance ? (
-			<View style={styles.trackInfo}>
-				<Text style={[styles.trackInfoText, styles.largeText]}>
-					{Playlist[currentIndex].title}
-				</Text>
-				<Text style={[styles.trackInfoText, styles.smallText]}>
-					{Playlist[currentIndex].source}
-				</Text>
-			</View>
-		) : null
 	}
 
 	handlePlaySound = async arrayObj => {
@@ -195,56 +185,52 @@ export default class App extends React.Component {
 				await soundObject.playAsync()
 				.catch(error => {
 					console.log(error)
-				})
-				soundState.isPlaying = true;
-				this.setState({soundState})
+			})
+			soundState.isPlaying = true;
+			this.setState({soundState})
 		   }
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
-
-
 	render() {
 		return (
 			<View style={styles.container}>
-       		{this.renderFileInfo()}
-            {this.state.isPlaying ? (
-              <Video
-                source={require('./app/assets/video/RecordLoop.mp4')}
-                resizeMode="cover"
-                shouldPlay
-                isLooping
-                style={styles.recordBackground}
-              />
-						) : (
-              <Image
-              style={styles.recordBackground}
-              source={require('./app/assets/images/record.jpg') }
-            	/>
-			)}
-			<View style={styles.controls}>
-					
-			<AppPlayerButton iconName="navigate-before" onPress={this.handlePreviousTrack}/>
-						{/* prob the answer to my blinking problem
-			https://stackoverflow.com/a/42348010 
-			or this
-			https://stackoverflow.com/a/56883227
-			*/}
-			<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
-			<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>
+				<View style={styles.controls}>
+								{/* prob the answer to my blinking problem
+					https://stackoverflow.com/a/42348010 
+					or this
+					https://stackoverflow.com/a/56883227
+					*/}
+					<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
+					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>	
+				</View>
+
+				<Text style={styles.buttonText}>{this.state.currentIndex}</Text>
 				
-        	</View>
+				{this.state.isPlaying ? (
+				<Video
+					source={require('./app/assets/video/RecordLoop.mp4')}
+					resizeMode="cover"
+					shouldPlay
+					isLooping
+					style={styles.recordBackground}
+				/>
+						) : (
+				<Image
+				style={styles.recordBackground}
+				source={require('./app/assets/images/record.jpg') }
+					/>
+				)}
 
-
-			{Soundlist.map((soundInfo) => {
-				return (
-					<View key={soundInfo.key} style={styles.buttonContainer}>
-						<AppSoundButton name={soundInfo.name} onPress={() => this.handlePlaySound(soundInfo)}/>
-					</View>
-				);
-			})}
+				{Soundlist.map((soundInfo) => {
+					return (
+						<View key={soundInfo.key} style={styles.buttonContainer}>
+							<AppSoundButton name={soundInfo.name} onPress={() => this.handlePlaySound(soundInfo)}/>
+						</View>
+					);
+				})}
 			
 			</View>
 
@@ -255,9 +241,9 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: colors.primary,
 		alignItems: 'center',
-    top:20,
+    	top:20,
 		//justifyContent: 'center'
 	},
   	recordBackground: {
@@ -266,13 +252,12 @@ const styles = StyleSheet.create({
 	},
 	trackInfo: {
 		padding: 40,
-		backgroundColor: '#fff'
+		backgroundColor: colors.white,
 	},
-
 	trackInfoText: {
 		textAlign: 'center',
 		flexWrap: 'wrap',
-		color: '#550088'
+		color: colors.purple
 	},
 	largeText: {
 		fontSize: 22
@@ -294,10 +279,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: 'red'
+		backgroundColor: colors.blue
 	},
 	buttonText: {
-		color: '#fff',
+		color: colors.black,
 		fontSize: 18
 	}
 })
