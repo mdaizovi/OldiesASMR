@@ -35,7 +35,7 @@ const Soundlist = [
 		soundFile: require('./app/assets/audio/sounds/cat.mp3'),
 		soundPath: './app/assets/audio/sounds/cat.mp3',
 		soundObject: new Audio.Sound(),
-		state: {isLoaded: false, isPlaying: false, volume: 1.0}
+		state: {isLoaded: false, isPlaying: false, volume: 0.5}
 	},
 	{	
 		key:'clock',
@@ -43,7 +43,7 @@ const Soundlist = [
 		soundFile: require('./app/assets/audio/sounds/clock.mp3'),
 		soundPath: './app/assets/audio/sounds/clock.mp3',
 		soundObject: new Audio.Sound(),
-		state: {isLoaded: false, isPlaying: false, volume: 1.0}
+		state: {isLoaded: false, isPlaying: false, volume: 0.5}
 	},
 ]
 
@@ -154,6 +154,10 @@ export default class App extends React.Component {
 					console.log(error)
 				})
 				soundState.isLoaded = true;
+
+				const initialVolume = soundState.volume;
+				soundObject.setStatusAsync({ volume: initialVolume })
+				
 				this.setState({soundState})
 			}
 			if (soundState.isPlaying === true) {
@@ -177,9 +181,21 @@ export default class App extends React.Component {
 		}
 	}
 
-	handleSlide = async arrayObj => {
-		console.log("slide");
-		console.log("slide");
+	handleSlide = async (arrayObj , value) => {
+
+		// console.log("value:");
+		// console.log(value);
+		const soundObject = arrayObj.soundObject
+		var soundState = arrayObj.state
+		const currentVolume = soundState.volume;
+		// console.log("---");
+		// console.log(currentVolume);
+		// console.log("---");
+		//get value of slider
+		// need to access sound obj and see if volume changes
+		soundState.volume = value;
+		this.setState({soundState})
+		soundObject.setStatusAsync({ volume: value })
 	}
 
 
@@ -223,7 +239,11 @@ export default class App extends React.Component {
 								maximumValue={1}
 								minimumTrackTintColor="red"
 								maximumTrackTintColor="#000000"
-								onValueChange={() => this.handleSlide()}
+								value={soundInfo.state.volume}
+								//onValueChange={val => this.setState({ volume: val })}
+								//onValueChange={() => this.handleSlide(soundInfo)}
+								onValueChange={value => this.handleSlide(soundInfo, value)}
+
 							/>
 						
 						</View>
