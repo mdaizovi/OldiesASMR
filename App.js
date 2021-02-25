@@ -3,8 +3,10 @@ import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, Te
 import { Ionicons } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { Audio, Video } from 'expo-av'
+import Slider from '@react-native-community/slider';
+
 //import { Playlist } from "./app/data/Playlist";
-//const Playlist = require('./app/data//Playlist.json');
+//const Playlist = require('./app/data/Playlist.json');
 //import AppMusicPlayer from "./app/components/AppMusicPlayer";
 import AppPlayerButton from "./app/components/AppPlayerButton";
 import AppPlayPauseButton from "./app/components/AppPlayPauseButton";
@@ -26,7 +28,6 @@ const Playlist = [
 	},
 ]
 
-
 const Soundlist = [
 	{
 		key: 'cat',
@@ -45,7 +46,6 @@ const Soundlist = [
 		state: {isLoaded: false, isPlaying: false, volume: 1.0}
 	},
 ]
-
 
 export default class App extends React.Component {
 	state = {
@@ -120,37 +120,20 @@ export default class App extends React.Component {
 
 			var tracksUnPlayed = this.state.tracksUnPlayed
 			var tracksPlayed = this.state.tracksPlayed
-			console.log(".")
-			console.log("------start")
-			console.log("tracksUnPlayed:")
-			console.log(tracksUnPlayed)
 
 			if (tracksUnPlayed.length === 0) {
 				// start over
 				tracksUnPlayed = Array.from({length: Playlist.length}, (_, index) => index),
 				tracksPlayed = []
-				console.log("tracksUnPlayed after reset (should be all):")
-				console.log(tracksUnPlayed)
-				console.log("tracksPlayed after reset (should be none):")
-				console.log(tracksPlayed)
 			}
 			const randomUnPlayedIndex = tracksUnPlayed[Math.floor(Math.random() * tracksUnPlayed.length)];
 			const randomIndex = randomUnPlayedIndex
-			console.log("randomIndex ")
-			console.log(randomIndex)
 
 			tracksPlayed.push(randomIndex);
 			const removeIndex = tracksUnPlayed.indexOf(randomIndex);
 			tracksUnPlayed.splice(removeIndex, 1);
-			
-			console.log("tracksUnPlayed, randomIndex should be removed")
-			console.log(tracksUnPlayed)
-			console.log("tracksPlayed, randomIndex should be added")
-			console.log(tracksPlayed)
 
 			currentIndex = randomIndex;
-			console.log("------end")
-			console.log(".")
 			this.setState({
 				currentIndex,
 				tracksPlayed,
@@ -194,21 +177,16 @@ export default class App extends React.Component {
 		}
 	}
 
+	handleSlide = async arrayObj => {
+		console.log("slide");
+		console.log("slide");
+	}
+
+
+
 	render() {
 		return (
 			<View style={styles.container}>
-				<View style={styles.controls}>
-								{/* prob the answer to my blinking problem
-					https://stackoverflow.com/a/42348010 
-					or this
-					https://stackoverflow.com/a/56883227
-					*/}
-					<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
-					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>	
-				</View>
-
-				<Text style={styles.buttonText}>{this.state.currentIndex}</Text>
-				
 				{this.state.isPlaying ? (
 				<Video
 					source={require('./app/assets/video/RecordLoop.mp4')}
@@ -224,10 +202,30 @@ export default class App extends React.Component {
 					/>
 				)}
 
+				<View style={styles.controls}>
+								{/* prob the answer to my blinking problem
+					https://stackoverflow.com/a/42348010 
+					or this
+					https://stackoverflow.com/a/56883227
+					*/}
+					<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
+					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>	
+				</View>
+
 				{Soundlist.map((soundInfo) => {
 					return (
-						<View key={soundInfo.key} style={styles.buttonContainer}>
+						<View key={soundInfo.key} style={styles.soundContainer}>
 							<AppSoundButton name={soundInfo.name} onPress={() => this.handlePlaySound(soundInfo)}/>
+						
+							<Slider
+								style={{width: 200, height: 40}}
+								minimumValue={0}
+								maximumValue={1}
+								minimumTrackTintColor="red"
+								maximumTrackTintColor="#000000"
+								onValueChange={() => this.handleSlide()}
+							/>
+						
 						</View>
 					);
 				})}
@@ -243,7 +241,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.primary,
 		alignItems: 'center',
-    	top:20,
+    	top:50,
 		//justifyContent: 'center'
 	},
   	recordBackground: {
@@ -257,7 +255,7 @@ const styles = StyleSheet.create({
 	trackInfoText: {
 		textAlign: 'center',
 		flexWrap: 'wrap',
-		color: colors.purple
+	
 	},
 	largeText: {
 		fontSize: 22
@@ -271,9 +269,13 @@ const styles = StyleSheet.create({
 	controls: {
 		flexDirection: 'row'
 	},
-	buttonContainer: {
-		height: 40,
-		margin: 5
+	soundContainer: {
+		height: 100,
+		width:400,
+		margin: 5,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: colors.veryLightGrey,
 	},
 	button: {
 		flex: 1,
@@ -284,5 +286,5 @@ const styles = StyleSheet.create({
 	buttonText: {
 		color: colors.black,
 		fontSize: 18
-	}
+	},
 })

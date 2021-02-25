@@ -14,15 +14,10 @@ function AppSoundButton({ name, onPress}) {
 }
 
 const styles = StyleSheet.create({
-	buttonContainer: {
-		height: 40,
-		margin: 5,
-	},
 	button: {
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: colors.purple,
 	},
 	buttonText: {
 		color: colors.blue,
