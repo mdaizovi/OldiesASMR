@@ -52,7 +52,7 @@ export default class App extends React.Component {
 		isPlaying: false,
 		playbackInstance: null,
 		currentIndex: 0,
-		volume: 1.0,
+		volume: 0.5,
 		isBuffering: true,
 		tracksUnPlayed : Array.from({length: Playlist.length}, (_, index) => index),
 		tracksPlayed : [],
@@ -154,10 +154,8 @@ export default class App extends React.Component {
 					console.log(error)
 				})
 				soundState.isLoaded = true;
-
 				const initialVolume = soundState.volume;
 				soundObject.setStatusAsync({ volume: initialVolume })
-				
 				this.setState({soundState})
 			}
 			if (soundState.isPlaying === true) {
@@ -182,23 +180,21 @@ export default class App extends React.Component {
 	}
 
 	handleSlide = async (arrayObj , value) => {
-
-		// console.log("value:");
-		// console.log(value);
 		const soundObject = arrayObj.soundObject
 		var soundState = arrayObj.state
 		const currentVolume = soundState.volume;
-		// console.log("---");
-		// console.log(currentVolume);
-		// console.log("---");
-		//get value of slider
-		// need to access sound obj and see if volume changes
 		soundState.volume = value;
 		this.setState({soundState})
 		soundObject.setStatusAsync({ volume: value })
 	}
 
-
+	handleSongVolume = async (value) => {
+		const { playbackInstance } = this.state
+		this.setState({
+			volume: value
+		})
+		playbackInstance.setStatusAsync({ volume: value })
+	}
 
 	render() {
 		return (
@@ -225,6 +221,17 @@ export default class App extends React.Component {
 					https://stackoverflow.com/a/56883227
 					*/}
 					<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
+
+							<Slider
+								style={{width: 200, height: 40}}
+								minimumValue={0}
+								maximumValue={1}
+								minimumTrackTintColor="red"
+								maximumTrackTintColor="#000000"
+								value={this.state.volume}
+								onValueChange={value => this.handleSongVolume(value)}
+							/>
+
 					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>	
 				</View>
 
@@ -232,7 +239,6 @@ export default class App extends React.Component {
 					return (
 						<View key={soundInfo.key} style={styles.soundContainer}>
 							<AppSoundButton name={soundInfo.name} onPress={() => this.handlePlaySound(soundInfo)}/>
-						
 							<Slider
 								style={{width: 200, height: 40}}
 								minimumValue={0}
@@ -243,9 +249,7 @@ export default class App extends React.Component {
 								//onValueChange={val => this.setState({ volume: val })}
 								//onValueChange={() => this.handleSlide(soundInfo)}
 								onValueChange={value => this.handleSlide(soundInfo, value)}
-
 							/>
-						
 						</View>
 					);
 				})}
