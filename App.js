@@ -37,6 +37,22 @@ const Playlist = [
 
 var Soundlist = [
 	{
+		name: "you're at the beach",
+		soundFile: require('./app/assets/audio/sounds/beach.mp3'),
+	},
+	{
+		name: 'birds are chirping',
+		soundFile: require('./app/assets/audio/sounds/birds.mp3'),
+	},
+	{
+		name: "you're on a boat",
+		soundFile: require('./app/assets/audio/sounds/boat.mp3'),
+	},
+	{
+		name: "you're camping",
+		soundFile: require('./app/assets/audio/sounds/camping.mp3'),
+	},	
+	{
 		name: 'a cat is purring',
 		soundFile: require('./app/assets/audio/sounds/cat.mp3'),
 	},
@@ -44,9 +60,33 @@ var Soundlist = [
 		name: 'a clock is ticking',
 		soundFile: require('./app/assets/audio/sounds/clock.mp3'),
 	},
+	{
+		name: "there are crickets",
+		soundFile: require('./app/assets/audio/sounds/crickets.mp3'),
+	},
+	{
+		name: "you're on a farm",
+		soundFile: require('./app/assets/audio/sounds/farm.mp3'),
+	},		
+	{
+		name: "you're in a field",
+		soundFile: require('./app/assets/audio/sounds/field.mp3'),
+	},
+	{
+		name: "there's a fire",
+		soundFile: require('./app/assets/audio/sounds/fire.mp3'),
+	},		
+	{
+		name: "there are frogs",
+		soundFile: require('./app/assets/audio/sounds/frogs.mp3'),
+	},	
 	{	
 		name: 'a hammock is swinging',
 		soundFile: require('./app/assets/audio/sounds/hammock.mp3'),
+	},
+	{	
+		name: "you're at a lake",
+		soundFile: require('./app/assets/audio/sounds/lake.mp3'),
 	},
 	{	
 		name: "it's raining with thunder",
@@ -57,12 +97,28 @@ var Soundlist = [
 		soundFile: require('./app/assets/audio/sounds/rainWind.mp3'),
 	},
 	{	
+		name: "people are skateboarding",
+		soundFile: require('./app/assets/audio/sounds/skateboard.mp3'),
+	},
+	{	
 		name: "you're on a train",
 		soundFile: require('./app/assets/audio/sounds/train.mp3'),
 	},
 	{	
 		name: 'a vinyl record is playing',
 		soundFile: require('./app/assets/audio/sounds/vinyl.mp3'),
+	},
+	{	
+		name: 'water is flowing',
+		soundFile: require('./app/assets/audio/sounds/water.mp3'),
+	},
+	{	
+		name: 'waves are crashing',
+		soundFile: require('./app/assets/audio/sounds/waves.mp3'),
+	},
+	{	
+		name: 'wheels are rolling',
+		soundFile: require('./app/assets/audio/sounds/wheels.mp3'),
 	},
 ]
 for (var i = 0; i < Soundlist.length; i++) {
@@ -260,6 +316,9 @@ export default class App extends React.Component {
 					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>	
 				</View>
 
+				<View style={styles.separator}>
+        		</View>
+
 				<View style={{flex:1}}>
   				<ScrollView contentContainerStyle={{flexGrow:1}}>
 				{Soundlist.map((soundInfo) => {
@@ -339,4 +398,10 @@ const styles = StyleSheet.create({
 		color: colors.black,
 		fontSize: 18
 	},
+	separator: {
+		height: 1,
+		width: "86%",
+		backgroundColor: "#CED0CE",
+		marginLeft: "14%"
+	}
 })

@@ -1,0 +1,157 @@
+[
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"468452__felix-blume__waves-and-seagulls-on-the-beach-close-to-lisbon.wav",
+		"sound": "beach",
+        "note":""
+	},
+	{
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"463440__idkmrgarcia__birds-in-park.wav",
+		"sound": "birds",
+        "note":""
+	},
+	{
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"510900__lydmakeren__boat-waves.wav",
+		"sound": "boat",
+        "note":"combo of 439366__falcet__ambience-sea-boat-night-ropes-3.wav, 510900__lydmakeren__boat-waves.wav, and 541322__dblover__squeaky-wooden-floor.wav"
+	},
+	{
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"203598__raoul-slayer__cricketsandtawnyowl.wav",
+		"sound": "camping",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"260881__trautwein__cat-purr.mp3",
+		"sound": "cat",
+        "note":""
+	},
+	{
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"408741__straget__alarm-clock-ticking.wav",
+		"sound": "clock",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"22604__martypinso__dmp010037-crickets-texas.wav",
+		"sound": "crickets",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"121951__odilonmarcenaro__sheep-pasture.wav",
+		"sound": "farm",
+        "note":"combo of 121951__odilonmarcenaro__sheep-pasture.wav and 488063__meisben__ambience-farm-02.wav"
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"451946__kyles__crickets-night-urban-park-or-residential-backyard-suburbs-distant-city-skyline-and-owl-india.flac",
+		"sound": "field",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"81800__silencyo__silencyo-cc-fire-in-fireplace-close-up-reverberant.aiff",
+		"sound": "fire",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"278872__sandermotions__nature-sounds-frog-2.wav",
+		"sound": "frogs",
+        "note":""
+	},
+	{
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"408741__straget__alarm-clock-ticking.wav",
+		"sound": "hammock (ropes)",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"66955__felix-blume__night-close-to-a-river-crickets-and-frogs-bird-sometimes.wav",
+		"sound": "lake",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"",
+		"sound": "rain no thunder",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"237729__flathill__rain-and-thunder-4.wav",
+		"sound": "rain with thunder",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"448196__bashrambali__wind-and-rain-in-iceland-48khz-ms.wav",
+		"sound": "rain with wind",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"533857__watkinsonic__southbank-skatepark.wav",
+		"sound": "skateboard",
+        "note":"combo of 533857__watkinsonic__southbank-skatepark.wav and 154855__pawsound__skate-board-screech.wav"
+	},
+	{
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"553064__nickcase__inside-a-train-in-india.wav",
+		"sound": "train",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"484978__soundensemble__binaural-waves-splashes-on-rocks-at-cap-de-l-huerta-spain.wav",
+		"sound": "water",
+        "note":""
+	}
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"546679__trezz77__soft-waves.aiff",
+		"sound": "waves",
+        "note":""
+	},
+    {
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"348329__blackneon1234__skate.wav",
+		"sound": "wheels",
+        "note":"",
+    },
+	{
+		"sourceName": "FreeSound",
+        "sourceUrl": "https://freesound.org/",
+		"originalFilename":"515129__mitchanary__vinyl-dust2.wav",
+		"sound": "vinyl",
+        "note":""
+	}
+]
+] 
