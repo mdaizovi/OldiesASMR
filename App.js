@@ -14,11 +14,6 @@ import AppPlayPauseButton from "./app/components/AppPlayPauseButton";
 import AppSoundButton from "./app/components/AppSoundButton";
 import colors from "./app/config/colors";
 
-const logo = {
-  uri: 'https://reactnative.dev/img/tiny_logo.png',
-  width: 64,
-  height: 64
-};
 
 const Playlist = [
 	{
@@ -97,16 +92,16 @@ var Soundlist = [
 		soundFile: require('./app/assets/audio/sounds/rainWind.mp3'),
 	},
 	{	
+		name: 'a vinyl record is playing',
+		soundFile: require('./app/assets/audio/sounds/vinyl.mp3'),
+	},
+	{	
 		name: "people are skateboarding",
 		soundFile: require('./app/assets/audio/sounds/skateboard.mp3'),
 	},
 	{	
 		name: "you're on a train",
 		soundFile: require('./app/assets/audio/sounds/train.mp3'),
-	},
-	{	
-		name: 'a vinyl record is playing',
-		soundFile: require('./app/assets/audio/sounds/vinyl.mp3'),
 	},
 	{	
 		name: 'water is flowing',
@@ -127,16 +122,21 @@ for (var i = 0; i < Soundlist.length; i++) {
 	sound.state = {isLoaded: false, isPlaying: false, volume: 0.5};
 }
 
+var startingTracksUnPlayed =  Array.from({length: Playlist.length}, (_, index) => index);
+var startingRandomIndex = Math.floor(Math.random() * Playlist.length);
+startingTracksUnPlayed.splice(startingRandomIndex, 1);
 
 export default class App extends React.Component {
+
 	state = {
 		isPlaying: false,
 		playbackInstance: null,
-		currentIndex: 0,
+		currentIndex: startingRandomIndex,
+		nextIndex: null, // will be replaced.
 		volume: 0.5,
 		isBuffering: true,
-		tracksUnPlayed : Array.from({length: Playlist.length}, (_, index) => index),
-		tracksPlayed : [],
+		tracksUnPlayed :  startingTracksUnPlayed,
+		tracksPlayed : [startingRandomIndex]
 	}
 
 	async componentDidMount() {
@@ -158,11 +158,18 @@ export default class App extends React.Component {
 	}
 
 	async loadAudio() {
-		const { currentIndex, isPlaying, volume } = this.state
+		const { playbackInstance, isPlaying, volume } = this.state
+		var currentIndex = this.state.currentIndex
+		if (playbackInstance) {
+			await playbackInstance.unloadAsync()
+			this.chooseNextTrack()
+			var nextIndex = this.state.nextIndex
+			currentIndex = nextIndex
+		}
 
 		try {
 			const playbackInstance = new Audio.Sound()
-      		const source = Playlist[currentIndex].musicFile
+			const source = Playlist[currentIndex].musicFile
 
 			const status = {
 				shouldPlay: isPlaying,
@@ -172,6 +179,7 @@ export default class App extends React.Component {
 			playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
 			await playbackInstance.loadAsync(source, status, false)
 			this.setState({
+				currentIndex,
 				playbackInstance
 			})
 		} catch (e) {
@@ -192,36 +200,38 @@ export default class App extends React.Component {
 		this.setState({
 			isPlaying: !isPlaying
 		})
+
+	}
+
+	chooseNextTrack = () => {
+		var tracksUnPlayed = this.state.tracksUnPlayed
+		var tracksPlayed = this.state.tracksPlayed
+		var currentIndex = this.state.currentIndex
+		var nextIndex = this.state.nextIndex
+
+		if (tracksUnPlayed.length === 0) {
+			// start over
+			tracksUnPlayed = Array.from({length: Playlist.length}, (_, index) => index),
+			tracksPlayed = []
+		}
+
+		const randomUnPlayedIndex = tracksUnPlayed[Math.floor(Math.random() * tracksUnPlayed.length)];
+
+		tracksPlayed.push(randomUnPlayedIndex);
+		const removeIndex = tracksUnPlayed.indexOf(randomUnPlayedIndex);
+		tracksUnPlayed.splice(removeIndex, 1);
+		nextIndex = randomUnPlayedIndex;
+		this.setState({
+			nextIndex,
+			tracksPlayed,
+			tracksUnPlayed
+		})
+
+
 	}
 
 	handleNextTrack = async () => {
-		let { playbackInstance, currentIndex } = this.state
-		if (playbackInstance) {
-			await playbackInstance.unloadAsync()
-
-			var tracksUnPlayed = this.state.tracksUnPlayed
-			var tracksPlayed = this.state.tracksPlayed
-
-			if (tracksUnPlayed.length === 0) {
-				// start over
-				tracksUnPlayed = Array.from({length: Playlist.length}, (_, index) => index),
-				tracksPlayed = []
-			}
-			const randomUnPlayedIndex = tracksUnPlayed[Math.floor(Math.random() * tracksUnPlayed.length)];
-			const randomIndex = randomUnPlayedIndex
-
-			tracksPlayed.push(randomIndex);
-			const removeIndex = tracksUnPlayed.indexOf(randomIndex);
-			tracksUnPlayed.splice(removeIndex, 1);
-
-			currentIndex = randomIndex;
-			this.setState({
-				currentIndex,
-				tracksPlayed,
-				tracksUnPlayed
-			})
-			this.loadAudio()
-		}
+		this.loadAudio()
 	}
 
 	handlePlaySound = async arrayObj => {
@@ -266,7 +276,9 @@ export default class App extends React.Component {
 		const currentVolume = soundState.volume;
 		soundState.volume = value;
 		this.setState({soundState})
-		soundObject.setStatusAsync({ volume: value })
+		if (soundState.isLoaded === true) {
+			soundObject.setStatusAsync({ volume: value })
+		}
 	}
 
 	handleSongVolume = async (value) => {
@@ -320,7 +332,7 @@ export default class App extends React.Component {
         		</View>
 
 				<View style={{flex:1}}>
-  				<ScrollView contentContainerStyle={{flexGrow:1}}>
+  				<ScrollView contentContainerStyle={{flexGrow:1, paddingBottom:100}}>
 				{Soundlist.map((soundInfo) => {
 					return (
 						<View key={soundInfo.name} style={styles.soundContainer}>
