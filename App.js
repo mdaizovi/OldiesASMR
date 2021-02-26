@@ -1,5 +1,6 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, Text } from 'react-native'
+import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, ScrollView, View, Image, Text } from 'react-native'
+import { List, ListItem } from "react-native-elements";
 import { Ionicons } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { Audio, Video } from 'expo-av'
@@ -12,6 +13,12 @@ import AppPlayerButton from "./app/components/AppPlayerButton";
 import AppPlayPauseButton from "./app/components/AppPlayPauseButton";
 import AppSoundButton from "./app/components/AppSoundButton";
 import colors from "./app/config/colors";
+
+const logo = {
+  uri: 'https://reactnative.dev/img/tiny_logo.png',
+  width: 64,
+  height: 64
+};
 
 const Playlist = [
 	{
@@ -30,15 +37,31 @@ const Playlist = [
 
 var Soundlist = [
 	{
-		name: 'Cat Purring',
+		name: 'a cat is purring',
 		soundFile: require('./app/assets/audio/sounds/cat.mp3'),
 	},
 	{	
-		name: 'Clock Ticking',
+		name: 'a clock is ticking',
 		soundFile: require('./app/assets/audio/sounds/clock.mp3'),
 	},
 	{	
-		name: 'Vinyl Record',
+		name: 'a hammock is swinging',
+		soundFile: require('./app/assets/audio/sounds/hammock.mp3'),
+	},
+	{	
+		name: "it's raining with thunder",
+		soundFile: require('./app/assets/audio/sounds/rainWithThunder.mp3'),
+	},
+	{	
+		name: "it's raining and windy",
+		soundFile: require('./app/assets/audio/sounds/rainWind.mp3'),
+	},
+	{	
+		name: "you're on a train",
+		soundFile: require('./app/assets/audio/sounds/train.mp3'),
+	},
+	{	
+		name: 'a vinyl record is playing',
 		soundFile: require('./app/assets/audio/sounds/vinyl.mp3'),
 	},
 ]
@@ -237,6 +260,8 @@ export default class App extends React.Component {
 					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>	
 				</View>
 
+				<View style={{flex:1}}>
+  				<ScrollView contentContainerStyle={{flexGrow:1}}>
 				{Soundlist.map((soundInfo) => {
 					return (
 						<View key={soundInfo.name} style={styles.soundContainer}>
@@ -255,7 +280,8 @@ export default class App extends React.Component {
 						</View>
 					);
 				})}
-			
+			</ScrollView>
+			</View>
 			</View>
 
 		)
