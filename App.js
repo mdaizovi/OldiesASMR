@@ -28,24 +28,26 @@ const Playlist = [
 	},
 ]
 
-const Soundlist = [
+var Soundlist = [
 	{
-		key: 'cat',
 		name: 'Cat Purring',
 		soundFile: require('./app/assets/audio/sounds/cat.mp3'),
-		soundPath: './app/assets/audio/sounds/cat.mp3',
-		soundObject: new Audio.Sound(),
-		state: {isLoaded: false, isPlaying: false, volume: 0.5}
 	},
 	{	
-		key:'clock',
 		name: 'Clock Ticking',
 		soundFile: require('./app/assets/audio/sounds/clock.mp3'),
-		soundPath: './app/assets/audio/sounds/clock.mp3',
-		soundObject: new Audio.Sound(),
-		state: {isLoaded: false, isPlaying: false, volume: 0.5}
+	},
+	{	
+		name: 'Vinyl Record',
+		soundFile: require('./app/assets/audio/sounds/vinyl.mp3'),
 	},
 ]
+for (var i = 0; i < Soundlist.length; i++) {
+	var sound = Soundlist[i];
+	sound.soundObject = new Audio.Sound();
+	sound.state = {isLoaded: false, isPlaying: false, volume: 0.5};
+}
+
 
 export default class App extends React.Component {
 	state = {
@@ -237,7 +239,7 @@ export default class App extends React.Component {
 
 				{Soundlist.map((soundInfo) => {
 					return (
-						<View key={soundInfo.key} style={styles.soundContainer}>
+						<View key={soundInfo.name} style={styles.soundContainer}>
 							<AppSoundButton name={soundInfo.name} onPress={() => this.handlePlaySound(soundInfo)}/>
 							<Slider
 								style={{width: 200, height: 40}}
