@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import colors from "../config/colors";
+import { Platform } from 'react-native';
 
 function AppSoundButton({ name, isPlaying, onPress}) {
   return (
@@ -24,7 +25,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	buttonText: {
-		fontSize: 22
+		fontSize: 22,
+		fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
 	},
 	buttonTextActive: {
 		color: colors.active,

@@ -17,16 +17,367 @@ import colors from "./app/config/colors";
 
 const Playlist = [
 	{
-    	musicFile: require('./app/assets/audio/music/1000/afghanis_64kb.mp3'),
+		musicFile: require('./app/assets/audio/music/1000/pretgirl_64kb.mp3'),
 	},
 	{
-    	musicFile: require('./app/assets/audio/music/1000/bluerose_64kb.mp3'),
+		musicFile: require('./app/assets/audio/music/1000/buttonup_64kb.mp3'),
 	},
 	{
-    	musicFile: require('./app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
+		musicFile: require('./app/assets/audio/music/1000/jazzdanc_64kb.mp3'),
 	},
 	{
-    	musicFile: require('./app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3'),
+		musicFile: require('./app/assets/audio/music/1000/Eubie_Blake-Chevy_Chase_11KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/burmah_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/admirat_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/duever_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/sirene_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/palestee_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/blackrag_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/dix1step_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/paleste1_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Black_Devils-MonkymanREDO_11KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/mohammed_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/llagoose_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/japsand_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/wabashbl_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/acehole_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/pastime_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/budhabit_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/ohmabel_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Parham-Washboard_Wiggles_11KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/wotlido_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/bhoosier_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/onesweet_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Bennie_Motens_KC_Jazz_Band-South_1924_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/cried4u_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/spanlove_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/omissrag_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/onlygirl_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/sheik_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/ivanhoe_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/istuttr_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/kentuckb_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/jackgal_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/mandy1_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/pozzo_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/amazgrac_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Howard_Lanin_When_Eyes_Of_Blue_Are_Foolin__You_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/lowdown_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Broadway_Nitelites_I_Wanna_Be_Loved_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/train_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/zulublue_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Raderman-Japanese_Sandman_8KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/hotlips_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/panama_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/mostomp_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Alexander_Wheres_That_Band_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Raderman_Jazz_Orch-Dardanella_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/stolmgal_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/lupe_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/smiles_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/south_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Erskine_Tate_Chinaman_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/dippermo_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/steppins_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/clement2_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Bucktown_5_Hot_Mittens_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/henpeckd_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/dardanel_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/wimwithu_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/cushfoot_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/buglcall_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/iaintgot_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/changes_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/sugarft_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/surshimy_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/newbaby_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/otpump_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Henpecked_Blues_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/hotmama_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Eubie_Blake-Charleston_Rag_11KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/siskate_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/hflouisv_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/lovrlane_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/urbones_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Bennie_Moten_Kater_St._Rag_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Somebodys_Wrong_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/goldleaf_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/kcshuffl_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/HoldMe_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/nickleod_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Helen_Kane-IWannabeLovedbyYou_11KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Washingtonians-Tishomingo_Blues_11KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/imaginat_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/The_Georgians-You_Tell_Her_I_Stutter_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/overther_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/paleste2_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/yestrday_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/jsandman_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/copenhag_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/crawdadd_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/deedido_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/afghanis_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/iknoukno_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/bluerose_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/keepgoin_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/vododeo_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/kckitty_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/dardan2_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/CA_Ramblers_Animal_Crackers_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Vo_Do_Do_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/chocoboy_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/jazmeblu_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/quaktown_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/swhenry_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/istutter_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/wangwang_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Golden_Gate_Orch-5_Foot_2_11KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/sentgent_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Ambassadors_Me_And_The_Man_In_The_Moon_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/clement1_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/piknemup_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/lstablbl_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/4or5x_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/ka-lu-a_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/nevrknew_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/leftalon_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Ragtimers-Sister_Kate_11KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/Whiteman-Whispering_11KHz_64kb.mp3'),
+	},
+	{
+		musicFile: require('./app/assets/audio/music/1000/singusin_64kb.mp3'),
 	},
 ]
 
@@ -294,11 +645,13 @@ export default class App extends React.Component {
 	}
 
 	handleSongVolume = async (value) => {
-		const { playbackInstance } = this.state
+		const { isPlaying, playbackInstance } = this.state
 		this.setState({
 			volume: value
 		})
-		playbackInstance.setStatusAsync({ volume: value })
+		if (playbackInstance != null) {
+			playbackInstance.setStatusAsync({ volume: value })
+		}
 	}
 
 	render() {
@@ -327,15 +680,29 @@ export default class App extends React.Component {
 					*/}
 					<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
 
-					<Slider
-						style={{width: 200, height: 40}}
-						minimumValue={0}
-						maximumValue={1}
-						minimumTrackTintColor={colors.veryDarkGrey}
-						maximumTrackTintColor={colors.inactive}
-						value={this.state.volume}
-						onValueChange={value => this.handleSongVolume(value)}
-					/>
+					{this.state.isPlaying ? (
+								<Slider
+									style={[styles.volumeSlider, styles.songVolumeSlider]}
+									minimumValue={0}
+									maximumValue={1}
+									minimumTrackTintColor={colors.veryLightGrey}
+									maximumTrackTintColor={colors.active}
+									thumbTintColor={colors.active}
+									value={this.state.volume}
+									onValueChange={value => this.handleSongVolume(value)}
+								/>
+							) : (
+								<Slider
+									style={[styles.volumeSlider,styles.songVolumeSlider]}
+									minimumValue={0}
+									maximumValue={1}
+									minimumTrackTintColor={colors.veryDarkGrey}
+									maximumTrackTintColor={colors.inactive}
+									thumbTintColor={colors.inactive}
+									value={this.state.volume}
+									onValueChange={value => this.handleSongVolume(value)}
+							/>
+							)}
 
 					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>	
 				</View>
@@ -373,7 +740,6 @@ export default class App extends React.Component {
 									onValueChange={value => this.handleSlide(soundInfo, value)}
 							/>
 							)}
-
 
 						</View>
 					);
@@ -426,5 +792,8 @@ const styles = StyleSheet.create({
 	volumeSlider: {
 		width: 200, 
 		height: 40
-	}
+	},
+	songVolumeSlider: {
+		marginTop: 25, 
+	},
 })
