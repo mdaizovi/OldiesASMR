@@ -96,6 +96,10 @@ var Soundlist = [
 		soundFile: require('./app/assets/audio/sounds/vinyl.mp3'),
 	},
 	{	
+		name: "you're roller skating outside over bricks",
+		soundFile: require('./app/assets/audio/sounds/skateBricks.mp3'),
+	},
+	{	
 		name: "people are skateboarding",
 		soundFile: require('./app/assets/audio/sounds/skateboard.mp3'),
 	},
@@ -170,7 +174,6 @@ export default class App extends React.Component {
 		try {
 			const playbackInstance = new Audio.Sound()
 			const source = Playlist[currentIndex].musicFile
-
 			const status = {
 				shouldPlay: isPlaying,
 				volume: volume
@@ -178,6 +181,8 @@ export default class App extends React.Component {
 
 			playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
 			await playbackInstance.loadAsync(source, status, false)
+
+			
 			this.setState({
 				currentIndex,
 				playbackInstance
@@ -191,6 +196,10 @@ export default class App extends React.Component {
 		this.setState({
 			isBuffering: status.isBuffering
 		})
+		didJustFinish = status.didJustFinish
+		if (didJustFinish) {
+			this.loadAudio()
+		  }
 	}
 
 	handlePlayPause = async () => {
@@ -206,17 +215,20 @@ export default class App extends React.Component {
 	chooseNextTrack = () => {
 		var tracksUnPlayed = this.state.tracksUnPlayed
 		var tracksPlayed = this.state.tracksPlayed
-		var currentIndex = this.state.currentIndex
 		var nextIndex = this.state.nextIndex
 
 		if (tracksUnPlayed.length === 0) {
 			// start over
+			// but first make sure next track is from first 25% of songs played
+			quarterLen = Math.floor(tracksPlayed.length / 4)
+			firstQuartile = tracksPlayed.slice(0, quarterLen)
+			var randomUnPlayedIndex = firstQuartile[Math.floor(Math.random() * firstQuartile.length)];
+			// okay now really start over.
 			tracksUnPlayed = Array.from({length: Playlist.length}, (_, index) => index),
 			tracksPlayed = []
+		} else {
+			var randomUnPlayedIndex = tracksUnPlayed[Math.floor(Math.random() * tracksUnPlayed.length)];
 		}
-
-		const randomUnPlayedIndex = tracksUnPlayed[Math.floor(Math.random() * tracksUnPlayed.length)];
-
 		tracksPlayed.push(randomUnPlayedIndex);
 		const removeIndex = tracksUnPlayed.indexOf(randomUnPlayedIndex);
 		tracksUnPlayed.splice(removeIndex, 1);
@@ -315,15 +327,15 @@ export default class App extends React.Component {
 					*/}
 					<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
 
-							<Slider
-								style={{width: 200, height: 40}}
-								minimumValue={0}
-								maximumValue={1}
-								minimumTrackTintColor="red"
-								maximumTrackTintColor="#000000"
-								value={this.state.volume}
-								onValueChange={value => this.handleSongVolume(value)}
-							/>
+					<Slider
+						style={{width: 200, height: 40}}
+						minimumValue={0}
+						maximumValue={1}
+						minimumTrackTintColor="red"
+						maximumTrackTintColor="#000000"
+						value={this.state.volume}
+						onValueChange={value => this.handleSongVolume(value)}
+					/>
 
 					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>	
 				</View>
