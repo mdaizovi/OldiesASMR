@@ -96,7 +96,7 @@ var Soundlist = [
 		soundFile: require('./app/assets/audio/sounds/vinyl.mp3'),
 	},
 	{	
-		name: "you're roller skating outside over bricks",
+		name: "you're skating over bricks",
 		soundFile: require('./app/assets/audio/sounds/skateBricks.mp3'),
 	},
 	{	
@@ -331,8 +331,8 @@ export default class App extends React.Component {
 						style={{width: 200, height: 40}}
 						minimumValue={0}
 						maximumValue={1}
-						minimumTrackTintColor="red"
-						maximumTrackTintColor="#000000"
+						minimumTrackTintColor={colors.veryDarkGrey}
+						maximumTrackTintColor={colors.inactive}
 						value={this.state.volume}
 						onValueChange={value => this.handleSongVolume(value)}
 					/>
@@ -348,18 +348,33 @@ export default class App extends React.Component {
 				{Soundlist.map((soundInfo) => {
 					return (
 						<View key={soundInfo.name} style={styles.soundContainer}>
-							<AppSoundButton name={soundInfo.name} onPress={() => this.handlePlaySound(soundInfo)}/>
-							<Slider
-								style={{width: 200, height: 40}}
-								minimumValue={0}
-								maximumValue={1}
-								minimumTrackTintColor="red"
-								maximumTrackTintColor="#000000"
-								value={soundInfo.state.volume}
-								//onValueChange={val => this.setState({ volume: val })}
-								//onValueChange={() => this.handleSlide(soundInfo)}
-								onValueChange={value => this.handleSlide(soundInfo, value)}
+							<AppSoundButton name={soundInfo.name} isPlaying={soundInfo.state.isPlaying} onPress={() => this.handlePlaySound(soundInfo)}/>
+							
+							{soundInfo.state.isPlaying ? (
+								<Slider
+									style={styles.volumeSlider}
+									minimumValue={0}
+									maximumValue={1}
+									minimumTrackTintColor={colors.veryLightGrey}
+									maximumTrackTintColor={colors.active}
+									thumbTintColor={colors.active}
+									value={soundInfo.state.volume}
+									onValueChange={value => this.handleSlide(soundInfo, value)}
+								/>
+							) : (
+								<Slider
+									style={styles.volumeSlider}
+									minimumValue={0}
+									maximumValue={1}
+									minimumTrackTintColor={colors.veryDarkGrey}
+									maximumTrackTintColor={colors.inactive}
+									thumbTintColor={colors.inactive}
+									value={soundInfo.state.volume}
+									onValueChange={value => this.handleSlide(soundInfo, value)}
 							/>
+							)}
+
+
 						</View>
 					);
 				})}
@@ -374,29 +389,14 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: colors.primary,
+		backgroundColor: colors.darkGrey,
 		alignItems: 'center',
-    	top:50,
+    	paddingTop:50,
 		//justifyContent: 'center'
 	},
   	recordBackground: {
 		width: 533,
 		height: 250
-	},
-	trackInfo: {
-		padding: 40,
-		backgroundColor: colors.white,
-	},
-	trackInfoText: {
-		textAlign: 'center',
-		flexWrap: 'wrap',
-	
-	},
-	largeText: {
-		fontSize: 22
-	},
-	smallText: {
-		fontSize: 16
 	},
 	control: {
 		margin: 20
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
 		margin: 5,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: colors.veryLightGrey,
+		// backgroundColor: colors.veryLightGrey,
 	},
 	button: {
 		flex: 1,
@@ -418,14 +418,13 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		backgroundColor: colors.blue
 	},
-	buttonText: {
-		color: colors.black,
-		fontSize: 18
-	},
 	separator: {
 		height: 1,
-		width: "86%",
-		backgroundColor: "#CED0CE",
-		marginLeft: "14%"
+		width: "80%",
+		backgroundColor: colors.veryLightGrey
+	},
+	volumeSlider: {
+		width: 200, 
+		height: 40
 	}
 })

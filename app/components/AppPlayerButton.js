@@ -6,7 +6,7 @@ import colors from "../config/colors";
 function AppPlayerButton({ iconName, onPress}) {
   return (
     <TouchableOpacity style={styles.control} onPress={onPress}>
-      <MaterialIcons name={iconName} size={48} color={colors.slateGrey} />
+      <MaterialIcons name={iconName} size={48} color={colors.active} />
     </TouchableOpacity>
   );
 }

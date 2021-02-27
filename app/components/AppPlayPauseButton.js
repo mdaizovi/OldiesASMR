@@ -7,9 +7,9 @@ function AppPlayPauseButton({ onPress, isPlaying }) {
   return (
     <TouchableOpacity style={styles.control}  onPress={onPress}>
     {isPlaying ? (
-      <Ionicons name='ios-pause' size={48} color={colors.slateGrey} />
+      <Ionicons name='ios-pause' size={48} color={colors.active} />
     ) : (
-      <Ionicons name='ios-play-circle' size={48} color={colors.slateGrey} />
+      <Ionicons name='ios-play-circle' size={48} color={colors.active} />
     )}
   </TouchableOpacity>
   );
