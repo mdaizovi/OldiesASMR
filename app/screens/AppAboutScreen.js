@@ -10,12 +10,16 @@ export default class AboutScreen extends React.Component {
 		return (
     <View style={styles.container}>
 
-      <Text>All Songs are streamed from US Library of Congress.
-		</Text>
+      <View>
+        <Text style={styles.aboutText}>All Songs are streamed from US Library of Congress.
+        </Text>
+      </View>
 
-      <Text>All Sounds are either CC0 1.0 public domain sounds, or recorded by me. 
-		  There are a lot of skating sounds because I love to skate.
-		</Text>
+      <View>
+        <Text style={styles.aboutText}>All Sounds are either CC0 1.0 public domain sounds, or recorded by me. 
+          There are a lot of skating sounds because I love to skate.
+        </Text>
+      </View>
     </View>
   );
 }
@@ -23,8 +27,15 @@ export default class AboutScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    //backgroundColor: colors.background,
-    flex: 1,
-    justifyContent: 'center', 
+		flex: 1,
+		backgroundColor: colors.darkGrey,
+		alignItems: 'center',
+    paddingTop:50,
+		width:'100%',
+		alignSelf:'center'
   },
+  aboutText: {
+		fontSize: 22,
+		fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
+	},
 });
