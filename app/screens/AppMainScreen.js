@@ -12,6 +12,7 @@ import Screen from "../components/Screen";
 import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import AppSoundButton from "../components/AppSoundButton";
+import AppSoundComponent from "../components/AppSoundComponent";
 import colors from "../config/colors";
 import playlistApi from '../api/playlist';
 
@@ -32,118 +33,6 @@ var tempPlaylist = [
 	},
 
 ]
-
-var Soundlist = [
-	{
-		name: "you're at the beach",
-		soundFile: require('../assets/audio/sounds/beach.mp3'),
-	},
-	{
-		name: 'birds are chirping',
-		soundFile: require('../assets/audio/sounds/birds.mp3'),
-	},
-	{
-		name: "you're on a boat",
-		soundFile: require('../assets/audio/sounds/boat.mp3'),
-	},
-	{
-		name: "you're camping",
-		soundFile: require('../assets/audio/sounds/camping.mp3'),
-	},	
-	{
-		name: 'a cat is purring',
-		soundFile: require('../assets/audio/sounds/cat.mp3'),
-	},
-	{	
-		name: 'a clock is ticking',
-		soundFile: require('../assets/audio/sounds/clock.mp3'),
-	},
-	{
-		name: "there are crickets",
-		soundFile: require('../assets/audio/sounds/crickets.mp3'),
-	},
-	{
-		name: "you're on a farm",
-		soundFile: require('../assets/audio/sounds/farm.mp3'),
-	},		
-	{
-		name: "you're in a field",
-		soundFile: require('../assets/audio/sounds/field.mp3'),
-	},
-	{
-		name: "there's a fire",
-		soundFile: require('../assets/audio/sounds/fire.mp3'),
-	},		
-	{
-		name: "there are frogs",
-		soundFile: require('../assets/audio/sounds/frogs.mp3'),
-	},	
-	{	
-		name: 'a hammock is swinging',
-		soundFile: require('../assets/audio/sounds/hammock.mp3'),
-	},
-	{	
-		name: "you're at a lake",
-		soundFile: require('../assets/audio/sounds/lake.mp3'),
-	},
-	{	
-		name: "it's raining with thunder",
-		soundFile: require('../assets/audio/sounds/rainWithThunder.mp3'),
-	},
-	{	
-		name: "it's raining and windy",
-		soundFile: require('../assets/audio/sounds/rainWind.mp3'),
-	},
-	{	
-		name: 'a vinyl record is playing',
-		soundFile: require('../assets/audio/sounds/vinyl.mp3'),
-	},
-	{	
-		name: "roller skates are sliding on a rail",
-		soundFile: require('../assets/audio/sounds/slidingRail.mp3'),
-	},
-	{	
-		name: "you're skating over bricks",
-		soundFile: require('../assets/audio/sounds/skateBricks.mp3'),
-	},
-	{	
-		name: "you're skating in a concrete bowl",
-		soundFile: require('../assets/audio/sounds/skatingConcreteBowl.mp3'),
-	},
-	{	
-		name: "you're skating a wooden halfpipe",
-		soundFile: require('../assets/audio/sounds/skateHalfpipeWood.mp3'),
-	},
-	{	
-		name: "people are skateboarding at a park",
-		soundFile: require('../assets/audio/sounds/skateboard.mp3'),
-	},
-	{	
-		name: "people are skateboarding in a garage",
-		soundFile: require('../assets/audio/sounds/skateboardICC.mp3'),
-	},
-	{	
-		name: "you're on a train",
-		soundFile: require('../assets/audio/sounds/train.mp3'),
-	},
-	{	
-		name: 'water is flowing',
-		soundFile: require('../assets/audio/sounds/water.mp3'),
-	},
-	{	
-		name: 'waves are crashing',
-		soundFile: require('../assets/audio/sounds/waves.mp3'),
-	},
-	{	
-		name: 'wheels are rolling',
-		soundFile: require('../assets/audio/sounds/wheels.mp3'),
-	},
-]
-for (var i = 0; i < Soundlist.length; i++) {
-	var sound = Soundlist[i];
-	sound.soundObject = new Audio.Sound();
-	sound.state = {isLoaded: false, isPlaying: false, volume: 0.25};
-}
 
 export default class MainScreen extends React.Component {
 
@@ -259,55 +148,6 @@ export default class MainScreen extends React.Component {
 		} 
 		this.loadAudio()
 	  }
-
-
-
-	handlePlaySound = async arrayObj => {
-		const soundObject = arrayObj.soundObject
-
-		try {
-			var soundState = arrayObj.state
-			if (soundState.isLoaded === false) {
-				await soundObject.loadAsync(arrayObj.soundFile)
-				.catch(error => {
-					console.log(error)
-				})
-				soundState.isLoaded = true;
-				const initialVolume = soundState.volume;
-				soundObject.setStatusAsync({ volume: initialVolume })
-				this.setState({soundState})
-			}
-			if (soundState.isPlaying === true) {
-				await soundObject.pauseAsync()
-				.catch(error => {
-					console.log(error)
-				})
-				soundState.isPlaying = false;
-				this.setState({soundState})
-			}  else {
-				soundObject.setIsLoopingAsync(true)
-				await soundObject.playAsync()
-				.catch(error => {
-					console.log(error)
-			})
-			soundState.isPlaying = true;
-			this.setState({soundState})
-		   }
-		} catch (error) {
-			console.log(error)
-		}
-	}
-
-	handleSlide = async (arrayObj , value) => {
-		const soundObject = arrayObj.soundObject
-		var soundState = arrayObj.state
-		const currentVolume = soundState.volume;
-		soundState.volume = value;
-		this.setState({soundState})
-		if (soundState.isLoaded === true) {
-			soundObject.setStatusAsync({ volume: value })
-		}
-	}
 
 	handleSongVolume = async (value) => {
 		const { isPlaying, playbackInstance } = this.state
@@ -436,42 +276,8 @@ export default class MainScreen extends React.Component {
 				<View style={styles.separator}>
         		</View>
 
-				<View style={{flex:1}}>
-  				<ScrollView contentContainerStyle={{flexGrow:1, paddingBottom:100}}>
-				{Soundlist.map((soundInfo) => {
-					return (
-						<View key={soundInfo.name} style={styles.soundContainer}>
-							<AppSoundButton name={soundInfo.name} isPlaying={soundInfo.state.isPlaying} onPress={() => this.handlePlaySound(soundInfo)}/>
-							
-							{soundInfo.state.isPlaying ? (
-								<Slider
-									style={styles.volumeSlider}
-									minimumValue={0}
-									maximumValue={1}
-									minimumTrackTintColor={colors.veryLightGrey}
-									maximumTrackTintColor={colors.active}
-									thumbTintColor={colors.active}
-									value={soundInfo.state.volume}
-									onValueChange={value => this.handleSlide(soundInfo, value)}
-								/>
-							) : (
-								<Slider
-									style={styles.volumeSlider}
-									minimumValue={0}
-									maximumValue={1}
-									minimumTrackTintColor={colors.veryDarkGrey}
-									maximumTrackTintColor={colors.inactive}
-									thumbTintColor={colors.inactive}
-									value={soundInfo.state.volume}
-									onValueChange={value => this.handleSlide(soundInfo, value)}
-							/>
-							)}
-
-						</View>
-					);
-				})}
-			</ScrollView>
-			</View>
+				<AppSoundComponent/>
+ 
 			</Screen>
 
 		)
@@ -492,18 +298,8 @@ const styles = StyleSheet.create({
 		width:deviceWidth,
 		height:deviceWidth / 1.7778 // ratio of record image.
 	},
-	control: {
-		margin: 20
-	},
 	controls: {
 		flexDirection: 'row'
-	},
-	soundContainer: {
-		height: 100,
-		width:deviceWidth,
-		margin: 5,
-		alignItems: 'center',
-		justifyContent: 'center',
 	},
 	button: {
 		flex: 1,
@@ -519,8 +315,5 @@ const styles = StyleSheet.create({
 	volumeSlider: {
 		width: 200, 
 		height: 40
-	},
-	songVolumeSlider: {
-		marginTop: 25, 
 	},
 })
