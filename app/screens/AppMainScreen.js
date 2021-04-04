@@ -187,11 +187,18 @@ export default class MainScreen extends React.Component {
 
 		if (masterPlaylist === undefined || masterPlaylist.length == 0) {
 			console.log(tempPlaylist)
-			//setmasterPlaylist(tempPlaylist);
-			var playlist = tempPlaylist
-			this.setState({
-				masterPlaylist: tempPlaylist
-			})
+
+			// var playlist = this.loadPlaylist().then(function (res) {
+			// 	console.log(playlist);  
+			//   });
+			var playlist = await this.loadPlaylist()
+				console.log(playlist);  
+
+
+
+
+			console.log("playlist in if statement")
+			console.log(playlist)
 		} else {
 			var playlist = masterPlaylist
 		}
@@ -317,6 +324,14 @@ export default class MainScreen extends React.Component {
 		}
 	}
 
+	loadPlaylist = async () => {
+		var playlist = tempPlaylist
+		//TODO replace with getting real playlist
+		this.setState({
+			masterPlaylist: tempPlaylist
+		})
+		return await playlist;
+	}
 
 	render() {
 
