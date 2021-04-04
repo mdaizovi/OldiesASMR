@@ -186,20 +186,12 @@ export default class MainScreen extends React.Component {
 		}
 
 		if (masterPlaylist === undefined || masterPlaylist.length == 0) {
-			console.log(tempPlaylist)
-
-			// var playlist = this.loadPlaylist().then(function (res) {
-			// 	console.log(playlist);  
-			//   });
+			console.log("masterplaylist is undefined")
+			//console.log(tempPlaylist)
 			var playlist = await this.loadPlaylist()
 				console.log(playlist);  
-
-
-
-
-			console.log("playlist in if statement")
-			console.log(playlist)
 		} else {
+			console.log("not undefined")
 			var playlist = masterPlaylist
 		}
 
@@ -249,21 +241,24 @@ export default class MainScreen extends React.Component {
 	}
 
 	handleNextTrack = async () => {
+		let { masterPlaylist, playbackInstance, currentIndex } = this.state
+		if (playbackInstance) {
+		  await playbackInstance.unloadAsync()
+		}
+		console.log("masterPlaylist.length")
+		console.log(masterPlaylist.length)
+		if (currentIndex === masterPlaylist.length - 1) {
+			//start over if currently on the last track of playlist
+			var playlist = await this.loadPlaylist()
+			console.log("masterPlaylist in handleNextTrack")
+			console.log(playlist)
+			this.setState({
+				currentIndex: -1,
+				masterPlaylist: playlist
+			})
+		} 
 		this.loadAudio()
-	}
-
-
-	// handleNextTrack = async () => {
-	// 	let { playbackInstance, currentIndex } = this.state
-	// 	if (playbackInstance) {
-	// 	  await playbackInstance.unloadAsync()
-	// 	  currentIndex < playlist.length - 1 ? (currentIndex += 1) : (currentIndex = 0)
-	// 	  this.setState({
-	// 		currentIndex
-	// 	  })
-	// 	  this.loadAudio()
-	// 	}
-	//   }
+	  }
 
 
 
@@ -380,8 +375,10 @@ export default class MainScreen extends React.Component {
 		// 	  .finally(() => setLoading(false));
 		//   }, []);
 
-		//const [masterPlaylist, setMasterPlaylist] = useState([]);
-		//setMasterPlaylist(tempPlaylist);
+		// const [masterPlaylist, setMasterPlaylist] = useState([]);
+		// useEffect(() => {
+		// 	loadPlaylist();
+		// }, []);
 
 
 		return (	
