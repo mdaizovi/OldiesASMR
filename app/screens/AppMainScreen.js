@@ -17,27 +17,9 @@ import playlistApi from '../api/playlist';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
-// https://stackoverflow.com/questions/56663785/invalid-hook-call-hooks-can-only-be-called-inside-of-the-body-of-a-function-com
-// Gives me 'import' and 'export' may only appear at the top level
-// const Playlist = () => {
-// 	const [playlist, setPlaylist] = useState([]);
-  
-// 	useEffect(() => {
-// 	  get("https://www.oldiesinanotherroom.com/api/music_library/playlist")
-// 		.then(data => {
-// 		  return data.json();
-// 		})
-// 		.then(data => {
-// 			setPlaylist(data);
-// 		})
-// 		.catch(err => {
-// 		  console.log(123123);
-// 		});
-// 	}, []);
 
 
-
-const playlist = [
+var tempPlaylist = [
 	{
 	citation: 'Hamlet - Act I',
 	streaming_url:
@@ -50,23 +32,6 @@ const playlist = [
 	},
 
 ]
-
-// const Playlist = () => {
-// 	const [playlist, setPlaylist] = useState([]);
-  
-// 	useEffect(() => {
-// 	  get("https://www.oldiesinanotherroom.com/api/music_library/playlist")
-// 		.then(data => {
-// 		  return data.json();
-// 		})
-// 		.then(data => {
-// 		  setPlaylist(data);
-// 		})
-// 		.catch(err => {
-// 		  console.log(123123);
-// 		});
-// 	}, []);
-// }
 
 var Soundlist = [
 	{
@@ -180,7 +145,6 @@ for (var i = 0; i < Soundlist.length; i++) {
 	sound.state = {isLoaded: false, isPlaying: false, volume: 0.25};
 }
 
-
 export default class MainScreen extends React.Component {
 
 	state = {
@@ -189,7 +153,9 @@ export default class MainScreen extends React.Component {
 		currentIndex: 0,
 		volume: 0.75,
 		isBuffering: false,
+		masterPlaylist:[]
 	}
+
 
 	async componentDidMount() {
 		try {
@@ -211,12 +177,23 @@ export default class MainScreen extends React.Component {
 
 
 	async loadAudio() {
-		const { playbackInstance, isPlaying, volume } = this.state
+		const { masterPlaylist, playbackInstance, isPlaying, volume } = this.state
 		var currentIndex = this.state.currentIndex
 		if (playbackInstance) {
 			await playbackInstance.unloadAsync()
 			var nextIndex = this.state.currentIndex + 1
 			currentIndex = nextIndex
+		}
+
+		if (masterPlaylist === undefined || masterPlaylist.length == 0) {
+			console.log(tempPlaylist)
+			//setmasterPlaylist(tempPlaylist);
+			var playlist = tempPlaylist
+			this.setState({
+				masterPlaylist: tempPlaylist
+			})
+		} else {
+			var playlist = masterPlaylist
 		}
 
 		try {
@@ -340,8 +317,59 @@ export default class MainScreen extends React.Component {
 		}
 	}
 
+
 	render() {
-		return (
+
+
+// https://stackoverflow.com/questions/56663785/invalid-hook-call-hooks-can-only-be-called-inside-of-the-body-of-a-function-com
+		// const Playlist = () => {
+		// 	const [playlist, setPlayList] = useState([]);
+		
+		// 	useEffect(() => {
+		// 	fetch("https://www.oldiesinanotherroom.com/api/music_library/playlist")
+		// 		.then(data => {
+		// 			console.log(data)
+		// 		return data.json();
+		// 		})
+		// 		.then(data => {
+		// 			setPlaylist(data);
+		// 		})
+		// 		.catch(err => {
+		// 		console.log(123123);
+		// 		});
+		// 	}, []);
+		// }
+		// Playlist();
+
+		// Code ith mosh, but doesn't work
+		// Error: Invalid hook call. Hooks can only be called inside of the body of a function component
+		//
+		// const [playlist, setPlaylist] = useState([]);
+		// useEffect(() => {
+		// loadPlaylist();
+		// }, []);
+		// const loadPlaylist = async () => {
+		// 	//const response = await apiClient.getPlaylist();
+		// 	const response = get("https://www.oldiesinanotherroom.com/api/music_library/playlist")
+		// 	console.log(response.data);
+		// 	setPlaylist(response.data);
+		// }
+
+
+
+		// useEffect(() => {
+		// 	fetch('https://www.oldiesinanotherroom.com/api/music_library/playlist')
+		// 	  .then((response) => response.json())
+		// 	  .then((json) => setPlaylist(json))
+		// 	  .catch((error) => console.error(error))
+		// 	  .finally(() => setLoading(false));
+		//   }, []);
+
+		//const [masterPlaylist, setMasterPlaylist] = useState([]);
+		//setMasterPlaylist(tempPlaylist);
+
+
+		return (	
 			<Screen style={styles.container}>
 				{this.state.isPlaying ? (
 				<Video
