@@ -3,18 +3,15 @@ import { StyleSheet, Text, TouchableOpacity, View,  Dimensions} from "react-nati
 import colors from "../config/colors";
 import { Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { Audio } from 'expo-av'
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default class AppSoundItem extends Component {
-	//props: name, file, sound.soundObject = new Audio.Sound();
-	state = {isLoaded: false, isPlaying: false, volume: 0.25};
+	state = {isLoaded: false, isPlaying: false, volume: 0.25, soundObject: new Audio.Sound()};
 	
 	handlePlaySound = async arrayObj => {
-		const soundObject = arrayObj.soundObject
-		let { isLoaded, volume, isPlaying } = this.state
-		//console.log("----handle play sound")
-		//console.log(arrayObj)
+		let { isLoaded, volume, isPlaying, soundObject } = this.state
 		try {
 			if (isLoaded === false) {
 				await soundObject.loadAsync(arrayObj.soundFile)
@@ -41,9 +38,9 @@ export default class AppSoundItem extends Component {
 				.catch(error => {
 					console.log(error)
 				})
-			this.setState({
-				isPlaying : true
-			}) 
+				this.setState({
+					isPlaying : true
+				}) 
 		   }
 
 		} catch (error) {
@@ -51,14 +48,14 @@ export default class AppSoundItem extends Component {
 		}
 	}
 
-	handleSlide = async (soundObject, value) => {
-		let { isLoaded } = this.state
-		this.setState({
-			volume: value,
-		}) 
+	handleSlide = async (value) => {
+		let { isLoaded, soundObject } = this.state
 		if (isLoaded === true) {
 			soundObject.setStatusAsync({ volume: value })
 		}
+		this.setState({
+			volume: value,
+		}) 
 	}
 
 	render() {
@@ -66,45 +63,42 @@ export default class AppSoundItem extends Component {
 		  
 			<View style={styles.soundContainer}>
 
-			<TouchableOpacity style={[styles.button]} onPress={() => this.handlePlaySound(this.props.arrayObj)}>
+				<TouchableOpacity style={[styles.button]} onPress={() => this.handlePlaySound(this.props.arrayObj)}>
+					{this.state.isPlaying ? (
+					<Text style={[styles.buttonText, styles.buttonTextActive]}>{this.props.arrayObj.name}</Text>
+					) : (
+						<Text style={[styles.buttonText, styles.buttonTextInactive]}>{this.props.arrayObj.name}</Text>
+					)}
+				</TouchableOpacity>
+
+
 				{this.state.isPlaying ? (
-				<Text style={[styles.buttonText, styles.buttonTextActive]}>{this.props.arrayObj.name}</Text>
+					<Slider
+						style={styles.volumeSlider}
+						minimumValue={0}
+						maximumValue={1}
+						minimumTrackTintColor={colors.veryLightGrey}
+						maximumTrackTintColor={colors.active}
+						thumbTintColor={colors.active}
+						value={this.state.volume}
+						onValueChange={value => this.handleSlide(value)}
+					/>
 				) : (
-					<Text style={[styles.buttonText, styles.buttonTextInactive]}>{this.props.arrayObj.name}</Text>
-				)}
-			</TouchableOpacity>
-
-
-			{this.state.isPlaying ? (
-				<Slider
-					style={styles.volumeSlider}
-					minimumValue={0}
-					maximumValue={1}
-					minimumTrackTintColor={colors.veryLightGrey}
-					maximumTrackTintColor={colors.active}
-					thumbTintColor={colors.active}
-					value={this.state.volume}
-					onValueChange={value => this.handleSlide(this.props.arrayObj.soundObject, value)}
+					<Slider
+						style={styles.volumeSlider}
+						minimumValue={0}
+						maximumValue={1}
+						minimumTrackTintColor={colors.veryDarkGrey}
+						maximumTrackTintColor={colors.inactive}
+						thumbTintColor={colors.inactive}
+						value={this.state.volume}
+						onValueChange={value => this.handleSlide(value)}
 				/>
-			) : (
-				<Slider
-					style={styles.volumeSlider}
-					minimumValue={0}
-					maximumValue={1}
-					minimumTrackTintColor={colors.veryDarkGrey}
-					maximumTrackTintColor={colors.inactive}
-					thumbTintColor={colors.inactive}
-					value={this.state.volume}
-					onValueChange={value => this.handleSlide(this.props.arrayObj.soundObject, value)}
-			/>
-			)}
-		</View>
-		 
-		 
+				)}
+			</View>
 		  );
-	
 		}
-  }
+  	}
   
 
   const styles = StyleSheet.create({
@@ -153,5 +147,3 @@ export default class AppSoundItem extends Component {
 	// 	fontSize: 16
 	// },
 })
-
-//export default AppSoundItem;

@@ -1,37 +1,14 @@
-import React, { useEffect, useState} from 'react'
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, ScrollView, View, Image, Text,  Dimensions } from 'react-native'
-import { List, ListItem } from "react-native-elements";
-import { Ionicons } from '@expo/vector-icons'
-import { MaterialIcons } from '@expo/vector-icons'; 
+import React from 'react'
+import { StyleSheet, View, Image,  Dimensions } from 'react-native'
 import { Audio, Video } from 'expo-av'
 import Slider from '@react-native-community/slider';
-import {createStavkNavigator} from '@react-navigation/stack';
-import {navigationContainer} from '@react-navigation/native';
-
 import Screen from "../components/Screen";
 import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import AppSoundComponent from "../components/AppSoundComponent";
 import colors from "../config/colors";
-import playlistApi from '../api/playlist';
 
 var deviceWidth = Dimensions.get('window').width; //full width
-
-
-
-var tempPlaylist = [
-	{
-	citation: 'Hamlet - Act I',
-	streaming_url:
-	'https://ia800204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act1_shakespeare.mp3',
-	},
-	{
-	citation: 'Hamlet - Act II',
-	streaming_url:
-	'https://ia600204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act2_shakespeare.mp3',
-	},
-
-]
 
 export default class MainScreen extends React.Component {
 
@@ -53,10 +30,11 @@ export default class MainScreen extends React.Component {
 				playsInSilentModeIOS: true,
 				interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
 				shouldDuckAndroid: true,
+				playInBackground:true,
 				staysActiveInBackground: true,
 				playThroughEarpieceAndroid: true
 			})
-
+			await this.loadPlaylist()
 			this.loadAudio()
 		} catch (e) {
 			console.log(e)
@@ -76,15 +54,9 @@ export default class MainScreen extends React.Component {
 		}
 
 		if (masterPlaylist === undefined || masterPlaylist.length == 0) {
-			console.log("masterplaylist is undefined")
-			//console.log(tempPlaylist)
-			var playlist = await this.loadPlaylist()
-			//this.loadPlaylist()
-			console.log(playlist);  
+			var playlist = await this.loadPlaylist() 
 		} else {
-			console.log("not undefined")
-			var playlist = masterPlaylist
-			console.log(playlist);  
+			var playlist = masterPlaylist 
 		}
 
 		try {
@@ -99,7 +71,6 @@ export default class MainScreen extends React.Component {
 
 			playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
 			await playbackInstance.loadAsync(source, status, false)
-
 			
 			this.setState({
 				currentIndex,
@@ -122,6 +93,9 @@ export default class MainScreen extends React.Component {
 
 	handlePlayPause = async () => {
 		const { isPlaying, playbackInstance } = this.state
+		if (!playbackInstance) {
+			await this.loadAudio()
+		}
 		isPlaying ? await playbackInstance.pauseAsync() : await playbackInstance.playAsync()
 
 		this.setState({
@@ -138,7 +112,6 @@ export default class MainScreen extends React.Component {
 		if (currentIndex === masterPlaylist.length - 1) {
 			//start over if currently on the last track of playlist
 			var playlist = await this.loadPlaylist()
-			//this.loadPlaylist()
 			this.setState({
 				currentIndex: -1,
 				masterPlaylist: playlist
@@ -170,56 +143,10 @@ export default class MainScreen extends React.Component {
 			return await json;
 		} catch (error) {
 			console.error(error);
-			var playlist = tempPlaylist
-			//TODO replace with getting real playlist
-			this.setState({
-				masterPlaylist: tempPlaylist
-			})
-			return await playlist;
 		}
-
-
-
 	}
 
 	render() {
-
-
-// https://stackoverflow.com/questions/56663785/invalid-hook-call-hooks-can-only-be-called-inside-of-the-body-of-a-function-com
-		// const Playlist = () => {
-		// 	const [playlist, setPlayList] = useState([]);
-		
-		// 	useEffect(() => {
-		// 	fetch("https://www.oldiesinanotherroom.com/api/music_library/playlist")
-		// 		.then(data => {
-		// 			console.log(data)
-		// 		return data.json();
-		// 		})
-		// 		.then(data => {
-		// 			setPlaylist(data);
-		// 		})
-		// 		.catch(err => {
-		// 		console.log(123123);
-		// 		});
-		// 	}, []);
-		// }
-		// Playlist();
-
-
-
-		// useEffect(() => {
-		// 	fetch('https://www.oldiesinanotherroom.com/api/music_library/playlist')
-		// 	  .then((response) => response.json())
-		// 	  .then((json) => setPlaylist(json))
-		// 	  .catch((error) => console.error(error))
-		// 	  .finally(() => setLoading(false));
-		//   }, []);
-
-		// const [masterPlaylist, setMasterPlaylist] = useState([]);
-		// useEffect(() => {
-		// 	loadPlaylist();
-		// }, []);
-
 
 		return (	
 			<Screen style={styles.container}>

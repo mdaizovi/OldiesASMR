@@ -1,6 +1,5 @@
 import React from "react";
 import { ScrollView, View, Dimensions } from 'react-native'
-import { Audio } from 'expo-av'
 import AppSoundItem from "../components/AppSoundItem";
 
 function AppSoundComponent() {
@@ -111,10 +110,6 @@ function AppSoundComponent() {
 			soundFile: require('../assets/audio/sounds/wheels.mp3'),
 		},
 	]
-	for (var i = 0; i < Soundlist.length; i++) {
-		var sound = Soundlist[i];
-		sound.soundObject = new Audio.Sound();
-	}
 	return (			
 		<View style={{flex:1}}>
 			<ScrollView contentContainerStyle={{flexGrow:1, paddingBottom:100}}>
