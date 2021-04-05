@@ -11,7 +11,6 @@ import {navigationContainer} from '@react-navigation/native';
 import Screen from "../components/Screen";
 import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
-import AppSoundButton from "../components/AppSoundButton";
 import AppSoundComponent from "../components/AppSoundComponent";
 import colors from "../config/colors";
 import playlistApi from '../api/playlist';
