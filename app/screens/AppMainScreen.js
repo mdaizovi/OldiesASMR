@@ -61,6 +61,8 @@ export default class MainScreen extends React.Component {
 		} catch (e) {
 			console.log(e)
 		}
+
+
 	}
 
 
@@ -77,10 +79,12 @@ export default class MainScreen extends React.Component {
 			console.log("masterplaylist is undefined")
 			//console.log(tempPlaylist)
 			var playlist = await this.loadPlaylist()
-				console.log(playlist);  
+			//this.loadPlaylist()
+			console.log(playlist);  
 		} else {
 			console.log("not undefined")
 			var playlist = masterPlaylist
+			console.log(playlist);  
 		}
 
 		try {
@@ -116,8 +120,6 @@ export default class MainScreen extends React.Component {
 		  }
 	}
 
-
-
 	handlePlayPause = async () => {
 		const { isPlaying, playbackInstance } = this.state
 		isPlaying ? await playbackInstance.pauseAsync() : await playbackInstance.playAsync()
@@ -133,13 +135,10 @@ export default class MainScreen extends React.Component {
 		if (playbackInstance) {
 		  await playbackInstance.unloadAsync()
 		}
-		console.log("masterPlaylist.length")
-		console.log(masterPlaylist.length)
 		if (currentIndex === masterPlaylist.length - 1) {
 			//start over if currently on the last track of playlist
 			var playlist = await this.loadPlaylist()
-			console.log("masterPlaylist in handleNextTrack")
-			console.log(playlist)
+			//this.loadPlaylist()
 			this.setState({
 				currentIndex: -1,
 				masterPlaylist: playlist
@@ -159,12 +158,28 @@ export default class MainScreen extends React.Component {
 	}
 
 	loadPlaylist = async () => {
-		var playlist = tempPlaylist
-		//TODO replace with getting real playlist
-		this.setState({
-			masterPlaylist: tempPlaylist
-		})
-		return await playlist;
+		try {
+			let response = await fetch(
+			'https://www.oldiesinanotherroom.com/api/music_library/playlist'
+			);
+			let json = await response.json();
+			this.setState({
+			loading: false,
+			masterPlaylist: json
+			})
+			return await json;
+		} catch (error) {
+			console.error(error);
+			var playlist = tempPlaylist
+			//TODO replace with getting real playlist
+			this.setState({
+				masterPlaylist: tempPlaylist
+			})
+			return await playlist;
+		}
+
+
+
 	}
 
 	render() {
@@ -189,20 +204,6 @@ export default class MainScreen extends React.Component {
 		// 	}, []);
 		// }
 		// Playlist();
-
-		// Code ith mosh, but doesn't work
-		// Error: Invalid hook call. Hooks can only be called inside of the body of a function component
-		//
-		// const [playlist, setPlaylist] = useState([]);
-		// useEffect(() => {
-		// loadPlaylist();
-		// }, []);
-		// const loadPlaylist = async () => {
-		// 	//const response = await apiClient.getPlaylist();
-		// 	const response = get("https://www.oldiesinanotherroom.com/api/music_library/playlist")
-		// 	console.log(response.data);
-		// 	setPlaylist(response.data);
-		// }
 
 
 

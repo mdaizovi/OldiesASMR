@@ -3,7 +3,6 @@ import { ScrollView, View, Dimensions } from 'react-native'
 import { Audio } from 'expo-av'
 import AppSoundItem from "../components/AppSoundItem";
 
-//export default class MainScreen extends React.Component {
 function AppSoundComponent() {
 
 	var Soundlist = [
@@ -115,22 +114,18 @@ function AppSoundComponent() {
 	for (var i = 0; i < Soundlist.length; i++) {
 		var sound = Soundlist[i];
 		sound.soundObject = new Audio.Sound();
-		//sound.state = {isLoaded: false, isPlaying: false, volume: 0.25};
 	}
-
-		return (	
-			
+	return (			
 		<View style={{flex:1}}>
-		<ScrollView contentContainerStyle={{flexGrow:1, paddingBottom:100}}>
-		{Soundlist.map((soundInfo) => {
-			return (
-				<AppSoundItem key={soundInfo.name}  arrayObj={soundInfo}/>
-			);
-		})}
-	</ScrollView>
-	</View>
-
-		)
+			<ScrollView contentContainerStyle={{flexGrow:1, paddingBottom:100}}>
+				{Soundlist.map((soundInfo) => {
+					return (
+						<AppSoundItem key={soundInfo.name} arrayObj={soundInfo}/>
+					);
+				})}
+			</ScrollView>
+		</View>
+	)
 	}
 
 export default AppSoundComponent;

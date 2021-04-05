@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect  } from "react";
+import React, { Component } from "react";
 import { StyleSheet, Text, TouchableOpacity, View,  Dimensions} from "react-native";
 import colors from "../config/colors";
 import { Platform } from 'react-native';
@@ -6,7 +6,6 @@ import Slider from '@react-native-community/slider';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
-//class AppSoundItem extends Component {
 export default class AppSoundItem extends Component {
 	//props: name, file, sound.soundObject = new Audio.Sound();
 	state = {isLoaded: false, isPlaying: false, volume: 0.25};
@@ -14,8 +13,8 @@ export default class AppSoundItem extends Component {
 	handlePlaySound = async arrayObj => {
 		const soundObject = arrayObj.soundObject
 		let { isLoaded, volume, isPlaying } = this.state
-		console.log("----handle play sound")
-		console.log(arrayObj)
+		//console.log("----handle play sound")
+		//console.log(arrayObj)
 		try {
 			if (isLoaded === false) {
 				await soundObject.loadAsync(arrayObj.soundFile)
@@ -29,7 +28,6 @@ export default class AppSoundItem extends Component {
 			}
 
 			if (isPlaying === true) {
-				console.log("is playing")
 				await soundObject.pauseAsync()
 				.catch(error => {
 					console.log(error)
@@ -38,7 +36,6 @@ export default class AppSoundItem extends Component {
 					isPlaying : false
 				}) 
 			}  else {
-				console.log("is not playing")
 				soundObject.setIsLoopingAsync(true)
 				await soundObject.playAsync()
 				.catch(error => {
@@ -48,15 +45,14 @@ export default class AppSoundItem extends Component {
 				isPlaying : true
 			}) 
 		   }
-		   
+
 		} catch (error) {
 			console.log(error)
 		}
-	console.log("----")
 	}
 
 	handleSlide = async (soundObject, value) => {
-		let { isLoaded} = this.state
+		let { isLoaded } = this.state
 		this.setState({
 			volume: value,
 		}) 
