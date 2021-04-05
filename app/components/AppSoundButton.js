@@ -1,55 +1,25 @@
-import React from "react";
+import React, { Component, useState, useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import colors from "../config/colors";
 import { Platform } from 'react-native';
 
-function AppSoundButton({ name, isPlaying, onPress}) {
-  return (
-    <TouchableOpacity
-      style={[styles.button]}
-      onPress={onPress}
-    >
-    {isPlaying ? (
-      <Text style={[styles.buttonText, styles.buttonTextActive]}>{ name }</Text>
-    ) : (
-		<Text style={[styles.buttonText, styles.buttonTextInactive]}>{ name }</Text>
-    )}
-    </TouchableOpacity>
-  );
-}
+class AppSoundButton extends Component {
+	state = { isPlaying: false };
+	render() {
+		return (
+			<TouchableOpacity
+			  style={[styles.button]}
+			  onPress={this.props.onPress}
+			>
+			
+			{this.state.isPlaying ? (
+			  <Text style={[styles.buttonText, styles.buttonTextActive]}>{ this.props.name }</Text>
+			) : (
+				<Text style={[styles.buttonText, styles.buttonTextInactive]}>{ this.props.name }</Text>
+			)}
 
-const styles = StyleSheet.create({
-	button: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	buttonText: {
-		fontSize: 22,
-		fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
-	},
-	buttonTextActive: {
-		color: colors.active,
-		fontWeight: "bold"
-	},
-	buttonTextInActive: {
-		color: colors.inactive,
-	},
-	trackInfo: {
-		padding: 40,
-		backgroundColor: colors.inactive,
-	},
-	trackInfoText: {
-		textAlign: 'center',
-		flexWrap: 'wrap',
-	
-	},
-	largeText: {
-		fontSize: 22
-	},
-	smallText: {
-		fontSize: 16
-	},
-})
-
-export default AppSoundButton;
+			</TouchableOpacity>
+		  );
+	}
+  }
+  
