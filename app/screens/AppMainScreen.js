@@ -19,8 +19,8 @@ export default class MainScreen extends React.Component {
 		currentIndex: 0,
 		volume: 0.75,
 		isBuffering: false,
-		masterPlaylist:[],
-		playListFetchError:false
+		masterPlaylist:null,
+		playListFetchError:null
 	}
 
 
@@ -36,13 +36,12 @@ export default class MainScreen extends React.Component {
 				staysActiveInBackground: true,
 				playThroughEarpieceAndroid: true
 			})
-			await this.loadPlaylist()
-			this.loadAudio()
+			var playlist = await this.loadPlaylist()
+			if ( playlist.length > 0) {
+				await this.loadAudio()
+			} 
 		} catch (e) {
-			console.log(e)
 		}
-
-
 	}
 
 
@@ -54,33 +53,34 @@ export default class MainScreen extends React.Component {
 			var nextIndex = this.state.currentIndex + 1
 			currentIndex = nextIndex
 		}
-
-		if (masterPlaylist === undefined || masterPlaylist.length == 0) {
+		if (masterPlaylist === null) {
 			var playlist = await this.loadPlaylist() 
 		} else {
 			var playlist = masterPlaylist 
 		}
 
-		try {
-			const playbackInstance = new Audio.Sound()
-			const source = {
-				uri: playlist[currentIndex].streaming_url
-			  }
-			const status = {
-				shouldPlay: isPlaying,
-				volume: volume
+		const {playListFetchError} = this.state
+		if (playListFetchError === false && playlist.length > 0) {
+			try {
+				const playbackInstance = new Audio.Sound()
+				const source = {
+					uri: playlist[currentIndex].streaming_url
+				  }
+				const status = {
+					shouldPlay: isPlaying,
+					volume: volume
+				}
+	
+				playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
+				await playbackInstance.loadAsync(source, status, false)
+				
+				this.setState({
+					currentIndex,
+					playbackInstance
+				})
+			} catch (e) {
 			}
-
-			playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
-			await playbackInstance.loadAsync(source, status, false)
-			
-			this.setState({
-				currentIndex,
-				playbackInstance
-			})
-		} catch (e) {
-			console.log(e)
-		}
+		} 
 	}
 
 	  onPlaybackStatusUpdate = status => {
@@ -95,12 +95,7 @@ export default class MainScreen extends React.Component {
 
 	handlePlayPause = async () => {
 		let { isPlaying, playbackInstance } = this.state
-		if (playbackInstance===null) {
-			await this.loadAudio()
-		}
-		playbackInstance = this.state.playbackInstance
 		isPlaying ? await playbackInstance.pauseAsync() : await playbackInstance.playAsync()
-
 		this.setState({
 			isPlaying: !isPlaying
 		})
@@ -138,14 +133,21 @@ export default class MainScreen extends React.Component {
 			let response = await fetch(
 			'https://www.oldiesinanotherroom.com/api/music_library/playlist'
 			);
-			//response.status;
-			let json = await response.json();
-			this.setState({
-				isLoading: false,
-				masterPlaylist: json,
-				playListFetchError: false
-			})
-			return await json;
+			if (response.status===200) {
+				let json = await response.json();
+				this.setState({
+					isLoading: false,
+					masterPlaylist: json,
+					playListFetchError: false
+				})
+				return await json;
+			} else {
+				this.setState({
+					playListFetchError: true
+				})
+				return [];
+			}
+			
 		} catch (error) {
 			this.setState({
 				playListFetchError: true
@@ -161,74 +163,80 @@ export default class MainScreen extends React.Component {
 		return (	
 			<Screen style={styles.container}>
 
-
-				{/* {this.state.playbackInstance ? (
-					<Text style={[styles.trackInfo, styles.trackInfoText, styles.smallText]}>{this.state.masterPlaylist[this.state.currentIndex].citation_mla}</Text>
-					) : (
-					<Text style={[styles.trackInfo, styles.trackInfoText, styles.smallText]}></Text>
-				)} */}
-				
-				{/* {this.state.playListFetchError (
+				{this.state.playListFetchError ? (
 					<>
-					<AppText>Couldn't load playlist. Are you sure you're connected to the internet?</AppText>
+					<Text style={[styles.errorInfo]}>Couldn't load playlist. Are you sure you're connected to the internet?</Text>
 					<Button title="Retry" onPress={this.loadPlaylist}/>
 					</>
-				)} */}
+					) : (
+						<>
 
-				{this.state.isPlaying ? (
-				<Video
-					source={require('../assets/video/RecordLoop.mp4')}
-					resizeMode="cover"
-					shouldPlay
-					isLooping
-					style={styles.recordBackground}
-				/>
-						) : (
-				<Image
-				style={styles.recordBackground}
-				source={require('../assets/images/record.jpg') }
-					/>
-				)}
-
-				<View style={styles.controls}>
-								{/* prob the answer to my blinking problem
-					https://stackoverflow.com/a/42348010 
-					or this
-					https://stackoverflow.com/a/56883227
-					*/}
-					<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
-
-					{this.state.isPlaying ? (
-								<Slider
-									style={[styles.volumeSlider, styles.songVolumeSlider]}
-									minimumValue={0}
-									maximumValue={1}
-									minimumTrackTintColor={colors.veryLightGrey}
-									maximumTrackTintColor={colors.active}
-									thumbTintColor={colors.active}
-									value={this.state.volume}
-									onValueChange={value => this.handleSongVolume(value)}
-								/>
+						{/* {this.state.playbackInstance ? (
+							<Text style={[styles.trackInfo, styles.trackInfoText, styles.smallText]}>{this.state.masterPlaylist[this.state.currentIndex].citation_mla}</Text>
 							) : (
-								<Slider
-									style={[styles.volumeSlider,styles.songVolumeSlider]}
-									minimumValue={0}
-									maximumValue={1}
-									minimumTrackTintColor={colors.veryDarkGrey}
-									maximumTrackTintColor={colors.inactive}
-									thumbTintColor={colors.inactive}
-									value={this.state.volume}
-									onValueChange={value => this.handleSongVolume(value)}
+							<Text style={[styles.trackInfo, styles.trackInfoText, styles.smallText]}></Text>
+						)} */}
+				
+
+						{this.state.isPlaying ? (
+							<Video
+								source={require('../assets/video/RecordLoop.mp4')}
+								resizeMode="cover"
+								shouldPlay
+								isLooping
+								style={styles.recordBackground}
 							/>
+									) : (
+							<Image
+							style={styles.recordBackground}
+							source={require('../assets/images/record.jpg') }
+								/>
 							)}
-
-					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack} disabled={this.state.isLoading}/>	
-				</View>
-
-				<View style={styles.separator}>
-        		</View>
-
-				<AppSoundComponent/>
+			
+							<View style={styles.controls}>
+											{/* prob the answer to my blinking problem
+								https://stackoverflow.com/a/42348010 
+								or this
+								https://stackoverflow.com/a/56883227
+								*/}
+						
+								{this.state.playbackInstance  && (
+								<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
+								)}
+			
+								{this.state.isPlaying ? (
+											<Slider
+												style={[styles.volumeSlider, styles.songVolumeSlider]}
+												minimumValue={0}
+												maximumValue={1}
+												minimumTrackTintColor={colors.veryLightGrey}
+												maximumTrackTintColor={colors.active}
+												thumbTintColor={colors.active}
+												value={this.state.volume}
+												onValueChange={value => this.handleSongVolume(value)}
+											/>
+										) : (
+											<Slider
+												style={[styles.volumeSlider,styles.songVolumeSlider]}
+												minimumValue={0}
+												maximumValue={1}
+												minimumTrackTintColor={colors.veryDarkGrey}
+												maximumTrackTintColor={colors.inactive}
+												thumbTintColor={colors.inactive}
+												value={this.state.volume}
+												onValueChange={value => this.handleSongVolume(value)}
+										/>
+										)}
+								<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>
+			
+							</View>
+			
+							<View style={styles.separator}>
+							</View>
+			
+							<AppSoundComponent/>
+							</>
+				)}
  
 			</Screen>
 
@@ -276,6 +284,14 @@ const styles = StyleSheet.create({
 	trackInfoText: {
 		textAlign: 'left',
 		flexWrap: 'wrap',
+	},
+	errorInfo: {
+		fontSize: 25,
+		margin: 20,
+		height: 150,
+		textAlign: 'center',
+		flexWrap: 'wrap',
+		color: colors.veryLightGrey,
 	},
 	smallText: {
 		//margin: 20,
