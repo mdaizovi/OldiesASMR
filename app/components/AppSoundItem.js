@@ -60,7 +60,6 @@ export default class AppSoundItem extends Component {
 
 	render() {
 		return (
-		  
 			<View style={styles.soundContainer}>
 
 				<TouchableOpacity style={[styles.button]} onPress={() => this.handlePlaySound(this.props.arrayObj)}>
@@ -97,6 +96,7 @@ export default class AppSoundItem extends Component {
 				)}
 			</View>
 		  );
+		  
 		}
   	}
   
@@ -106,7 +106,7 @@ export default class AppSoundItem extends Component {
 		margin: 20
 	},
 	soundContainer: {
-		height: 100,
+		height: 120,
 		width:deviceWidth,
 		margin: 5,
 		alignItems: 'center',
@@ -123,6 +123,8 @@ export default class AppSoundItem extends Component {
 	},
 	buttonText: {
 		fontSize: 22,
+		padding: 10,
+		height: 50,
 		fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
 	},
 	buttonTextActive: {
@@ -131,19 +133,5 @@ export default class AppSoundItem extends Component {
 	},
 	buttonTextInActive: {
 		color: colors.inactive,
-	},
-	// trackInfo: {
-	// 	padding: 40,
-	// 	backgroundColor: colors.inactive,
-	// },
-	// trackInfoText: {
-	// 	textAlign: 'center',
-	// 	flexWrap: 'wrap',
-	// },
-	// largeText: {
-	// 	fontSize: 22
-	// },
-	// smallText: {
-	// 	fontSize: 16
-	// },
+	}
 })

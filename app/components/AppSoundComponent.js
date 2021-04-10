@@ -65,10 +65,10 @@ function AppSoundComponent() {
 			name: "it's raining and windy",
 			soundFile: require('../assets/audio/sounds/rainWind.mp3'),
 		},
-		{	
-			name: 'a vinyl record is playing',
-			soundFile: require('../assets/audio/sounds/vinyl.mp3'),
-		},
+		// {	
+		// 	name: 'a vinyl record is playing',
+		// 	soundFile: require('../assets/audio/sounds/vinyl.mp3'),
+		// },
 		{	
 			name: "roller skates are sliding on a rail",
 			soundFile: require('../assets/audio/sounds/slidingRail.mp3'),
@@ -78,7 +78,7 @@ function AppSoundComponent() {
 			soundFile: require('../assets/audio/sounds/skateBricks.mp3'),
 		},
 		{	
-			name: "you're skating in a concrete bowl",
+			name: "you're skating a concrete bowl",
 			soundFile: require('../assets/audio/sounds/skatingConcreteBowl.mp3'),
 		},
 		{	
@@ -90,7 +90,7 @@ function AppSoundComponent() {
 			soundFile: require('../assets/audio/sounds/skateboard.mp3'),
 		},
 		{	
-			name: "people are skateboarding in a garage",
+			name: "people are skateboarding indoors",
 			soundFile: require('../assets/audio/sounds/skateboardICC.mp3'),
 		},
 		{	
@@ -119,6 +119,7 @@ function AppSoundComponent() {
 					);
 				})}
 			</ScrollView>
+			
 		</View>
 	)
 	}

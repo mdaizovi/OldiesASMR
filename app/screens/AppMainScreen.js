@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Image,  Dimensions } from 'react-native'
+import { StyleSheet, AppText, Button, Text, View, Image,  Dimensions } from 'react-native'
 import { Audio, Video } from 'expo-av'
 import Slider from '@react-native-community/slider';
 import Screen from "../components/Screen";
@@ -14,11 +14,13 @@ export default class MainScreen extends React.Component {
 
 	state = {
 		isPlaying: false,
+		isLoading:true,
 		playbackInstance: null,
 		currentIndex: 0,
 		volume: 0.75,
 		isBuffering: false,
-		masterPlaylist:[]
+		masterPlaylist:[],
+		playListFetchError:false
 	}
 
 
@@ -92,10 +94,11 @@ export default class MainScreen extends React.Component {
 	}
 
 	handlePlayPause = async () => {
-		const { isPlaying, playbackInstance } = this.state
-		if (!playbackInstance) {
+		let { isPlaying, playbackInstance } = this.state
+		if (playbackInstance===null) {
 			await this.loadAudio()
 		}
+		playbackInstance = this.state.playbackInstance
 		isPlaying ? await playbackInstance.pauseAsync() : await playbackInstance.playAsync()
 
 		this.setState({
@@ -135,21 +138,43 @@ export default class MainScreen extends React.Component {
 			let response = await fetch(
 			'https://www.oldiesinanotherroom.com/api/music_library/playlist'
 			);
+			//response.status;
 			let json = await response.json();
 			this.setState({
-			loading: false,
-			masterPlaylist: json
+				isLoading: false,
+				masterPlaylist: json,
+				playListFetchError: false
 			})
 			return await json;
 		} catch (error) {
+			this.setState({
+				playListFetchError: true
+				})
 			console.error(error);
+			return [];
 		}
 	}
+	
 
 	render() {
 
 		return (	
 			<Screen style={styles.container}>
+
+
+				{/* {this.state.playbackInstance ? (
+					<Text style={[styles.trackInfo, styles.trackInfoText, styles.smallText]}>{this.state.masterPlaylist[this.state.currentIndex].citation_mla}</Text>
+					) : (
+					<Text style={[styles.trackInfo, styles.trackInfoText, styles.smallText]}></Text>
+				)} */}
+				
+				{/* {this.state.playListFetchError (
+					<>
+					<AppText>Couldn't load playlist. Are you sure you're connected to the internet?</AppText>
+					<Button title="Retry" onPress={this.loadPlaylist}/>
+					</>
+				)} */}
+
 				{this.state.isPlaying ? (
 				<Video
 					source={require('../assets/video/RecordLoop.mp4')}
@@ -197,7 +222,7 @@ export default class MainScreen extends React.Component {
 							/>
 							)}
 
-					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>	
+					<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack} disabled={this.state.isLoading}/>	
 				</View>
 
 				<View style={styles.separator}>
@@ -242,5 +267,20 @@ const styles = StyleSheet.create({
 	volumeSlider: {
 		width: 200, 
 		height: 40
+	},
+	trackInfo: {
+		//padding: 10,
+		margin: 20,
+		height: 75,
+	},
+	trackInfoText: {
+		textAlign: 'left',
+		flexWrap: 'wrap',
+	},
+	smallText: {
+		//margin: 20,
+		fontSize: 16,
+		color: colors.veryLightGrey,
+		flexWrap: 'wrap'
 	},
 })
