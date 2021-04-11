@@ -7,6 +7,7 @@ import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import AppSoundComponent from "../components/AppSoundComponent";
 import colors from "../config/colors";
+import TextTicker from 'react-native-text-ticker'
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
@@ -163,25 +164,19 @@ export default class MainScreen extends React.Component {
 
 		return (	
 			<Screen style={styles.container}>
-
+			{this.state.isLoading ? (
 				<ActivityIndicator animating={this.state.isLoading} size="large"/>
-
+			) : (
+				<>
 				{this.state.playListFetchError ? (
 					<>
-					<Text style={[styles.errorInfo]}>Couldn't load playlist. Are you sure you're connected to the internet?</Text>
+					<Text style={[styles.errorInfo]}>Couldn't load song playlist. Are you sure you're connected to the internet?</Text>
 					<Button title="Retry" onPress={this.loadPlaylist}/>
 					</>
 					) : (
 						<>
-
-						{/* {this.state.playbackInstance ? (
-							<Text style={[styles.trackInfo, styles.trackInfoText, styles.smallText]}>{this.state.masterPlaylist[this.state.currentIndex].citation_mla}</Text>
-							) : (
-							<Text style={[styles.trackInfo, styles.trackInfoText, styles.smallText]}></Text>
-						)} */}
-				
-
 						{this.state.isPlaying ? (
+							<>
 							<Video
 								source={require('../assets/video/RecordLoop.mp4')}
 								resizeMode="cover"
@@ -189,12 +184,26 @@ export default class MainScreen extends React.Component {
 								isLooping
 								style={styles.recordBackground}
 							/>
+							<TextTicker
+								style={[styles.trackInfo, styles.trackInfoText]}
+								duration={20000}
+								loop
+							>
+							{this.state.masterPlaylist[this.state.currentIndex].citation_mla}
+							</TextTicker>
+							</>
 									) : (
+										<>
 							<Image
 							style={styles.recordBackground}
 							source={require('../assets/images/record.jpg') }
 								/>
+								<Text style={[styles.trackInfo, styles.trackInfoText]}>
+									{this.state.masterPlaylist[this.state.currentIndex].citation_mla}
+								</Text>
+								</>
 							)}
+
 			
 							<View style={styles.controls}>
 											{/* prob the answer to my blinking problem
@@ -203,9 +212,11 @@ export default class MainScreen extends React.Component {
 								https://stackoverflow.com/a/56883227
 								*/}
 						
-								{this.state.playbackInstance  && (
-								<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
-								)}
+								{this.state.playbackInstance  ? (
+									<AppPlayPauseButton onPress={this.handlePlayPause} isPlaying={this.state.isPlaying}/>
+									) : (
+									<ActivityIndicator animating={!this.state.playbackInstance} color={colors.white} size="large"/>
+									)}
 			
 								{this.state.isPlaying ? (
 											<Slider
@@ -236,11 +247,11 @@ export default class MainScreen extends React.Component {
 			
 							<View style={styles.separator}>
 							</View>
-			
-							<AppSoundComponent/>
 							</>
 				)}
- 
+ 			<AppSoundComponent/>
+			</>
+			)}
 			</Screen>
 
 		)
@@ -282,11 +293,13 @@ const styles = StyleSheet.create({
 	trackInfo: {
 		//padding: 10,
 		margin: 20,
-		height: 75,
+		height: 25,
+		top:5
 	},
 	trackInfoText: {
-		textAlign: 'left',
-		flexWrap: 'wrap',
+		fontStyle: 'italic',
+		fontSize: 16,
+		color: colors.veryDarkGrey,
 	},
 	errorInfo: {
 		fontSize: 25,
