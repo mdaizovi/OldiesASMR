@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, ActivityIndicator, AppText, Button, Text, View, Image,  Dimensions } from 'react-native'
+import { StyleSheet, ActivityIndicator, Button, Text, View, Image,  Dimensions } from 'react-native'
 import { Audio, Video } from 'expo-av'
 import Slider from '@react-native-community/slider';
 import Screen from "../components/Screen";
@@ -7,6 +7,7 @@ import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import AppSoundComponent from "../components/AppSoundComponent";
 import colors from "../config/colors";
+import settings from "../config/settings";
 import TextTicker from 'react-native-text-ticker'
 import logger from '../utilities/logger';  
 
@@ -133,7 +134,7 @@ export default class MainScreen extends React.Component {
 	loadPlaylist = async () => {
 		try {
 			let response = await fetch(
-			'https://www.oldiesinanotherroom.com/api/music_library/playlist'
+				settings.apiUrl
 			);
 			if (response.status===200) {
 				let json = await response.json();
