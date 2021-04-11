@@ -18,8 +18,12 @@ export default class AboutScreen extends React.Component {
 
           <Text style={styles.aboutText}>All Sounds are either CC0 1.0 public domain sounds, 
             or recorded by me. 
-            There are a lot of skating sounds because I love to skate.
+            There are a lot of skating sounds because I love to skate, and find it relaxing to listen to.
           </Text>
+
+          <Text style={styles.aboutText}>Please send questions, comments, concerns, to listen@oldiesinanotherroom.com
+          </Text>
+
         </View>
       </View>
     );
