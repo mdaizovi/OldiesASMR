@@ -32,6 +32,19 @@
     "web": {
       "favicon": "./app/assets/favicon.png"
     },
-    "description": "Oldies play in another room and... the rest is up to you. Ambient sounds include train, being on the beach, by a lake, or even skateboarding. This is an app for relaxation and productivity, which combines the euphoric feeling of soft 30's era tunes playing, with ambient noises in the background."
+    "description": "Oldies play in another room and... the rest is up to you. Ambient sounds include train, being on the beach, by a lake, or even skateboarding. This is an app for relaxation and productivity, which combines the euphoric feeling of soft 30's era tunes playing, with ambient noises in the background.",
+    "extra": {
+      "bugsnag": {
+        "apiKey": "6d3ec4de7e5dcec14d9431167418b3d1"
+      }
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "@bugsnag/expo/hooks/post-publish.js",
+          "config": {}
+        }
+      ]
+    }
   }
 }

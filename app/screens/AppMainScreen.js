@@ -8,6 +8,7 @@ import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import AppSoundComponent from "../components/AppSoundComponent";
 import colors from "../config/colors";
 import TextTicker from 'react-native-text-ticker'
+import logger from '../utilities/logger';  
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
@@ -154,7 +155,7 @@ export default class MainScreen extends React.Component {
 			this.setState({
 				playListFetchError: true
 				})
-			console.error(error);
+			logger.log(error);
 			return [];
 		}
 	}

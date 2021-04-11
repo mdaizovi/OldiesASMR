@@ -4,6 +4,7 @@ import colors from "../config/colors";
 import { Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Audio } from 'expo-av'
+import logger from '../utilities/logger';  
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
@@ -16,7 +17,7 @@ export default class AppSoundItem extends Component {
 			if (isLoaded === false) {
 				await soundObject.loadAsync(arrayObj.soundFile)
 				.catch(error => {
-					console.log(error)
+					logger.log(error);
 				})
 				soundObject.setStatusAsync({ volume: volume })
 				this.setState({
@@ -27,7 +28,7 @@ export default class AppSoundItem extends Component {
 			if (isPlaying === true) {
 				await soundObject.pauseAsync()
 				.catch(error => {
-					console.log(error)
+					logger.log(error);
 				})
 				this.setState({
 					isPlaying : false
@@ -36,7 +37,7 @@ export default class AppSoundItem extends Component {
 				soundObject.setIsLoopingAsync(true)
 				await soundObject.playAsync()
 				.catch(error => {
-					console.log(error)
+					logger.log(error);
 				})
 				this.setState({
 					isPlaying : true
@@ -44,7 +45,7 @@ export default class AppSoundItem extends Component {
 		   }
 
 		} catch (error) {
-			console.log(error)
+			logger.log(error);
 		}
 	}
 

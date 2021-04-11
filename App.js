@@ -1,12 +1,15 @@
+
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import MainScreen from './app/screens/AppMainScreen';  
 import AboutScreen from './app/screens/AppAboutScreen';  
+import logger from './app/utilities/logger';  
+
+logger.start();
 
 const Tab = createBottomTabNavigator();
-
 
 export default function App() {
 	return (
