@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, AppText, Button, Text, View, Image,  Dimensions } from 'react-native'
+import { StyleSheet, ActivityIndicator, AppText, Button, Text, View, Image,  Dimensions } from 'react-native'
 import { Audio, Video } from 'expo-av'
 import Slider from '@react-native-community/slider';
 import Screen from "../components/Screen";
@@ -143,7 +143,8 @@ export default class MainScreen extends React.Component {
 				return await json;
 			} else {
 				this.setState({
-					playListFetchError: true
+					playListFetchError: true,
+					isLoading: false,
 				})
 				return [];
 			}
@@ -162,6 +163,8 @@ export default class MainScreen extends React.Component {
 
 		return (	
 			<Screen style={styles.container}>
+
+				<ActivityIndicator animating={this.state.isLoading} size="large"/>
 
 				{this.state.playListFetchError ? (
 					<>
