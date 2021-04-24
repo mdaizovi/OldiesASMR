@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.darkGrey,
 		alignItems: 'center',
-    	paddingTop:50,
+    	paddingTop:0,
 		width:'100%',
 		alignSelf:'center'
 		//justifyContent: 'center'
@@ -292,10 +292,13 @@ const styles = StyleSheet.create({
 		width: 200, 
 		height: 40
 	},
+	songVolumeSlider: {
+		marginTop:25
+	},
 	trackInfo: {
 		//padding: 10,
-		margin: 20,
-		height: 25,
+		margin: 5,
+		height: 15,
 		top:5
 	},
 	trackInfoText: {
