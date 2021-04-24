@@ -11,15 +11,12 @@ export default class AboutScreen extends React.Component {
           <Text style={styles.aboutText}>All Songs are streamed from US Library of Congress.
           </Text>
 
-          <Text style={styles.aboutText}>All Images and Videos are CC0 1.0 public domain.
-          </Text>
-
-          <Text style={styles.aboutText}>All Sounds are either CC0 1.0 public domain sounds, 
-            or recorded by me. 
+          <Text style={styles.aboutText}>
             There are a lot of skating sounds because I love to skate, and find it relaxing to listen to.
           </Text>
 
-          <Text style={styles.aboutText}>Please send questions, comments, concerns, to listen@oldiesinanotherroom.com
+          <Text style={styles.aboutText}>Please send questions, comments, concerns, sound suggestions, 
+            and especially love letters, to listen@oldiesinanotherroom.com
           </Text>
 
         </View>

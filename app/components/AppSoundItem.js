@@ -50,13 +50,24 @@ export default class AppSoundItem extends Component {
 	}
 
 	handleSlide = async (value) => {
-		let { isLoaded, soundObject } = this.state
+		let { isLoaded, soundObject, isPlaying } = this.state
 		if (isLoaded === true) {
 			soundObject.setStatusAsync({ volume: value })
 		}
 		this.setState({
 			volume: value,
 		}) 
+	}
+
+	playIfNotPlaying = async arrayObj => {
+		let {isPlaying } = this.state
+		try {
+		   if (isPlaying === false) {
+			this.handlePlaySound(arrayObj);
+			}
+		} catch (error) {
+			logger.log(error);
+		}
 	}
 
 	render() {
@@ -93,6 +104,7 @@ export default class AppSoundItem extends Component {
 						thumbTintColor={colors.inactive}
 						value={this.state.volume}
 						onValueChange={value => this.handleSlide(value)}
+						onSlidingComplete = {() => this.playIfNotPlaying(this.props.arrayObj)}
 				/>
 				)}
 			</View>
