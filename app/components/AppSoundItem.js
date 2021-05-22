@@ -76,9 +76,13 @@ export default class AppSoundItem extends Component {
 
 				<TouchableOpacity style={[styles.button]} onPress={() => this.handlePlaySound(this.props.arrayObj)}>
 					{this.state.isPlaying ? (
+					<>
 					<Text style={[styles.buttonText, styles.buttonTextActive]}>{this.props.arrayObj.name}</Text>
+					</>
 					) : (
+						<>
 						<Text style={[styles.buttonText, styles.buttonTextInactive]}>{this.props.arrayObj.name}</Text>
+						</>
 					)}
 				</TouchableOpacity>
 

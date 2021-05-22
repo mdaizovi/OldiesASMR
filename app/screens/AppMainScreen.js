@@ -31,12 +31,12 @@ export default class MainScreen extends React.Component {
 		try {
 			await Audio.setAudioModeAsync({
 				allowsRecordingIOS: false,
+				staysActiveInBackground: true,
 				interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-				playsInSilentModeIOS: true,
 				interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+				playsInSilentModeIOS: true,
 				shouldDuckAndroid: true,
 				playInBackground:true,
-				staysActiveInBackground: true,
 				playThroughEarpieceAndroid: true
 			})
 			var playlist = await this.loadPlaylist()
@@ -107,9 +107,15 @@ export default class MainScreen extends React.Component {
 
 	handleNextTrack = async () => {
 		let { masterPlaylist, playbackInstance, currentIndex } = this.state
+
+		let song_id = masterPlaylist[currentIndex].id;
+		//await this.noteSkippedSong(song_id); 
+		this.noteSkippedSong(song_id);  // do i need to await ?
+
 		if (playbackInstance) {
 		  await playbackInstance.unloadAsync()
 		}
+
 		if (currentIndex === masterPlaylist.length - 1) {
 			//start over if currently on the last track of playlist
 			var playlist = await this.loadPlaylist()
@@ -161,6 +167,21 @@ export default class MainScreen extends React.Component {
 		}
 	}
 	
+	noteSkippedSong = async (song_id) => {
+		/// Tells BE this song was skipped so we can know which songs everyone hates 
+
+		fetch(settings.skipUrl, {
+			method: 'POST',
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+			  song: song_id,
+			})
+		  });
+
+	}
 
 	render() {
 

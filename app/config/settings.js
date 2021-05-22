@@ -1,14 +1,21 @@
 import Constants from 'expo-constants'
 
 const settings = {
+    
     dev: {
-        apiUrl : "https://www.oldiesinanotherroom.com/api/music_library/playlist"
+        BackendUrl: "http://127.0.0.1:8000/api",
+        apiUrl : "http://127.0.0.1:8000/api/music_library/playlist",
+        skipUrl : "http://127.0.0.1:8000/api/music_library/skip"
     },
     staging: {
-        apiUrl : "https://www.oldiesinanotherroom.com/api/music_library/playlist"
+        BackendUrl: "https://www.oldiesinanotherroom.com/api",
+        apiUrl : "https://www.oldiesinanotherroom.com/api/music_library/playlist",
+        skipUrl : "https://www.oldiesinanotherroom.com/api/music_library/skip"
     },
     prod: {
-        apiUrl : "https://www.oldiesinanotherroom.com/api/music_library/playlist"
+        BackendUrl: "https://www.oldiesinanotherroom.com/api",
+        apiUrl : "https://www.oldiesinanotherroom.com/api/music_library/playlist",
+        skipUrl : "https://www.oldiesinanotherroom.com/api/music_library/skip"
     },
 }
 
