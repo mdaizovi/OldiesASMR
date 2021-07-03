@@ -5200,6 +5200,11 @@
   dependencies:
     "minimist" "^1.2.5"
 
+"moment@^2.22.0":
+  "integrity" "sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ=="
+  "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz"
+  "version" "2.29.1"
+
 "ms@2.0.0":
   "integrity" "sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g="
   "resolved" "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz"
@@ -5892,6 +5897,13 @@
   "resolved" "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz"
   "version" "17.0.1"
 
+"react-native-24h-timepicker@^1.1.0":
+  "integrity" "sha512-rnOHWmKcSbbdpYBVl2MxkQY7IU83f/5K6NB8iq4nmWdq8WfHklnkfvfpjnga8uY6sqLDAK11j+dQHo0XVK+QIg=="
+  "resolved" "https://registry.npmjs.org/react-native-24h-timepicker/-/react-native-24h-timepicker-1.1.0.tgz"
+  "version" "1.1.0"
+  dependencies:
+    "react-native-raw-bottom-sheet" "^1.0.0"
+
 "react-native-elements@^3.2.0":
   "integrity" "sha512-DgilI1P/S8xV3Uh6sjS7v1H7DsBXhlivG1IwHGJCO3OV3aFNh90bcdcmlKzxLZXWghQItqh9hQR3TLmgaZbU1w=="
   "resolved" "https://registry.npmjs.org/react-native-elements/-/react-native-elements-3.2.0.tgz"
@@ -5929,6 +5941,13 @@
   dependencies:
     "lodash" "^4.17.15"
     "prop-types" "^15.7.2"
+
+"react-native-raw-bottom-sheet@^1.0.0":
+  "integrity" "sha512-rn9KZuxWLE/EwxuoVzVBrzuTTcUZyhUfOOmAXScuGc90W6sf2NgM38vx6+SkZ0pqWgXmAKnUALmjE3kdNnxAFQ=="
+  "resolved" "https://registry.npmjs.org/react-native-raw-bottom-sheet/-/react-native-raw-bottom-sheet-1.1.4.tgz"
+  "version" "1.1.4"
+  dependencies:
+    "prop-types" "^15.6.2"
 
 "react-native-reanimated@~1.13.0":
   "integrity" "sha512-O+WhgxSjOIzcVdAAvx+h2DY331Ek1knKlaq+jsNLpC1fhRy9XTdOObovgob/aF2ve9uJfPEawCx8381g/tUJZQ=="
@@ -5985,6 +6004,13 @@
     "normalize-css-color" "^1.0.2"
     "prop-types" "^15.6.0"
     "react-timer-mixin" "^0.13.4"
+
+"react-native-wheel-picker-android@^2.0.6":
+  "integrity" "sha512-gwstWymEZUmSokWKDQufD3t/alSRkYDTSEe3YrtsDtpcKM55t9BeAPdKzYURTVRUGCYeoOy4nyxKBYkMnqbvlQ=="
+  "resolved" "https://registry.npmjs.org/react-native-wheel-picker-android/-/react-native-wheel-picker-android-2.0.6.tgz"
+  "version" "2.0.6"
+  dependencies:
+    "moment" "^2.22.0"
 
 "react-native@*", "react-native@>=0.42.0", "react-native@>=0.57", "react-native@>=0.59", "react-native@>=0.62.0-rc.0 <0.64.0", "react-native@https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz":
   "version" "0.63.2"

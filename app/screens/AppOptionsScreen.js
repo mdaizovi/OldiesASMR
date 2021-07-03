@@ -1,17 +1,45 @@
-import React from "react";
-import { Text, StyleSheet, View } from "react-native";
 import colors from "../config/colors";
 
-export default class OptionsScreen extends React.Component {
+import React, { Component } from "react";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import TimePicker from "react-native-24h-timepicker";
 
-	render() {
-		return (
+class Example extends Component {
+  constructor() {
+    super();
+    this.state = {
+      time: ""
+    };
+  }
+
+  onCancel() {
+    this.TimePicker.close();
+  }
+
+  onConfirm(hour, minute) {
+    this.setState({ time: `${hour}:${minute}` });
+    this.TimePicker.close();
+  }
+
+  render() {
+    return (
       <View style={styles.container}>
-        <View>
-          <Text style={styles.aboutText}>here's where the Stop button and picker form will be
-          </Text>
-
-        </View>
+        <Text style={styles.text}>REACT NATIVE</Text>
+        <Text style={styles.text}>24 HOURS FORMAT TIMEPICKER</Text>
+        <TouchableOpacity
+          onPress={() => this.TimePicker.open()}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>TIMEPICKER</Text>
+        </TouchableOpacity>
+        <Text style={styles.text}>{this.state.time}</Text>
+        <TimePicker
+          ref={ref => {
+            this.TimePicker = ref;
+          }}
+          onCancel={() => this.onCancel()}
+          onConfirm={(hour, minute) => this.onConfirm(hour, minute)}
+        />
       </View>
     );
   }
@@ -20,15 +48,42 @@ export default class OptionsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-		backgroundColor: colors.lightGrey,
-    paddingHorizontal:20,
-		width:'100%',
+    alignItems: "center",
+    backgroundColor: "#fff",
+    paddingTop: 100
   },
-  aboutText: {
-		fontSize: 22,
-		fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
-    paddingVertical:20,
-	},
+  text: {
+    fontSize: 20,
+    marginTop: 10
+  },
+  button: {
+    backgroundColor: "#4EB151",
+    paddingVertical: 11,
+    paddingHorizontal: 17,
+    borderRadius: 3,
+    marginVertical: 50
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600"
+  }
 });
+
+export default Example;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+// 		backgroundColor: colors.lightGrey,
+//     paddingHorizontal:20,
+// 		width:'100%',
+//   },
+//   aboutText: {
+// 		fontSize: 22,
+// 		fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
+//     paddingVertical:20,
+// 	},
+// });

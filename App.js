@@ -14,10 +14,19 @@ logger.start();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+	const screenProps = {
+		timerEndTime: null,
+		stopAudio: false,
+   }
+   //    state = {
+// 	timerEndTime: null,
+// 	stopAudio: false,
+// }
 	return (
 	  <NavigationContainer>
 		<Tab.Navigator
 		  initialRouteName="Home"
+		  screenProps={screenProps}
 		  screenOptions={({ route }) => ({
 			tabBarIcon: ({ focused, color, size }) => {
 			  let iconName;
