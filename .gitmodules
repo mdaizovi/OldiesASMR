@@ -1,1 +1,4 @@
 
+[submodule "react-native-super-timepicker"]
+	path = submodules/react-native-super-timepicker
+	url = git@github.com:auderephilip/react-native-super-timepicker.git
