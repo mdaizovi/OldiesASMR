@@ -2,7 +2,7 @@ import colors from "../config/colors";
 
 import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import TimePicker from "react-native-24h-timepicker";
+import TimePicker from "../../submodules/react-native-super-timepicker";
 
 class Example extends Component {
   constructor() {
