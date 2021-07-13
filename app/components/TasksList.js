@@ -1,17 +1,17 @@
 import React, {Component} from 'react';
 import { View, StyleSheet, FlatList, Text } from 'react-native';
-import Context from '../context/context';
+import playbackInstanceContext from '../context/context';
 
 export default class TasksList extends Component {
   
-  static contextType = Context;
+  static contextType = playbackInstanceContext;
 
   render(){
    return (
     <View style={styles.container}>
      <Text style={styles.title} >To Do</Text>
      <FlatList 
-      data={this.context.tasks} 
+      data={this.context.playbackInstances} 
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item, index}) => {
       return (
@@ -19,7 +19,7 @@ export default class TasksList extends Component {
         <Text style={styles.text}>{item}</Text>
         <Text 
          style={styles.delete}
-         onPress= {()=>{this.context.deleteTask(index)}}
+         onPress= {()=>{this.context.stopPlaybackInstances(index)}}
         >
          delete
         </Text>

@@ -1,29 +1,29 @@
 import React from 'react';
-import Context from './context';
+import playbackInstanceContext from './context';
 export default class GlobalState extends React.Component{
 state = {
-  tasks: [],
+  playbackInstances: [],
 }
  
-addNewTask = (task) => {
-  const list = [this.state.tasks, task];
-  this.setState({tasks: list});
+addNewPlaybackInstance = (task) => {
+  const list = [this.state.playbackInstances, task];
+  this.setState({playbackInstances: list});
 };
  
-deleteTask = (taskId) => {
-  this.setState(this.state.tasks.splice(taskId,1));
+stopPlaybackInstances = (taskId) => {
+  this.setState(this.state.playbackInstances.splice(taskId,1));
 };
 render(){
  return (
-  <Context.Provider 
+  <playbackInstanceContext.Provider 
    value={{
-    tasks: this.state.tasks,
-    addNewTask: this.addNewTask,
-    deleteTask: this.deleteTask
+    playbackInstances: this.state.playbackInstances,
+    addNewPlaybackInstance: this.addNewPlaybackInstance,
+    stopPlaybackInstances: this.stopPlaybackInstances
    }}
   >
    {this.props.children}
-  </Context.Provider>
+  </playbackInstanceContext.Provider>
  );
  }
 }

@@ -10,7 +10,7 @@ import Footer from '../components/Footer';
 import GlobalState from '../context/globalState';
 
 class OptionsScreen extends Component {
-  static contextType = Context;
+  static contextType = playbackInstanceContext;
 
   constructor() {
     super();

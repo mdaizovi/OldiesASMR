@@ -1,6 +1,6 @@
 import React from 'react';
 import { View,Text, StyleSheet, TextInput, Button } from 'react-native';
-import Context from '../context/context';
+import playbackInstanceContext from '../context/context';
 
 export default class Footer extends React.Component{
   constructor(props){
@@ -9,7 +9,7 @@ export default class Footer extends React.Component{
    newTask: ''
    }
   }
-  static contextType = Context;
+  static contextType = playbackInstanceContext;
   render(){
    return(
     <View style={styles.view}>
@@ -20,7 +20,7 @@ export default class Footer extends React.Component{
      />
      <Text
       style={styles.add} 
-      onPress={()=>this.context.addNewTask(this.state.newTask)}
+      onPress={()=>this.context.addNewPlaybackInstance(this.state.newTask)}
       >
        Add
       </Text>
