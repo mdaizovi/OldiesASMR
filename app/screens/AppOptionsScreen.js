@@ -2,7 +2,7 @@ import colors from "../config/colors";
 
 import React, { Component, Section } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-//import AppStopButton from "../components/AppStopButton";
+import AppStopButton from "../components/AppStopButton";
 import TimePicker from "../../submodules/react-native-super-timepicker";
 
 import TaskList from '../components/TasksList'
@@ -28,18 +28,7 @@ class OptionsScreen extends Component {
     this.TimePicker.close();
   }
 
-  handleStop = async () => {
-    console.log("stop all sounds now")
-    //let { playbackInstanceArray } = this.state
-    for (const pi of playbackInstanceArray){
-      // need to do a custom stopAudio() that is different for songs versus sounds
-      pi.unloadAsync()
-    }
-    // this.setState({
-    //   playbackInstanceArray: []
-    // })
-  }
-
+  
   render() {
     return (
       <View style={styles.container}>
@@ -57,10 +46,12 @@ class OptionsScreen extends Component {
 
 
 
-      {/* <View style={styles.OptionsSegment}>
-        <AppStopButton onPress={this.handleStop} isPlaying={this.state.isPlaying}/>
+      <View style={styles.OptionsSegment}>
+      <GlobalState>
+        <AppStopButton/>
         <Text style={styles.buttonText}>Stop Audio</Text>
-      </View> */}
+      </GlobalState>
+      </View>
 
       <View style={styles.OptionsSegment}>
         <TouchableOpacity
