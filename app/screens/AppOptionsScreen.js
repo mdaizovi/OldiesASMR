@@ -1,14 +1,21 @@
 import colors from "../config/colors";
 
-import React, { Component } from "react";
+import React, { Component, Section } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+//import AppStopButton from "../components/AppStopButton";
 import TimePicker from "../../submodules/react-native-super-timepicker";
 
-class Example extends Component {
+import TaskList from '../components/TasksList'
+import Footer from '../components/Footer';
+import GlobalState from '../context/globalState';
+
+class OptionsScreen extends Component {
+  static contextType = Context;
+
   constructor() {
     super();
     this.state = {
-      time: ""
+      time: "",
     };
   }
 
@@ -21,16 +28,46 @@ class Example extends Component {
     this.TimePicker.close();
   }
 
+  handleStop = async () => {
+    console.log("stop all sounds now")
+    //let { playbackInstanceArray } = this.state
+    for (const pi of playbackInstanceArray){
+      // need to do a custom stopAudio() that is different for songs versus sounds
+      pi.unloadAsync()
+    }
+    // this.setState({
+    //   playbackInstanceArray: []
+    // })
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>REACT NATIVE</Text>
-        <Text style={styles.text}>24 HOURS FORMAT TIMEPICKER</Text>
+
+
+      <View style={styles.OptionsSegment}>
+          <GlobalState>
+        <View style={styles.container}>
+        <TaskList />
+        <Footer/>
+        </View>
+      </GlobalState>
+      </View>
+
+
+
+
+      {/* <View style={styles.OptionsSegment}>
+        <AppStopButton onPress={this.handleStop} isPlaying={this.state.isPlaying}/>
+        <Text style={styles.buttonText}>Stop Audio</Text>
+      </View> */}
+
+      <View style={styles.OptionsSegment}>
         <TouchableOpacity
           onPress={() => this.TimePicker.open()}
           style={styles.button}
         >
-          <Text style={styles.buttonText}>TIMEPICKER</Text>
+        <Text style={styles.buttonText}>Sleep Timer</Text>
         </TouchableOpacity>
         <Text style={styles.text}>{this.state.time}</Text>
         <TimePicker
@@ -40,17 +77,30 @@ class Example extends Component {
           onCancel={() => this.onCancel()}
           onConfirm={(hour, minute) => this.onConfirm(hour, minute)}
         />
+       </View>
+
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+
+	OptionsSegment: {
+		flexDirection: 'row',
+    borderRadius: 10,
+    margin: 10,
+    backgroundColor: colors.veryLightGrey,
+	},
   container: {
     flex: 1,
-    alignItems: "center",
-    backgroundColor: "#fff",
-    paddingTop: 100
+    justifyContent: 'center',
+    //alignItems: "center",
+    //backgroundColor: "#fff",
+    backgroundColor: colors.darkGrey,
+    //paddingTop: 100,
+    paddingHorizontal:20,
+    width:'100%',
   },
   text: {
     fontSize: 20,
@@ -64,26 +114,12 @@ const styles = StyleSheet.create({
     marginVertical: 50
   },
   buttonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
+    fontSize: 22,
+    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
+    paddingVertical:20,
+    color: colors.black,
     fontWeight: "600"
   }
 });
 
-export default Example;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-// 		backgroundColor: colors.lightGrey,
-//     paddingHorizontal:20,
-// 		width:'100%',
-//   },
-//   aboutText: {
-// 		fontSize: 22,
-// 		fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
-//     paddingVertical:20,
-// 	},
-// });
+export default OptionsScreen;
