@@ -35,23 +35,24 @@ class OptionsScreen extends Component {
 
 
       <View style={styles.OptionsSegment}>
+          
           <GlobalState>
         <View style={styles.container}>
         <TaskList />
         <Footer/>
         </View>
-      </GlobalState>
-      </View>
-
-
 
 
       <View style={styles.OptionsSegment}>
-      <GlobalState>
         <AppStopButton/>
         <Text style={styles.buttonText}>Stop Audio</Text>
-      </GlobalState>
       </View>
+      </GlobalState>
+      
+      </View>
+
+
+
 
       <View style={styles.OptionsSegment}>
         <TouchableOpacity

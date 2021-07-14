@@ -18,7 +18,8 @@ stopAllPlaybackInstances = () => {
   console.log("stopAllPlaybackInstances");
   // iterate and stop all audio properly unmount or whatever.
   // make sure play buttons look right, resume appropriately.
-
+  const list = this.state.playbackInstances;
+  console.log(list);
   // i can see the print statements but objects reamain. don't know if this is bc list isn't getting updated
   // or if just not getting re rendered.
   this.setState({playbackInstances: []});
