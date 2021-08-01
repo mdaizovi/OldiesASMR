@@ -5,5 +5,6 @@ export default playbackInstanceContext = React.createContext({
   addNewTask : (task) => {},
   removeTask : (taskId) => {},
   addNewPlaybackInstance : (playbackInstance) => {},
+  removePlaybackInstance:(playbackInstance) => {},
   stopAllPlaybackInstances : () => {}
 });

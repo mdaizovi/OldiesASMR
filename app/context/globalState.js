@@ -25,6 +25,15 @@ addNewPlaybackInstance = async (playbackInstance) => {
   console.log("end addNewPlaybackInstance")
 };
 
+removePlaybackInstance = (playbackInstance) => {
+  console.log("start removePlaybackInstance")
+  const list = this.state.playbackInstances;
+  var index = list.indexOf(playbackInstance);
+  list.splice(index, 1);
+  this.setState({playbackInstances: list});
+  console.log("end removePlaybackInstance")
+};
+
 stopAllPlaybackInstances = () => {
   console.log("stopAllPlaybackInstances");
   // iterate and stop all audio properly unmount or whatever.
@@ -44,6 +53,7 @@ render(){
     addNewTask: this.addNewTask,
     removeTask: this.removeTask,
     addNewPlaybackInstance: this.addNewPlaybackInstance,
+    removePlaybackInstance: this.removePlaybackInstance,
     stopAllPlaybackInstances: this.stopAllPlaybackInstances
    }}
   >

@@ -26,7 +26,9 @@ export default class AppSoundItem extends Component {
 		let { isLoaded, volume, isPlaying, soundObject } = this.state
 		var playbackInstances = this.context.playbackInstances
 		var addNewPlaybackInstance = this.context.addNewPlaybackInstance
-		console.log("playbackInstances len:")
+		var removePlaybackInstance = this.context.removePlaybackInstance
+
+		console.log("handlePlaySound playbackInstances len:")
 		console.log(playbackInstances.length)
 
 		try {
@@ -46,19 +48,15 @@ export default class AppSoundItem extends Component {
 				.catch(error => {
 					logger.log(error);
 				})
+				removePlaybackInstance(soundObject)
 				this.setState({
 					isPlaying : false
 				}) 
+				
 			}  else {
 				soundObject.setIsLoopingAsync(true)
 				await soundObject.playAsync()
-
 				await addNewPlaybackInstance(soundObject)
-				
-				
-				
-				
-				
 				.catch(error => {
 					logger.log(error);
 				})
