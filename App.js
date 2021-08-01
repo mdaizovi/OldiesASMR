@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 //import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { Ionicons } from '@expo/vector-icons'; 
+import GlobalState from './app/context/globalState';
 import MainScreen from './app/screens/AppMainScreen';  
 import AboutScreen from './app/screens/AppAboutScreen';  
 import OptionsScreen from './app/screens/AppOptionsScreen';  
@@ -24,6 +25,7 @@ export default function App() {
 // }
 	return (
 	  <NavigationContainer>
+		  <GlobalState>
 		<Tab.Navigator
 		  initialRouteName="Home"
 		  screenProps={screenProps}
@@ -52,6 +54,7 @@ export default function App() {
 		  <Tab.Screen name="Home" component={MainScreen} />
 		  <Tab.Screen name="Options" component={OptionsScreen} />
 		</Tab.Navigator>
+		</GlobalState>
 	  </NavigationContainer>
 	);
   }

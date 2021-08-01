@@ -19,7 +19,7 @@ export default class TasksList extends Component {
         <Text style={styles.text}>{item}</Text>
         <Text 
          style={styles.delete}
-         onPress= {()=>{this.context.stopPlaybackInstances(index)}}
+         onPress= {()=>{this.context.removeTask(index)}}
         >
          delete
         </Text>

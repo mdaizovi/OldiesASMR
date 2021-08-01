@@ -1,18 +1,34 @@
-import React, { Component } from "react";
+import React, { Component, Componen, useContext, useEffect, useState  } from "react";
 import { StyleSheet, Text, TouchableOpacity, View,  Dimensions} from "react-native";
 import colors from "../config/colors";
 import { Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Audio } from 'expo-av'
 import logger from '../utilities/logger';  
+import playbackInstanceContext from '../context/context';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default class AppSoundItem extends Component {
 	state = {isLoaded: false, isPlaying: false, volume: 0.25, soundObject: new Audio.Sound()};
+	static contextType = playbackInstanceContext;
 	
+	// addNewPlaybackInstance = playbackInstance => {
+	// 	const playbackInstances = [...this.state.playbackInstances];
+	// 	console.log("playbackInstances 1")
+	// 	console.log(playbackInstances)
+
+	// 	console.log("playbackInstances 2")
+	// 	console.log(playbackInstances)
+	//   };
+
 	handlePlaySound = async arrayObj => {
 		let { isLoaded, volume, isPlaying, soundObject } = this.state
+		var playbackInstances = this.context.playbackInstances
+		var addNewPlaybackInstance = this.context.addNewPlaybackInstance
+		console.log("playbackInstances len:")
+		console.log(playbackInstances.length)
+
 		try {
 			if (isLoaded === false) {
 				await soundObject.loadAsync(arrayObj.soundFile)
@@ -36,6 +52,13 @@ export default class AppSoundItem extends Component {
 			}  else {
 				soundObject.setIsLoopingAsync(true)
 				await soundObject.playAsync()
+
+				await addNewPlaybackInstance(soundObject)
+				
+				
+				
+				
+				
 				.catch(error => {
 					logger.log(error);
 				})
@@ -74,7 +97,9 @@ export default class AppSoundItem extends Component {
 		return (
 			<View style={styles.soundContainer}>
 
-				<TouchableOpacity style={[styles.button]} onPress={() => this.handlePlaySound(this.props.arrayObj)}>
+				<TouchableOpacity style={[styles.button]} 
+					onPress={() => this.handlePlaySound(this.props.arrayObj)}
+					>
 					{this.state.isPlaying ? (
 					<>
 					<Text style={[styles.buttonText, styles.buttonTextActive]}>{this.props.arrayObj.name}</Text>

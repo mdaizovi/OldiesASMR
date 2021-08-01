@@ -20,7 +20,7 @@ export default class Footer extends React.Component{
      />
      <Text
       style={styles.add} 
-      onPress={()=>this.context.addNewPlaybackInstance(this.state.newTask)}
+      onPress={()=>this.context.addNewTask(this.state.newTask)}
       >
        Add
       </Text>

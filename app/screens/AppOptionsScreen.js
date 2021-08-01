@@ -7,7 +7,6 @@ import TimePicker from "../../submodules/react-native-super-timepicker";
 
 import TaskList from '../components/TasksList'
 import Footer from '../components/Footer';
-import GlobalState from '../context/globalState';
 
 class OptionsScreen extends Component {
   static contextType = playbackInstanceContext;
@@ -36,7 +35,6 @@ class OptionsScreen extends Component {
 
       <View style={styles.OptionsSegment}>
           
-          <GlobalState>
         <View style={styles.container}>
         <TaskList />
         <Footer/>
@@ -47,7 +45,6 @@ class OptionsScreen extends Component {
         <AppStopButton/>
         <Text style={styles.buttonText}>Stop Audio</Text>
       </View>
-      </GlobalState>
       
       </View>
 

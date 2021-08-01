@@ -1,17 +1,28 @@
 import React from 'react';
 import playbackInstanceContext from './context';
+
 export default class GlobalState extends React.Component{
 state = {
   playbackInstances: [],
 }
  
-addNewPlaybackInstance = (task) => {
-  const list = [this.state.playbackInstances, task];
+addNewTask = (task) => {
+  const list = this.state.playbackInstances;
+  list.push(task);
   this.setState({playbackInstances: list});
 };
- 
-stopPlaybackInstances = (taskId) => {
+
+removeTask = (taskId) => {
   this.setState(this.state.playbackInstances.splice(taskId,1));
+};
+
+
+addNewPlaybackInstance = async (playbackInstance) => {
+  console.log("start addNewPlaybackInstance")
+  const list = this.state.playbackInstances;
+  list.push(playbackInstance);
+  this.setState({playbackInstances: list});
+  console.log("end addNewPlaybackInstance")
 };
 
 stopAllPlaybackInstances = () => {
@@ -30,8 +41,9 @@ render(){
   <playbackInstanceContext.Provider 
    value={{
     playbackInstances: this.state.playbackInstances,
+    addNewTask: this.addNewTask,
+    removeTask: this.removeTask,
     addNewPlaybackInstance: this.addNewPlaybackInstance,
-    stopPlaybackInstances: this.stopPlaybackInstances,
     stopAllPlaybackInstances: this.stopAllPlaybackInstances
    }}
   >
