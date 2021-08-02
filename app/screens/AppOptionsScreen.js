@@ -5,9 +5,6 @@ import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import AppStopButton from "../components/AppStopButton";
 import TimePicker from "../../submodules/react-native-super-timepicker";
 
-import TaskList from '../components/TasksList'
-import Footer from '../components/Footer';
-
 class OptionsScreen extends Component {
   static contextType = playbackInstanceContext;
 
@@ -31,15 +28,7 @@ class OptionsScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-
-
       <View style={styles.OptionsSegment}>
-          
-        <View style={styles.container}>
-        <TaskList />
-        <Footer/>
-        </View>
-
 
       <View style={styles.OptionsSegment}>
         <AppStopButton/>

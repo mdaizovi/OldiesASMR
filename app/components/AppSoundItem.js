@@ -41,7 +41,7 @@ export default class AppSoundItem extends Component {
 			}
 
 			if (isPlaying === true) {
-				removePlaybackInstance(soundObject)
+				removePlaybackInstance("sound", soundObject)
 				await soundObject.pauseAsync()
 				.catch(error => {
 					logger.log(error);
@@ -52,7 +52,7 @@ export default class AppSoundItem extends Component {
 				
 			}  else {
 				soundObject.setIsLoopingAsync(true)
-				await addNewPlaybackInstance(soundObject)
+				await addNewPlaybackInstance("sound", soundObject)
 				await soundObject.playAsync()
 				.catch(error => {
 					logger.log(error);

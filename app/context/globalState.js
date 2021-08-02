@@ -1,36 +1,46 @@
 import React from 'react';
 import playbackInstanceContext from './context';
 
+function get(object, key, default_value) {
+  var result = object[key];
+  return (typeof result !== "undefined") ? result : default_value;
+}
+
 export default class GlobalState extends React.Component{
 state = {
-  playbackInstances: [],
+  playbackInstances: {},
 }
  
-addNewTask = (task) => {
-  const list = this.state.playbackInstances;
-  list.push(task);
-  this.setState({playbackInstances: list});
-};
-
-removeTask = (taskId) => {
-  this.setState(this.state.playbackInstances.splice(taskId,1));
-};
 
 
-addNewPlaybackInstance = async (playbackInstance) => {
+addNewPlaybackInstance = async (key, playbackInstance) => {
   console.log("start addNewPlaybackInstance")
-  const list = this.state.playbackInstances;
+  const playbackInstancesDict = this.state.playbackInstances;
+  //const list = playbackInstancesDict[key]
+  const list = get(playbackInstancesDict, key, []);
+  console.log(key)
+  console.log(Object.keys(playbackInstancesDict).length)
+  console.log(list.length)
   list.push(playbackInstance);
-  this.setState({playbackInstances: list});
+  console.log(list.length)
+  // do i need to put list back or is it good?
+  playbackInstancesDict[key] = list
+  this.setState({playbackInstances: playbackInstancesDict});
   console.log("end addNewPlaybackInstance")
 };
 
-removePlaybackInstance = (playbackInstance) => {
+removePlaybackInstance = (key, playbackInstance) => {
   console.log("start removePlaybackInstance")
-  const list = this.state.playbackInstances;
+  const playbackInstancesDict = this.state.playbackInstances;
+  const list = get(playbackInstancesDict, key, []);
+  console.log(key)
+  console.log(Object.keys(playbackInstancesDict).length)
+  console.log(list.length)
   var index = list.indexOf(playbackInstance);
   list.splice(index, 1);
-  this.setState({playbackInstances: list});
+    // do i need to put list back or is it good?
+  playbackInstancesDict[key] = list
+  this.setState({playbackInstances: playbackInstancesDict});
   console.log("end removePlaybackInstance")
 };
 
@@ -38,11 +48,17 @@ stopAllPlaybackInstances = () => {
   console.log("stopAllPlaybackInstances");
   // iterate and stop all audio properly unmount or whatever.
   // make sure play buttons look right, resume appropriately.
-  const list = this.state.playbackInstances;
-  console.log(list);
+  const dict = this.state.playbackInstances;
+  for (var key in dict){
+    const list = dict[key]
+    console.log(key);
+    for (const sounditem of list){
+      console.log("remove from list and stop/pause/unmount as appripriate");
+    }
+  }
   // i can see the print statements but objects reamain. don't know if this is bc list isn't getting updated
   // or if just not getting re rendered.
-  this.setState({playbackInstances: []});
+  this.setState({playbackInstances: {}});
 };
 
 render(){

@@ -82,7 +82,7 @@ export default class MainScreen extends React.Component {
 	
 				playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
 				await playbackInstance.loadAsync(source, status, false)
-				await addNewPlaybackInstance(playbackInstance)
+				await addNewPlaybackInstance("song", playbackInstance)
 				this.setState({
 					currentIndex,
 					playbackInstance
@@ -120,7 +120,7 @@ export default class MainScreen extends React.Component {
 
 		if (playbackInstance) {
 		    var removePlaybackInstance = this.context.removePlaybackInstance
-			removePlaybackInstance(playbackInstance)
+			removePlaybackInstance("song",playbackInstance)
 		    await playbackInstance.unloadAsync()
 		}
 
