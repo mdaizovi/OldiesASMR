@@ -6,107 +6,107 @@ function AppSoundComponent() {
 
 	var Soundlist = [
 		{
-			name: "you're at the beach",
+			title: "you're at the beach",
 			soundFile: require('../assets/audio/sounds/beach.mp3'),
 		},
 		{
-			name: 'birds are chirping',
+			title: 'birds are chirping',
 			soundFile: require('../assets/audio/sounds/birds.mp3'),
 		},
 		{
-			name: "you're on a boat",
+			title: "you're on a boat",
 			soundFile: require('../assets/audio/sounds/boat.mp3'),
 		},
 		{
-			name: "you're camping",
+			title: "you're camping",
 			soundFile: require('../assets/audio/sounds/camping.mp3'),
 		},	
 		{
-			name: 'a cat is purring',
+			title: 'a cat is purring',
 			soundFile: require('../assets/audio/sounds/cat.mp3'),
 		},
 		{	
-			name: 'a clock is ticking',
+			title: 'a clock is ticking',
 			soundFile: require('../assets/audio/sounds/clock.mp3'),
 		},
 		{
-			name: "there are crickets",
+			title: "there are crickets",
 			soundFile: require('../assets/audio/sounds/crickets.mp3'),
 		},
 		{
-			name: "you're on a farm",
+			title: "you're on a farm",
 			soundFile: require('../assets/audio/sounds/farm.mp3'),
 		},		
 		{
-			name: "you're in a field",
+			title: "you're in a field",
 			soundFile: require('../assets/audio/sounds/field.mp3'),
 		},
 		{
-			name: "there's a fire",
+			title: "there's a fire",
 			soundFile: require('../assets/audio/sounds/fire.mp3'),
 		},		
 		{
-			name: "there are frogs",
+			title: "there are frogs",
 			soundFile: require('../assets/audio/sounds/frogs.mp3'),
 		},	
 		{	
-			name: 'a hammock is swinging',
+			title: 'a hammock is swinging',
 			soundFile: require('../assets/audio/sounds/hammock.mp3'),
 		},
 		{	
-			name: "you're at a lake",
+			title: "you're at a lake",
 			soundFile: require('../assets/audio/sounds/lake.mp3'),
 		},
 		{	
-			name: "it's raining with thunder",
+			title: "it's raining with thunder",
 			soundFile: require('../assets/audio/sounds/rainWithThunder.mp3'),
 		},
 		{	
-			name: "it's raining and windy",
+			title: "it's raining and windy",
 			soundFile: require('../assets/audio/sounds/rainWind.mp3'),
 		},
 		// {	
-		// 	name: 'a vinyl record is playing',
+		// 	title: 'a vinyl record is playing',
 		// 	soundFile: require('../assets/audio/sounds/vinyl.mp3'),
 		// },
 		{	
-			name: "roller skates are sliding on a rail",
+			title: "roller skates are sliding on a rail",
 			soundFile: require('../assets/audio/sounds/slidingRail.mp3'),
 		},
 		{	
-			name: "you're skating over bricks",
+			title: "you're skating over bricks",
 			soundFile: require('../assets/audio/sounds/skateBricks.mp3'),
 		},
 		{	
-			name: "you're skating a concrete bowl",
+			title: "you're skating a concrete bowl",
 			soundFile: require('../assets/audio/sounds/skatingConcreteBowl.mp3'),
 		},
 		{	
-			name: "you're skating a wooden halfpipe",
+			title: "you're skating a wooden halfpipe",
 			soundFile: require('../assets/audio/sounds/skateHalfpipeWood.mp3'),
 		},
 		{	
-			name: "people are skateboarding at a park",
+			title: "people are skateboarding at a park",
 			soundFile: require('../assets/audio/sounds/skateboard.mp3'),
 		},
 		{	
-			name: "people are skateboarding indoors",
+			title: "people are skateboarding indoors",
 			soundFile: require('../assets/audio/sounds/skateboardICC.mp3'),
 		},
 		{	
-			name: "you're on a train",
+			title: "you're on a train",
 			soundFile: require('../assets/audio/sounds/train.mp3'),
 		},
 		{	
-			name: 'water is flowing',
+			title: 'water is flowing',
 			soundFile: require('../assets/audio/sounds/water.mp3'),
 		},
 		{	
-			name: 'waves are crashing',
+			title: 'waves are crashing',
 			soundFile: require('../assets/audio/sounds/waves.mp3'),
 		},
 		{	
-			name: 'wheels are rolling',
+			title: 'wheels are rolling',
 			soundFile: require('../assets/audio/sounds/wheels.mp3'),
 		},
 	]
@@ -115,7 +115,7 @@ function AppSoundComponent() {
 			<ScrollView contentContainerStyle={{flexGrow:1, paddingBottom:100}}>
 				{Soundlist.map((soundInfo) => {
 					return (
-						<AppSoundItem key={soundInfo.name} arrayObj={soundInfo}/>
+						<AppSoundItem key={soundInfo.title} arrayObj={soundInfo}/>
 					);
 				})}
 			</ScrollView>

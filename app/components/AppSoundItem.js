@@ -1,4 +1,4 @@
-import React, { Component, Componen, useContext, useEffect, useState  } from "react";
+import React, { Component, useContext, useEffect, useState  } from "react";
 import { StyleSheet, Text, TouchableOpacity, View,  Dimensions} from "react-native";
 import colors from "../config/colors";
 import { Platform } from 'react-native';
@@ -28,9 +28,6 @@ export default class AppSoundItem extends Component {
 		var addNewPlaybackInstance = this.context.addNewPlaybackInstance
 		var removePlaybackInstance = this.context.removePlaybackInstance
 
-		console.log("handlePlaySound playbackInstances len:")
-		console.log(playbackInstances.length)
-
 		try {
 			if (isLoaded === false) {
 				await soundObject.loadAsync(arrayObj.soundFile)
@@ -44,19 +41,19 @@ export default class AppSoundItem extends Component {
 			}
 
 			if (isPlaying === true) {
+				removePlaybackInstance(soundObject)
 				await soundObject.pauseAsync()
 				.catch(error => {
 					logger.log(error);
 				})
-				removePlaybackInstance(soundObject)
 				this.setState({
 					isPlaying : false
 				}) 
 				
 			}  else {
 				soundObject.setIsLoopingAsync(true)
-				await soundObject.playAsync()
 				await addNewPlaybackInstance(soundObject)
+				await soundObject.playAsync()
 				.catch(error => {
 					logger.log(error);
 				})
@@ -100,11 +97,11 @@ export default class AppSoundItem extends Component {
 					>
 					{this.state.isPlaying ? (
 					<>
-					<Text style={[styles.buttonText, styles.buttonTextActive]}>{this.props.arrayObj.name}</Text>
+					<Text style={[styles.buttonText, styles.buttonTextActive]}>{this.props.arrayObj.title}</Text>
 					</>
 					) : (
 						<>
-						<Text style={[styles.buttonText, styles.buttonTextInactive]}>{this.props.arrayObj.name}</Text>
+						<Text style={[styles.buttonText, styles.buttonTextInactive]}>{this.props.arrayObj.title}</Text>
 						</>
 					)}
 				</TouchableOpacity>

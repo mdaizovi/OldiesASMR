@@ -10,6 +10,8 @@ import colors from "../config/colors";
 import settings from "../config/settings";
 import TextTicker from 'react-native-text-ticker'
 import logger from '../utilities/logger';  
+import playbackInstanceContext from '../context/context';
+
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
@@ -25,7 +27,7 @@ export default class MainScreen extends React.Component {
 		masterPlaylist:null,
 		playListFetchError:null
 	}
-
+	static contextType = playbackInstanceContext;
 
 	async componentDidMount() {
 		try {
@@ -51,6 +53,10 @@ export default class MainScreen extends React.Component {
 	async loadAudio() {
 		const { masterPlaylist, playbackInstance, isPlaying, volume } = this.state
 		var currentIndex = this.state.currentIndex
+
+		var playbackInstances = this.context.playbackInstances
+		var addNewPlaybackInstance = this.context.addNewPlaybackInstance
+
 		if (playbackInstance) {
 			await playbackInstance.unloadAsync()
 			var nextIndex = this.state.currentIndex + 1
@@ -76,7 +82,7 @@ export default class MainScreen extends React.Component {
 	
 				playbackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
 				await playbackInstance.loadAsync(source, status, false)
-				
+				await addNewPlaybackInstance(playbackInstance)
 				this.setState({
 					currentIndex,
 					playbackInstance
@@ -113,7 +119,9 @@ export default class MainScreen extends React.Component {
 		this.noteSkippedSong(song_id);  // do i need to await ?
 
 		if (playbackInstance) {
-		  await playbackInstance.unloadAsync()
+		    var removePlaybackInstance = this.context.removePlaybackInstance
+			removePlaybackInstance(playbackInstance)
+		    await playbackInstance.unloadAsync()
 		}
 
 		if (currentIndex === masterPlaylist.length - 1) {
