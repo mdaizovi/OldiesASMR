@@ -12,15 +12,6 @@ var deviceWidth = Dimensions.get('window').width; //full width
 export default class AppSoundItem extends Component {
 	state = {isLoaded: false, isPlaying: false, volume: 0.25, soundObject: new Audio.Sound()};
 	static contextType = playbackInstanceContext;
-	
-	// addNewPlaybackInstance = playbackInstance => {
-	// 	const playbackInstances = [...this.state.playbackInstances];
-	// 	console.log("playbackInstances 1")
-	// 	console.log(playbackInstances)
-
-	// 	console.log("playbackInstances 2")
-	// 	console.log(playbackInstances)
-	//   };
 
 	handlePlaySound = async arrayObj => {
 		let { isLoaded, volume, isPlaying, soundObject } = this.state

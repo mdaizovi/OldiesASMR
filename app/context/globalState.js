@@ -8,6 +8,8 @@ function get(object, key, default_value) {
 
 export default class GlobalState extends React.Component{
 state = {
+  songState: {isPlaying: false, isLoading:true, playbackInstance: null},
+  soundsStates:{},// key is str of sound title, then dict of states 
   playbackInstances: {},
 }
  
@@ -18,10 +20,8 @@ addNewPlaybackInstance = async (key, playbackInstance) => {
   const playbackInstancesDict = this.state.playbackInstances;
   //const list = playbackInstancesDict[key]
   const list = get(playbackInstancesDict, key, []);
-  console.log(key)
-  console.log(Object.keys(playbackInstancesDict).length)
-  console.log(list.length)
   list.push(playbackInstance);
+  console.log(key)
   console.log(list.length)
   // do i need to put list back or is it good?
   playbackInstancesDict[key] = list
@@ -33,13 +33,11 @@ removePlaybackInstance = (key, playbackInstance) => {
   console.log("start removePlaybackInstance")
   const playbackInstancesDict = this.state.playbackInstances;
   const list = get(playbackInstancesDict, key, []);
-  console.log(key)
-  console.log(Object.keys(playbackInstancesDict).length)
-  console.log(list.length)
   var index = list.indexOf(playbackInstance);
   list.splice(index, 1);
-    // do i need to put list back or is it good?
   playbackInstancesDict[key] = list
+  console.log(key)
+  console.log(list.length)
   this.setState({playbackInstances: playbackInstancesDict});
   console.log("end removePlaybackInstance")
 };
@@ -54,6 +52,12 @@ stopAllPlaybackInstances = () => {
     console.log(key);
     for (const sounditem of list){
       console.log("remove from list and stop/pause/unmount as appripriate");
+      // sounds:
+      //
+
+      // songs:
+      // basically all of the state stuff in main screen needs to be accessible.
+      //
     }
   }
   // i can see the print statements but objects reamain. don't know if this is bc list isn't getting updated

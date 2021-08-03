@@ -34,7 +34,7 @@ export default class AppStopButton extends React.Component {
       {this.state.isPlaying ? (
         <Ionicons name='ios-stop-circle' size={48} color={colors.active} />
       ) : (
-        <Ionicons name='ios-stop-circle' size={48} color={colors.active} />
+        <Ionicons name='ios-stop-circle' size={48} color={colors.inactive} />
       )}
     </TouchableOpacity>
     );
