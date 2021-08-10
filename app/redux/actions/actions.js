@@ -9,6 +9,8 @@ export const GET_MOVIES = 'GET_MOVIES';
 export const ADD_FAVORITE_ITEM = 'ADD_FAVORITE_ITEM';
 export const REMOVE_FAVORITE_ITEM = 'REMOVE_FAVORITE_ITEM';
 
+export const STOP_ALL_AUDIO = 'STOP_ALL_AUDIO';
+
 export const getMovies = () => {
     try {
       return async dispatch => {
@@ -38,5 +40,12 @@ export const getMovies = () => {
     dispatch({
       type: REMOVE_FAVORITE_ITEM,
       payload: movie,
+    });
+  };
+
+  export const stopAllAudio = () => dispatch => {
+    dispatch({
+      type: STOP_ALL_AUDIO,
+      payload: false,
     });
   };

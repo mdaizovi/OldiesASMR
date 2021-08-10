@@ -27,7 +27,14 @@ class OptionsScreen extends Component {
   
   render() {
     return (
+      
       <View style={styles.container}>
+
+      <View style={styles.OptionsSegment}>
+        <AppStopButton
+          isPlaying={true}
+        />
+        </View>
 
       <View style={styles.OptionsSegment}>
         <TouchableOpacity
