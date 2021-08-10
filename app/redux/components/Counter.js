@@ -1,51 +1,59 @@
 import React, { Fragment, Component } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   View,
-  Button,
-  Text
+  Text,
+  TouchableOpacity,
+  TextInput
 } from 'react-native';
+import { connect } from 'react-redux';
+import colors from "../../config/colors";
 
+const SimpleCounter = (props) => {
 
-export default class AppCounter extends Component {
-  state = { count: 0 };
-  decrementCount() {
-    let { count } = this.state;
-    count--;
-    this.setState({
-      count
-    })
-  }
-  incrementCount() {
-    let { count } = this.state;
-    count++;
-    this.setState({
-      count
-    })
-  }
-  render() {
-    const { count } = this.state;
+  const increment = () => {
+    props.dispatch(incrementAction());
+  };
+
+  const decrement = () => {
+    props.dispatch(decrementAction());
+  };
+
+  const handleInputChange = (event) => {
+    props.dispatch(changeByAmount(event.nativeEvent.text));
+  };
+
     return (
-      <View styles={styles.container}>
-        <Button
-          title="increment"
-          onPress={() => this.incrementCount()}
-        />
-        <Text>{count}</Text>
-        <Button
-          title="decrement"
-          onPress={() => this.decrementCount()}
-        />
-      </View>
-    );
-  }
-};
+      <View style={styles.container}>
+        <Text>Counter: {props.amount}</Text>
+        <View style = {styles.floatingView}>
+          <TouchableOpacity style ={styles.floatingButton}
+            onPress={increment}>
+            <Text>+</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style ={styles.floatingButton}
+          onPress={decrement}>
+            <Text>-</Text>
+          </TouchableOpacity>
+        </View>
+        <TextInput onSubmitEditing = {handleInputChange} keyboardType = 'numeric' placeholder= "change amount"/> 
+      </View>)
+    }
 
 const styles = StyleSheet.create({
+  floatingView: {},
+  floatingButton: {},
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    backgroundColor: colors.darkGrey,
+    paddingHorizontal:20,
+    width:'100%',
+  },
 });
+
+//export default SimpleCounter;
+const mapStateToProps = (state, props) => {
+  return { amount: state.counter.amount };
+}
+export default connect(mapStateToProps)(SimpleCounter);

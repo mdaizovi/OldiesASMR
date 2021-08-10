@@ -3,8 +3,13 @@ import colors from "../config/colors";
 import React, { Component, Section } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import AppStopButton from "../components/AppStopButton";
-import AppCounter from "../redux/components/Counter";
+import SimpleCounter from "../redux/components/Counter";
 import TimePicker from "../../submodules/react-native-super-timepicker";
+import { Provider } from 'react-redux';
+import configureStore from "../redux/store/store";
+
+
+const store = configureStore()
 
 class OptionsScreen extends Component {
 
@@ -31,8 +36,11 @@ class OptionsScreen extends Component {
       <View style={styles.OptionsSegment}>
 
       <View style={styles.OptionsSegment}>
-        <AppCounter/>
+      <Provider store={store}>
+        <SimpleCounter />
+      </Provider>)        
       </View>
+
 
       {/* <View style={styles.OptionsSegment}>
         <AppStopButton/>
