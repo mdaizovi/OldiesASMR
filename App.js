@@ -7,7 +7,12 @@ import { Ionicons } from '@expo/vector-icons';
 import MainScreen from './app/screens/AppMainScreen';  
 import AboutScreen from './app/screens/AppAboutScreen';  
 import OptionsScreen from './app/screens/AppOptionsScreen';  
+import MoviesScreen from './app/screens/AppMoviesScreen';  
+import FavoritesScreen from './app/screens/AppFavoritesScreen';  
 import logger from './app/utilities/logger';  
+import { Provider } from 'react-redux';
+import {store} from "./app/redux/store/store";
+
 
 logger.start();
 
@@ -23,6 +28,7 @@ export default function App() {
 // 	stopAudio: false,
 // }
 	return (
+	<Provider store={store}>
 	  <NavigationContainer>
 		<Tab.Navigator
 		  initialRouteName="Home"
@@ -39,7 +45,12 @@ export default function App() {
 				iconName = focused ? 'information' : 'information-outline';
 			  } else if (route.name === 'Options') {
 				iconName = focused ? 'options' : 'options-outline';
+			  } else if (route.name === 'Movies') {
+				iconName ='movie-filter';
+			  } else if (route.name === 'Favorites') {
+				iconName ='favorite';
 			  }
+
 			  return <Ionicons name={iconName} size={size} color={color} />;
 			},
 		  })}
@@ -51,7 +62,11 @@ export default function App() {
 		  <Tab.Screen name="About" component={AboutScreen} />
 		  <Tab.Screen name="Home" component={MainScreen} />
 		  <Tab.Screen name="Options" component={OptionsScreen} />
+		  <Tab.Screen name="Movies" component={MoviesScreen} />
+		  <Tab.Screen name="Favorites" component={FavoritesScreen} />
+
 		</Tab.Navigator>
 	  </NavigationContainer>
+	  </Provider>
 	);
   }

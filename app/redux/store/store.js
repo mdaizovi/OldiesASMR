@@ -1,9 +1,8 @@
-import { createStore, combineReducers } from 'redux';
-import simpleCounterReducer from "../reducers/reducer"
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import thunk from 'redux-thunk';
+import moviesReducer from '../reducers/reducer';
 
-//export default createStore(simpleCounterReducer)
-
-const configureStore = () => {
-    return createStore(simpleCounterReducer);
-    }
-export default configureStore;
+const rootReducer = combineReducers({
+  moviesReducer,
+});
+export const store = createStore(rootReducer, applyMiddleware(thunk));

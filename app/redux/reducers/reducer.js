@@ -1,23 +1,25 @@
-const initialState = {
-    counter: { amount: 0 },
-}
+import {GET_MOVIES, ADD_FAVORITE_ITEM, REMOVE_FAVORITE_ITEM} from '../actions/actions';
 
-export default simpleCounterReducer = (state = initialState, action) => {
+const initialState = {
+  movies: [],
+  favorites: [],
+};
+
+function moviesReducer(state = initialState, action) {
     switch (action.type) {
-        case INCREMENT:
-            return { 
-                ...state, counter: { amount: state.counter.amount + 1 }
-            };
-        case DECREMENT:
-            return { 
-                ...state, counter: { amount: state.counter.amount - 1 }
-            };
-        case CHANGE_BY_AMOUNT:
-            return { 
-                ...state, 
-                counter: { amount: state.counter.amount + action.payload } 
-            };
-        default:
-            return state;
+      case GET_MOVIES:
+        return {...state, movies: action.payload};
+      case ADD_FAVORITE_ITEM:
+        return {...state, favorites: [...state.favorites, action.payload]};
+      case REMOVE_FAVORITE_ITEM:
+        return {
+          ...state,
+          favorites: state.favorites.filter(
+            movie => movie.id !== action.payload.id,
+          ),
+        };
+      default:
+        return state;
     }
-}
+  }
+export default moviesReducer;
