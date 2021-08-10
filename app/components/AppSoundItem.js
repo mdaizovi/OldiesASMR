@@ -13,7 +13,12 @@ export default class AppSoundItem extends Component {
 
 	handlePlaySound = async arrayObj => {
 		let { isLoaded, volume, isPlaying, soundObject } = this.state
-
+		// audioShouldPlay = ??? need to get from store.
+		// if (audioShouldPlay === false) {
+		// 	this.setState({
+		// 		audioShouldPlay : true
+		// 	}) 
+		// }
 		try {
 			if (isLoaded === false) {
 				await soundObject.loadAsync(arrayObj.soundFile)

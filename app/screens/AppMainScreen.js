@@ -16,9 +16,9 @@ var deviceWidth = Dimensions.get('window').width; //full width
 export default class MainScreen extends React.Component {
 	state = {
 		songIsPlaying: false,
-		songisLoading:true,
-		songplaybackInstance: null,
-
+		songIsLoading:true,
+		songPlaybackInstance: null,
+		audioShouldPlay:false,
 		currentIndex: 0,
 		volume: 0.75,
 		isBuffering: false,
@@ -48,11 +48,11 @@ export default class MainScreen extends React.Component {
 
 
 	async loadAudio() {
-		const { masterPlaylist, songplaybackInstance, songIsPlaying, volume } = this.state
+		const { masterPlaylist, songPlaybackInstance, songIsPlaying, volume } = this.state
 		var currentIndex = this.state.currentIndex
 
-		if (songplaybackInstance) {
-			await songplaybackInstance.unloadAsync()
+		if (songPlaybackInstance) {
+			await songPlaybackInstance.unloadAsync()
 			var nextIndex = this.state.currentIndex + 1
 			currentIndex = nextIndex
 		}
@@ -65,20 +65,20 @@ export default class MainScreen extends React.Component {
 		const {playListFetchError} = this.state
 		if (playListFetchError === false && playlist.length > 0) {
 			try {
-				const songplaybackInstance = new Audio.Sound()
+				const songPlaybackInstance = new Audio.Sound()
 				const source = {
 					uri: playlist[currentIndex].streaming_url
 				  }
 				const status = {
-					shouldPlay: songIsPlaying,
+					shouldImageLoop: songIsPlaying,
 					volume: volume
 				}
 	
-				songplaybackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
-				await songplaybackInstance.loadAsync(source, status, false)
+				songPlaybackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
+				await songPlaybackInstance.loadAsync(source, status, false)
 				this.setState({
 					currentIndex,
-					songplaybackInstance
+					songPlaybackInstance
 				})
 			} catch (e) {
 			}
@@ -86,33 +86,47 @@ export default class MainScreen extends React.Component {
 	}
 
 	  onPlaybackStatusUpdate = status => {
+		let { songPlaybackInstance, songIsPlaying, audioShouldPlay } = this.state
 		this.setState({
 			isBuffering: status.isBuffering
 		})
 		didJustFinish = status.didJustFinish
+		
+		// in case of sleep timer or stop button
+		if (audioShouldPlay === false && songIsPlaying === true) {
+			songPlaybackInstance.pauseAsync()
+			this.setState({
+				songIsPlaying: false,
+			})
+		}
 		if (didJustFinish) {
 			this.loadAudio()
 		  }
 	}
 
 	handlePlayPause = async () => {
-		let { songIsPlaying, songplaybackInstance } = this.state
-		songIsPlaying ? await songplaybackInstance.pauseAsync() : await songplaybackInstance.playAsync()
+		let { songIsPlaying, songPlaybackInstance, audioShouldPlay } = this.state
+		songIsPlaying ? await songPlaybackInstance.pauseAsync() : await songPlaybackInstance.playAsync()
+		if (audioShouldPlay === false) {
+			audioShouldPlay = true;
+		}
+
 		this.setState({
-			songIsPlaying: !songIsPlaying
+			songIsPlaying: !songIsPlaying,
+			audioShouldPlay: audioShouldPlay
 		})
 
 	}
 
 	handleNextTrack = async () => {
-		let { masterPlaylist, songplaybackInstance, currentIndex } = this.state
+		let { masterPlaylist, songPlaybackInstance, currentIndex } = this.state
 
 		let song_id = masterPlaylist[currentIndex].id;
 		//await this.noteSkippedSong(song_id); 
 		this.noteSkippedSong(song_id);  // do i need to await ?
 
-		if (songplaybackInstance) {
-		    await songplaybackInstance.unloadAsync()
+		if (songPlaybackInstance) {
+		    await songPlaybackInstance.unloadAsync()
 		}
 
 		if (currentIndex === masterPlaylist.length - 1) {
@@ -127,12 +141,12 @@ export default class MainScreen extends React.Component {
 	  }
 
 	handleSongVolume = async (value) => {
-		const { songIsPlaying, songplaybackInstance } = this.state
+		const { songIsPlaying, songPlaybackInstance } = this.state
 		this.setState({
 			volume: value
 		})
-		if (songplaybackInstance != null) {
-			songplaybackInstance.setStatusAsync({ volume: value })
+		if (songPlaybackInstance != null) {
+			songPlaybackInstance.setStatusAsync({ volume: value })
 		}
 	}
 
@@ -144,7 +158,7 @@ export default class MainScreen extends React.Component {
 			if (response.status===200) {
 				let json = await response.json();
 				this.setState({
-					songisLoading: false,
+					songIsLoading: false,
 					masterPlaylist: json,
 					playListFetchError: false
 				})
@@ -152,7 +166,7 @@ export default class MainScreen extends React.Component {
 			} else {
 				this.setState({
 					playListFetchError: true,
-					songisLoading: false,
+					songIsLoading: false,
 				})
 				return [];
 			}
@@ -186,8 +200,8 @@ export default class MainScreen extends React.Component {
 
 		return (	
 			<Screen style={styles.container}>
-			{this.state.songisLoading ? (
-				<ActivityIndicator animating={this.state.songisLoading} size="large"/>
+			{this.state.songIsLoading ? (
+				<ActivityIndicator animating={this.state.songIsLoading} size="large"/>
 			) : (
 				<>
 				{this.state.playListFetchError ? (
@@ -202,7 +216,7 @@ export default class MainScreen extends React.Component {
 							<Video
 								source={require('../assets/video/RecordLoop.mp4')}
 								resizeMode="cover"
-								shouldPlay
+								shouldImageLoop
 								isLooping
 								style={styles.recordBackground}
 							/>
@@ -234,10 +248,10 @@ export default class MainScreen extends React.Component {
 								https://stackoverflow.com/a/56883227
 								*/}
 						
-								{this.state.songplaybackInstance  ? (
+								{this.state.songPlaybackInstance  ? (
 									<AppPlayPauseButton onPress={this.handlePlayPause} songIsPlaying={this.state.songIsPlaying}/>
 									) : (
-									<ActivityIndicator animating={!this.state.songplaybackInstance} color={colors.white} size="large"/>
+									<ActivityIndicator animating={!this.state.songPlaybackInstance} color={colors.white} size="large"/>
 									)}
 			
 								{this.state.songIsPlaying ? (
