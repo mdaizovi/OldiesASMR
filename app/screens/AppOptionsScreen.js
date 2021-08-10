@@ -3,10 +3,10 @@ import colors from "../config/colors";
 import React, { Component, Section } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import AppStopButton from "../components/AppStopButton";
+import AppCounter from "../redux/components/Counter";
 import TimePicker from "../../submodules/react-native-super-timepicker";
 
 class OptionsScreen extends Component {
-  static contextType = playbackInstanceContext;
 
   constructor() {
     super();
@@ -31,9 +31,13 @@ class OptionsScreen extends Component {
       <View style={styles.OptionsSegment}>
 
       <View style={styles.OptionsSegment}>
+        <AppCounter/>
+      </View>
+
+      {/* <View style={styles.OptionsSegment}>
         <AppStopButton/>
         <Text style={styles.buttonText}>Stop Audio</Text>
-      </View>
+      </View> */}
       
       </View>
 

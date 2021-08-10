@@ -5,19 +5,14 @@ import { Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Audio } from 'expo-av'
 import logger from '../utilities/logger';  
-import playbackInstanceContext from '../context/context';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default class AppSoundItem extends Component {
 	state = {isLoaded: false, isPlaying: false, volume: 0.25, soundObject: new Audio.Sound()};
-	static contextType = playbackInstanceContext;
 
 	handlePlaySound = async arrayObj => {
 		let { isLoaded, volume, isPlaying, soundObject } = this.state
-		var playbackInstances = this.context.playbackInstances
-		var addNewPlaybackInstance = this.context.addNewPlaybackInstance
-		var removePlaybackInstance = this.context.removePlaybackInstance
 
 		try {
 			if (isLoaded === false) {
@@ -32,7 +27,6 @@ export default class AppSoundItem extends Component {
 			}
 
 			if (isPlaying === true) {
-				removePlaybackInstance("sound", soundObject)
 				await soundObject.pauseAsync()
 				.catch(error => {
 					logger.log(error);
@@ -43,7 +37,6 @@ export default class AppSoundItem extends Component {
 				
 			}  else {
 				soundObject.setIsLoopingAsync(true)
-				await addNewPlaybackInstance("sound", soundObject)
 				await soundObject.playAsync()
 				.catch(error => {
 					logger.log(error);
