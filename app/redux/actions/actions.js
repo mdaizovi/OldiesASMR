@@ -43,9 +43,17 @@ export const getMovies = () => {
     });
   };
 
-  export const stopAllAudio = () => dispatch => {
-    dispatch({
+  // is dispatch just for async?
+  // export const stopAllAudio = () => dispatch => {
+  //   dispatch({
+  //     type: STOP_ALL_AUDIO,
+  //     payload: false,
+  //   });
+  // };
+  export const stopAllAudio = () => {
+    return{
       type: STOP_ALL_AUDIO,
-      payload: false,
-    });
+      //payload is optional
+      payload: true,
+    };
   };

@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, ActivityIndicator, Button, Text, View, Image,  Dimensions } from 'react-native'
 import { Audio, Video } from 'expo-av'
+import {useSelector, useDispatch, connect} from 'react-redux';
 import Slider from '@react-native-community/slider';
 import Screen from "../components/Screen";
 import AppPlayerButton from "../components/AppPlayerButton";
@@ -10,15 +11,18 @@ import colors from "../config/colors";
 import settings from "../config/settings";
 import TextTicker from 'react-native-text-ticker'
 import logger from '../utilities/logger';  
+import stopAllAudio from '../redux/actions/actions';
+
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
-export default class MainScreen extends React.Component {
+class MainScreen extends React.Component {
 	state = {
 		songIsPlaying: false,
 		songIsLoading:true,
 		songPlaybackInstance: null,
 		audioShouldPlay:false,
+		audioHasBeenStopped: false,
 		currentIndex: 0,
 		volume: 0.75,
 		isBuffering: false,
@@ -70,7 +74,7 @@ export default class MainScreen extends React.Component {
 					uri: playlist[currentIndex].streaming_url
 				  }
 				const status = {
-					shouldImageLoop: songIsPlaying,
+					shouldPlay: songIsPlaying,
 					volume: volume
 				}
 	
@@ -85,15 +89,24 @@ export default class MainScreen extends React.Component {
 		} 
 	}
 
+
 	  onPlaybackStatusUpdate = status => {
-		let { songPlaybackInstance, songIsPlaying, audioShouldPlay } = this.state
+		let { songPlaybackInstance, songIsPlaying, audioHasBeenStopped} = this.state
+		console.log("onPlaybackStatusUpdate");
+		console.log("audioHasBeenStopped:");
+		console.log(audioHasBeenStopped);
+		if (audioHasBeenStopped === true){
+			console.log("---------------TRUE------");
+		}
+
 		this.setState({
 			isBuffering: status.isBuffering
 		})
 		didJustFinish = status.didJustFinish
 		
 		// in case of sleep timer or stop button
-		if (audioShouldPlay === false && songIsPlaying === true) {
+		if (audioHasBeenStopped === true && songIsPlaying === true) {
+			console.log("audio should not play and song is playing");
 			songPlaybackInstance.pauseAsync()
 			this.setState({
 				songIsPlaying: false,
@@ -197,7 +210,7 @@ export default class MainScreen extends React.Component {
 	}
 
 	render() {
-
+		
 		return (	
 			<Screen style={styles.container}>
 			{this.state.songIsLoading ? (
@@ -216,7 +229,7 @@ export default class MainScreen extends React.Component {
 							<Video
 								source={require('../assets/video/RecordLoop.mp4')}
 								resizeMode="cover"
-								shouldImageLoop
+								shouldPlay
 								isLooping
 								style={styles.recordBackground}
 							/>
@@ -293,6 +306,13 @@ export default class MainScreen extends React.Component {
 		)
 	}
 }
+const mapStateToProps = (state) => {
+	return {audioHasBeenStopped: state.audioHasBeenStopped}
+}
+const mapDispatchToProps = {
+	stopAllAudio
+}
+export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)
 
 const styles = StyleSheet.create({
 	container: {
