@@ -1,4 +1,4 @@
-import {STOP_ALL_AUDIO} from '../actions/actions';
+import {AUDIO_STOP_REQUESTED} from '../actions/actions';
 
 
 const initialState = {
@@ -9,7 +9,7 @@ const initialState = {
 // https://medium.com/swlh/a-basic-redux-setup-in-react-react-native-c1670005dd70
 function audioReducer(state = initialState, action) {
     switch (action.type) {
-      case STOP_ALL_AUDIO:
+      case AUDIO_STOP_REQUESTED:
         console.log("action.payload");
         console.log(action.payload);
         return {

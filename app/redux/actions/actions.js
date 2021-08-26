@@ -9,7 +9,7 @@ export const GET_MOVIES = 'GET_MOVIES';
 export const ADD_FAVORITE_ITEM = 'ADD_FAVORITE_ITEM';
 export const REMOVE_FAVORITE_ITEM = 'REMOVE_FAVORITE_ITEM';
 
-export const STOP_ALL_AUDIO = 'STOP_ALL_AUDIO';
+export const AUDIO_STOP_REQUESTED = 'AUDIO_STOP_REQUESTED';
 
 export const getMovies = () => {
     try {
@@ -46,13 +46,13 @@ export const getMovies = () => {
   // is dispatch just for async?
   // export const stopAllAudio = () => dispatch => {
   //   dispatch({
-  //     type: STOP_ALL_AUDIO,
+  //     type: AUDIO_STOP_REQUESTED,
   //     payload: false,
   //   });
   // };
   export const stopAllAudio = () => {
     return{
-      type: STOP_ALL_AUDIO,
+      type: AUDIO_STOP_REQUESTED,
       //payload is optional
       payload: true,
     };
