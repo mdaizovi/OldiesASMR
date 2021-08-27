@@ -16,13 +16,11 @@ import stopAllAudio from '../redux/actions/actions';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
-class MainScreen extends React.Component {
+export default class MainScreen extends React.Component {
 	state = {
 		songIsPlaying: false,
 		songIsLoading:true,
 		songPlaybackInstance: null,
-		audioShouldPlay:false,
-		audioHasBeenStopped: false,
 		currentIndex: 0,
 		volume: 0.75,
 		isBuffering: false,
@@ -91,42 +89,31 @@ class MainScreen extends React.Component {
 
 
 	  onPlaybackStatusUpdate = status => {
-		let { songPlaybackInstance, songIsPlaying,audioHasBeenStopped} = this.state
-		console.log("onPlaybackStatusUpdate");
-		console.log("audioHasBeenStopped:");
-		console.log(audioHasBeenStopped);
-		if (audioHasBeenStopped === true){
-			console.log("---------------TRUE------");
-		}
+		let { songPlaybackInstance, songIsPlaying} = this.state
 
 		this.setState({
 			isBuffering: status.isBuffering
 		})
 		didJustFinish = status.didJustFinish
 		
-		// in case of sleep timer or stop button
-		if (audioHasBeenStopped === true && songIsPlaying === true) {
-			console.log("audio should not play and song is playing");
-			songPlaybackInstance.pauseAsync()
-			this.setState({
-				songIsPlaying: false,
-			})
-		}
+		// // in case of sleep timer or stop button
+		// if (audioHasBeenStopped === true && songIsPlaying === true) {
+		// 	console.log("audio should not play and song is playing");
+		// 	songPlaybackInstance.pauseAsync()
+		// 	this.setState({
+		// 		songIsPlaying: false,
+		// 	})
+		// }
 		if (didJustFinish) {
 			this.loadAudio()
 		  }
 	}
 
 	handlePlayPause = async () => {
-		let { songIsPlaying, songPlaybackInstance, audioShouldPlay } = this.state
+		let { songIsPlaying, songPlaybackInstance} = this.state
 		songIsPlaying ? await songPlaybackInstance.pauseAsync() : await songPlaybackInstance.playAsync()
-		if (audioShouldPlay === false) {
-			audioShouldPlay = true;
-		}
-
 		this.setState({
 			songIsPlaying: !songIsPlaying,
-			audioShouldPlay: audioShouldPlay
 		})
 
 	}
@@ -306,13 +293,6 @@ class MainScreen extends React.Component {
 		)
 	}
 }
-const mapStateToProps = (state) => {
-	return {audioHasBeenStopped: state.audioHasBeenStopped}
-}
-const mapDispatchToProps = {
-	stopAllAudio
-}
-export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)
 
 const styles = StyleSheet.create({
 	container: {
