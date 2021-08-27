@@ -1,32 +1,30 @@
 import React from 'react'
 import { StyleSheet, ActivityIndicator, Button, Text, View, Image,  Dimensions } from 'react-native'
 import { Audio, Video } from 'expo-av'
-import {useSelector, useDispatch, connect} from 'react-redux';
 import Slider from '@react-native-community/slider';
-import Screen from "../components/Screen";
 import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
-import AppSoundComponent from "../components/AppSoundComponent";
-import AppSongComponent from "../components/AppSongComponent";
 import colors from "../config/colors";
 import settings from "../config/settings";
 import TextTicker from 'react-native-text-ticker'
 import logger from '../utilities/logger';  
-import stopAllAudio from '../redux/actions/actionsAudio';
 
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default class MainScreen extends React.Component {
 	state = {
+		// used in main screen
+		playListFetchError:null,
+		masterPlaylist:null,
+		// will need to change to share
+
 		songIsPlaying: false,
-		songIsLoading:true,
 		songPlaybackInstance: null,
+		audioShouldPlay:false,
 		currentIndex: 0,
 		volume: 0.75,
 		isBuffering: false,
-		masterPlaylist:null,
-		playListFetchError:null
 	};
 
 	async componentDidMount() {
@@ -90,31 +88,42 @@ export default class MainScreen extends React.Component {
 
 
 	  onPlaybackStatusUpdate = status => {
-		let { songPlaybackInstance, songIsPlaying} = this.state
+		let { songPlaybackInstance, songIsPlaying, audioHasBeenStopped} = this.state
+		console.log("onPlaybackStatusUpdate");
+		console.log("audioHasBeenStopped:");
+		console.log(audioHasBeenStopped);
+		if (audioHasBeenStopped === true){
+			console.log("---------------TRUE------");
+		}
 
 		this.setState({
 			isBuffering: status.isBuffering
 		})
 		didJustFinish = status.didJustFinish
 		
-		// // in case of sleep timer or stop button
-		// if (audioHasBeenStopped === true && songIsPlaying === true) {
-		// 	console.log("audio should not play and song is playing");
-		// 	songPlaybackInstance.pauseAsync()
-		// 	this.setState({
-		// 		songIsPlaying: false,
-		// 	})
-		// }
+		// in case of sleep timer or stop button
+		if (audioHasBeenStopped === true && songIsPlaying === true) {
+			console.log("audio should not play and song is playing");
+			songPlaybackInstance.pauseAsync()
+			this.setState({
+				songIsPlaying: false,
+			})
+		}
 		if (didJustFinish) {
 			this.loadAudio()
 		  }
 	}
 
 	handlePlayPause = async () => {
-		let { songIsPlaying, songPlaybackInstance} = this.state
+		let { songIsPlaying, songPlaybackInstance, audioShouldPlay } = this.state
 		songIsPlaying ? await songPlaybackInstance.pauseAsync() : await songPlaybackInstance.playAsync()
+		if (audioShouldPlay === false) {
+			audioShouldPlay = true;
+		}
+
 		this.setState({
 			songIsPlaying: !songIsPlaying,
+			audioShouldPlay: audioShouldPlay
 		})
 
 	}
@@ -150,36 +159,6 @@ export default class MainScreen extends React.Component {
 			songPlaybackInstance.setStatusAsync({ volume: value })
 		}
 	}
-
-	loadPlaylist = async () => {
-		try {
-			let response = await fetch(
-				settings.apiUrl
-			);
-			if (response.status===200) {
-				let json = await response.json();
-				this.setState({
-					songIsLoading: false,
-					masterPlaylist: json,
-					playListFetchError: false
-				})
-				return await json;
-			} else {
-				this.setState({
-					playListFetchError: true,
-					songIsLoading: false,
-				})
-				return [];
-			}
-			
-		} catch (error) {
-			this.setState({
-				playListFetchError: true
-				})
-			logger.log(error);
-			return [];
-		}
-	}
 	
 	noteSkippedSong = async (song_id) => {
 		/// Tells BE this song was skipped so we can know which songs everyone hates 
@@ -200,42 +179,85 @@ export default class MainScreen extends React.Component {
 	render() {
 		
 		return (	
-			<Screen style={styles.container}>
-
-
-
-			{this.state.songIsLoading ? (
-				<ActivityIndicator animating={this.state.songIsLoading} size="large"/>
-			) : (
-				<>
-				{this.state.playListFetchError ? (
+			<View>
+				{this.state.songIsPlaying ? (
 					<>
-					<Text style={[styles.errorInfo]}>Couldn't load song playlist. Are you sure you're connected to the internet?</Text>
-					<Button title="Retry" onPress={this.loadPlaylist}/>
-					</>
-					) : (				
-					<AppSongComponent handlePlayPause={handlePlayPause} handleSongVolume={handleSongVolume} handleNextTrack={handleNextTrack}
+					<Video
+						source={require('../assets/video/RecordLoop.mp4')}
+						resizeMode="cover"
+						shouldPlay
+						isLooping
+						style={styles.recordBackground}
 					/>
-				)}
- 			<AppSoundComponent/>
-			</>
-			)}
-			</Screen>
+					<TextTicker
+						style={[styles.trackInfo, styles.trackInfoText]}
+						duration={20000}
+						loop
+					>
+					{this.state.masterPlaylist[this.state.currentIndex].citation_mla}
+					</TextTicker>
+					</>
+							) : (
+								<>
+					<Image
+					style={styles.recordBackground}
+					source={require('../assets/images/record.jpg') }
+						/>
+						<Text style={[styles.trackInfo, styles.trackInfoText]}>
+							{this.state.masterPlaylist[this.state.currentIndex].citation_mla}
+						</Text>
+						</>
+					)}
 
-		)
-	}
+					<View style={styles.controls}>
+									{/* prob the answer to my blinking problem
+						https://stackoverflow.com/a/42348010 
+						or this
+						https://stackoverflow.com/a/56883227
+						*/}
+				
+						{this.state.songPlaybackInstance  ? (
+							<AppPlayPauseButton onPress={this.handlePlayPause} songIsPlaying={this.state.songIsPlaying}/>
+							) : (
+							<ActivityIndicator animating={!this.state.songPlaybackInstance} color={colors.white} size="large"/>
+							)}
+
+						{this.state.songIsPlaying ? (
+									<Slider
+										style={[styles.volumeSlider, styles.songVolumeSlider]}
+										minimumValue={0}
+										maximumValue={1}
+										minimumTrackTintColor={colors.veryLightGrey}
+										maximumTrackTintColor={colors.active}
+										thumbTintColor={colors.active}
+										value={this.state.volume}
+										onValueChange={value => this.handleSongVolume(value)}
+									/>
+								) : (
+									<Slider
+										style={[styles.volumeSlider,styles.songVolumeSlider]}
+										minimumValue={0}
+										maximumValue={1}
+										minimumTrackTintColor={colors.veryDarkGrey}
+										maximumTrackTintColor={colors.inactive}
+										thumbTintColor={colors.inactive}
+										value={this.state.volume}
+										onValueChange={value => this.handleSongVolume(value)}
+								/>
+								)}
+						<AppPlayerButton iconName="navigate-next" onPress={this.handleNextTrack}/>
+
+					</View>
+
+					<View style={styles.separator}>
+					</View>
+					
+					</View>
+		)}
 }
 
+
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: colors.darkGrey,
-		alignItems: 'center',
-    	paddingTop:0,
-		width:'100%',
-		alignSelf:'center'
-		//justifyContent: 'center'
-	},
   	recordBackground: {
 		width:deviceWidth,
 		height:deviceWidth / 1.7778 // ratio of record image.
@@ -279,11 +301,5 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		flexWrap: 'wrap',
 		color: colors.veryLightGrey,
-	},
-	smallText: {
-		//margin: 20,
-		fontSize: 16,
-		color: colors.veryLightGrey,
-		flexWrap: 'wrap'
 	},
 })
