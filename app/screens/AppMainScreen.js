@@ -19,14 +19,9 @@ var deviceWidth = Dimensions.get('window').width; //full width
 
 export default class MainScreen extends React.Component {
 	state = {
-		songIsPlaying: false,
-		songIsLoading:true,
-		songPlaybackInstance: null,
-		currentIndex: 0,
-		volume: 0.75,
-		isBuffering: false,
 		masterPlaylist:null,
-		playListFetchError:null
+		playListFetchError:null,
+		songIsLoading:true,
 	};
 
 	async componentDidMount() {
@@ -46,108 +41,6 @@ export default class MainScreen extends React.Component {
 				await this.loadAudio()
 			} 
 		} catch (e) {
-		}
-	}
-
-
-	async loadAudio() {
-		const { masterPlaylist, songPlaybackInstance, songIsPlaying, volume } = this.state
-		var currentIndex = this.state.currentIndex
-
-		if (songPlaybackInstance) {
-			await songPlaybackInstance.unloadAsync()
-			var nextIndex = this.state.currentIndex + 1
-			currentIndex = nextIndex
-		}
-		if (masterPlaylist === null) {
-			var playlist = await this.loadPlaylist() 
-		} else {
-			var playlist = masterPlaylist 
-		}
-
-		const {playListFetchError} = this.state
-		if (playListFetchError === false && playlist.length > 0) {
-			try {
-				const songPlaybackInstance = new Audio.Sound()
-				const source = {
-					uri: playlist[currentIndex].streaming_url
-				  }
-				const status = {
-					shouldPlay: songIsPlaying,
-					volume: volume
-				}
-	
-				songPlaybackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
-				await songPlaybackInstance.loadAsync(source, status, false)
-				this.setState({
-					currentIndex,
-					songPlaybackInstance
-				})
-			} catch (e) {
-			}
-		} 
-	}
-
-
-	  onPlaybackStatusUpdate = status => {
-		let { songPlaybackInstance, songIsPlaying} = this.state
-
-		this.setState({
-			isBuffering: status.isBuffering
-		})
-		didJustFinish = status.didJustFinish
-		
-		// // in case of sleep timer or stop button
-		// if (audioHasBeenStopped === true && songIsPlaying === true) {
-		// 	console.log("audio should not play and song is playing");
-		// 	songPlaybackInstance.pauseAsync()
-		// 	this.setState({
-		// 		songIsPlaying: false,
-		// 	})
-		// }
-		if (didJustFinish) {
-			this.loadAudio()
-		  }
-	}
-
-	handlePlayPause = async () => {
-		let { songIsPlaying, songPlaybackInstance} = this.state
-		songIsPlaying ? await songPlaybackInstance.pauseAsync() : await songPlaybackInstance.playAsync()
-		this.setState({
-			songIsPlaying: !songIsPlaying,
-		})
-
-	}
-
-	handleNextTrack = async () => {
-		let { masterPlaylist, songPlaybackInstance, currentIndex } = this.state
-
-		let song_id = masterPlaylist[currentIndex].id;
-		//await this.noteSkippedSong(song_id); 
-		this.noteSkippedSong(song_id);  // do i need to await ?
-
-		if (songPlaybackInstance) {
-		    await songPlaybackInstance.unloadAsync()
-		}
-
-		if (currentIndex === masterPlaylist.length - 1) {
-			//start over if currently on the last track of playlist
-			var playlist = await this.loadPlaylist()
-			this.setState({
-				currentIndex: -1,
-				masterPlaylist: playlist
-			})
-		} 
-		this.loadAudio()
-	  }
-
-	handleSongVolume = async (value) => {
-		const { songIsPlaying, songPlaybackInstance } = this.state
-		this.setState({
-			volume: value
-		})
-		if (songPlaybackInstance != null) {
-			songPlaybackInstance.setStatusAsync({ volume: value })
 		}
 	}
 
@@ -180,29 +73,11 @@ export default class MainScreen extends React.Component {
 			return [];
 		}
 	}
-	
-	noteSkippedSong = async (song_id) => {
-		/// Tells BE this song was skipped so we can know which songs everyone hates 
-
-		fetch(settings.skipUrl, {
-			method: 'POST',
-			headers: {
-			  Accept: 'application/json',
-			  'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-			  song: song_id,
-			})
-		  });
-
-	}
 
 	render() {
 		
 		return (	
 			<Screen style={styles.container}>
-
-
 
 			{this.state.songIsLoading ? (
 				<ActivityIndicator animating={this.state.songIsLoading} size="large"/>
@@ -214,7 +89,7 @@ export default class MainScreen extends React.Component {
 					<Button title="Retry" onPress={this.loadPlaylist}/>
 					</>
 					) : (				
-					<AppSongComponent handlePlayPause={handlePlayPause} handleSongVolume={handleSongVolume} handleNextTrack={handleNextTrack}
+					<AppSongComponent masterPlaylist={this.state.masterPlaylist}
 					/>
 				)}
  			<AppSoundComponent/>

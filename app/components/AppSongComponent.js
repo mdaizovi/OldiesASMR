@@ -1,15 +1,121 @@
 import React, { useState } from 'react';
-import { StyleSheet, ActivityIndicator, Button, Text, View, Image } from 'react-native'
+import { StyleSheet, ActivityIndicator, Button, Text, View, Image,  Dimensions } from 'react-native'
+import Slider from '@react-native-community/slider';
+import AppPlayerButton from "../components/AppPlayerButton";
+import AppPlayPauseButton from "../components/AppPlayPauseButton";
+import colors from "../config/colors";
 
-function AppSongComponent({handlePlayPause, handleSongVolume, handleNextTrack}) {
-	const [songIsPlaying, setsongIsPlaying] = useState(false);
-	//const [songIsLoading, setsongIsLoading] = useState(true);
-	const [songPlaybackInstance, songPlaybackInstance] = useState(null);
-	const [currentIndex, setcurrentIndex] = useState(0);
-	const [volume, setvolume] = useState(0.75);
-	//const [isBuffering, setisBuffering] = useState(false);
-	const [masterPlaylist, setmasterPlaylis] = useState(null);
-	//const [playListFetchError, setplayListFetchError] = useState(null);
+var deviceWidth = Dimensions.get('window').width; //full width
+
+function AppSongComponent({masterPlaylist}) {
+
+	const [songIsPlaying, setsongIsPlaying] = React.useState(false);
+	const [songPlaybackInstance, setsongPlaybackInstance] = React.useState(null);
+	const [currentIndex, setcurrentIndex] = React.useState(0);
+	const [volume, setvolume] = React.useState(0.75);
+	const [isBuffering, setisBuffering] = React.useState(false);
+
+	async function componentDidMount() {
+		try {
+			await Audio.setAudioModeAsync({
+				allowsRecordingIOS: false,
+				staysActiveInBackground: true,
+				interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+				interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+				playsInSilentModeIOS: true,
+				shouldDuckAndroid: true,
+				playInBackground:true,
+				playThroughEarpieceAndroid: true
+			})
+			var playlist = await this.loadPlaylist()
+			if ( playlist.length > 0) {
+				await this.loadAudio()
+			} 
+		} catch (e) {
+		}
+	}
+
+
+
+	  onPlaybackStatusUpdate = status => {
+		let { songPlaybackInstance, songIsPlaying} = this.state
+
+		this.setState({
+			isBuffering: status.isBuffering
+		})
+		didJustFinish = status.didJustFinish
+		
+		// // in case of sleep timer or stop button
+		// if (audioHasBeenStopped === true && songIsPlaying === true) {
+		// 	console.log("audio should not play and song is playing");
+		// 	songPlaybackInstance.pauseAsync()
+		// 	this.setState({
+		// 		songIsPlaying: false,
+		// 	})
+		// }
+		if (didJustFinish) {
+			this.loadAudio()
+		  }
+	}
+
+	handlePlayPause = async () => {
+		let { songIsPlaying, songPlaybackInstance} = this.state
+		songIsPlaying ? await songPlaybackInstance.pauseAsync() : await songPlaybackInstance.playAsync()
+		this.setState({
+			songIsPlaying: !songIsPlaying,
+		})
+
+	}
+
+	handleNextTrack = async () => {
+		let { masterPlaylist, songPlaybackInstance, currentIndex } = this.state
+
+		let song_id = masterPlaylist[currentIndex].id;
+		//await this.noteSkippedSong(song_id); 
+		this.noteSkippedSong(song_id);  // do i need to await ?
+
+		if (songPlaybackInstance) {
+		    await songPlaybackInstance.unloadAsync()
+		}
+
+		if (currentIndex === masterPlaylist.length - 1) {
+			//start over if currently on the last track of playlist
+			var playlist = await this.loadPlaylist()
+			this.setState({
+				currentIndex: -1,
+				masterPlaylist: playlist
+			})
+		} 
+		this.loadAudio()
+	  }
+
+	handleSongVolume = async (value) => {
+		const { songIsPlaying, songPlaybackInstance } = this.state
+		this.setState({
+			volume: value
+		})
+		if (songPlaybackInstance != null) {
+			songPlaybackInstance.setStatusAsync({ volume: value })
+		}
+	}
+
+	
+	noteSkippedSong = async (song_id) => {
+		/// Tells BE this song was skipped so we can know which songs everyone hates 
+
+		fetch(settings.skipUrl, {
+			method: 'POST',
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+			  song: song_id,
+			})
+		  });
+
+	}
+
 
 	return (			
 		<View>
