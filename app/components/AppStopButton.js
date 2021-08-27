@@ -2,7 +2,7 @@ import React, {useContext}  from "react";
 import { Ionicons } from '@expo/vector-icons' 
 import { StyleSheet, TouchableOpacity } from "react-native";
 import colors from "../config/colors";
-import {stopAllAudio} from '../redux/actions/actions';
+import {stopAllAudio} from '../redux/actions/actionsAudio';
 import {useDispatch, useSelector} from 'react-redux';
 
 //const AppStopButton = (onPress, isPlaying ) => {

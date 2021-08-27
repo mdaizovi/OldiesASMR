@@ -11,7 +11,7 @@ import colors from "../config/colors";
 import settings from "../config/settings";
 import TextTicker from 'react-native-text-ticker'
 import logger from '../utilities/logger';  
-import stopAllAudio from '../redux/actions/actions';
+import stopAllAudio from '../redux/actions/actionsAudio';
 
 
 var deviceWidth = Dimensions.get('window').width; //full width

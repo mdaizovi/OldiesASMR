@@ -1,4 +1,4 @@
-import {AUDIO_STOP_REQUESTED} from '../actions/actions';
+import {AUDIO_STOP_REQUESTED} from '../actions/actionsAudio';
 
 
 const initialState = {

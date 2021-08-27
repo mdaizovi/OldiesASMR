@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {View, Text, FlatList, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {getMovies, addFavorite, removeFavorite} from '../redux/actions/actions';
+import {getMovies, addFavorite, removeFavorite} from '../redux/actions/actionsMovies';
 
 
 export default function MoviesScreen() {
