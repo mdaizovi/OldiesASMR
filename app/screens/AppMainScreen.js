@@ -36,10 +36,7 @@ export default class MainScreen extends React.Component {
 				playInBackground:true,
 				playThroughEarpieceAndroid: true
 			})
-			var playlist = await this.loadPlaylist()
-			if ( playlist.length > 0) {
-				await this.loadAudio()
-			} 
+			await this.loadPlaylist()
 		} catch (e) {
 		}
 	}
@@ -74,6 +71,8 @@ export default class MainScreen extends React.Component {
 		}
 	}
 
+
+	
 	render() {
 		
 		return (	

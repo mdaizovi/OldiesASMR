@@ -15,27 +15,6 @@ function AppSongComponent({masterPlaylist}) {
 	const [volume, setvolume] = React.useState(0.75);
 	const [isBuffering, setisBuffering] = React.useState(false);
 
-	async function componentDidMount() {
-		try {
-			await Audio.setAudioModeAsync({
-				allowsRecordingIOS: false,
-				staysActiveInBackground: true,
-				interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-				interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-				playsInSilentModeIOS: true,
-				shouldDuckAndroid: true,
-				playInBackground:true,
-				playThroughEarpieceAndroid: true
-			})
-			var playlist = await this.loadPlaylist()
-			if ( playlist.length > 0) {
-				await this.loadAudio()
-			} 
-		} catch (e) {
-		}
-	}
-
-
 
 	  onPlaybackStatusUpdate = status => {
 		let { songPlaybackInstance, songIsPlaying} = this.state
@@ -54,12 +33,62 @@ function AppSongComponent({masterPlaylist}) {
 		// 	})
 		// }
 		if (didJustFinish) {
-			this.loadAudio()
+			loadAudio()
 		  }
 	}
 
+	const loadAudio = async () => {
+		console.log("loadAudio");
+		const { masterPlaylist, songplaybackInstance, songIsPlaying, volume } = this.state
+		var currentIndex = this.state.currentIndex
+
+		var playbackInstances = this.context.playbackInstances
+		var addNewPlaybackInstance = this.context.addNewPlaybackInstance
+
+		if (songplaybackInstance) {
+			await songplaybackInstance.unloadAsync()
+			var nextIndex = this.state.currentIndex + 1
+			currentIndex = nextIndex
+		}
+		if (masterPlaylist === null) {
+			var playlist = await this.loadPlaylist() 
+		} else {
+			var playlist = masterPlaylist 
+		}
+
+		const {playListFetchError} = this.state
+		if (playListFetchError === false && playlist.length > 0) {
+			try {
+				const songplaybackInstance = new Audio.Sound()
+				const source = {
+					uri: playlist[currentIndex].streaming_url
+				  }
+				const status = {
+					shouldPlay: songIsPlaying,
+					volume: volume
+				}
+	
+				songplaybackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
+				await songplaybackInstance.loadAsync(source, status, false)
+				await addNewPlaybackInstance("song", songplaybackInstance)
+				this.setState({
+					currentIndex,
+					songplaybackInstance
+				})
+			} catch (e) {
+			}
+		} 
+	}
+
 	handlePlayPause = async () => {
+		console.log("handlePlayPause");
 		let { songIsPlaying, songPlaybackInstance} = this.state
+		if (songPlaybackInstance===null) {
+			console.log("songPlaybackInstance is null");
+		    await loadAudio()
+			console.log("think this wont run");
+		}
+		console.log("this wont run either");
 		songIsPlaying ? await songPlaybackInstance.pauseAsync() : await songPlaybackInstance.playAsync()
 		this.setState({
 			songIsPlaying: !songIsPlaying,
@@ -86,7 +115,7 @@ function AppSongComponent({masterPlaylist}) {
 				masterPlaylist: playlist
 			})
 		} 
-		this.loadAudio()
+		loadAudio()
 	  }
 
 	handleSongVolume = async (value) => {
@@ -156,7 +185,7 @@ function AppSongComponent({masterPlaylist}) {
 					https://stackoverflow.com/a/56883227
 					*/}
 			
-					{songPlaybackInstance  ? (
+					{masterPlaylist ? (
 						<AppPlayPauseButton onPress={handlePlayPause} songIsPlaying={songIsPlaying}/>
 						) : (
 						<ActivityIndicator animating={!songPlaybackInstance} color={colors.white} size="large"/>
