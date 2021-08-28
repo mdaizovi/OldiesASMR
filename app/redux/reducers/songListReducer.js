@@ -2,48 +2,28 @@ import {SONGLIST_FETCH_STARTED, SONGLIST_FETCH_COMPLETED, SONGLIST_FETCH_FAILED}
 
 const initialState = {
   songListFetching: false,
-  songList:[],
+  songList:null,
   songListFetchError:false,
-  songIsLoading:true
 }
 
-const songListReducer = (state = initialState, action) => {
-  // when we get the news that a fetch has started
-  // we'll create and return a new object
-  // This object, will contain all the properties
-  // from current state, but.. will now also
-  // set our `songListFetching` property to true
-  if (action.type === 'SONGLIST_FETCH_STARTED') {
-    return Object.assign({}, state, {
-      songListFetching: true,
-      songListFetchError:false,
-      songIsLoading:true
-    })
-  }
 
-  // when a fetch is complete, it will include results.
-  // So now, we'll store the results from action.payload
-  // and also make sure we set fetching and error back to `false`
-  if (action.type === 'SONGLIST_FETCH_COMPLETED') {
-    return Object.assign({}, state, {
-      songList: action.payload,
-      songListFetching: false,
-      songListFetchError: false,
-      songIsLoading:false
-    })
+function songListReducer(state = initialState, action) {
+  console.log("---songlist reducer---");
+  switch (action.type) {
+    case SONGLIST_FETCH_STARTED:
+      console.log("SONGLIST_FETCH_STARTED");
+      return {...state, songListFetching: true,songListFetchError:false,};
+    case SONGLIST_FETCH_COMPLETED:
+      console.log("SONGLIST_FETCH_completed");
+      return {...state, songList: action.payload,songListFetching: false,songListFetchError: false,};
+    case SONGLIST_FETCH_FAILED:
+      console.log("SONGLIST_FETCH_failed");
+      return {
+        ...state,
+        songListFetching: false,songList: [],songListFetchError: true,
+      };
+    default:
+      return state;
   }
-
-  if (action.type === 'SONGLIST_FETCH_FAILED') {
-    return Object.assign({}, state, {
-      songListFetching: false,
-      songList: [],
-      songListFetchError: true,
-      songIsLoading:true
-    })
-  }
-
-  // no matter what, we always return state
-  return state
 }
-
 export default songListReducer;

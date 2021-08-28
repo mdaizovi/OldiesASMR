@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {useSelector, useDispatch, connect} from 'react-redux';
 import { StyleSheet, ActivityIndicator, Button, Text, View, Image,  Dimensions } from 'react-native'
 import Slider from '@react-native-community/slider';
 import AppPlayerButton from "../components/AppPlayerButton";
@@ -8,6 +9,8 @@ import colors from "../config/colors";
 var deviceWidth = Dimensions.get('window').width; //full width
 
 function AppSongComponent({masterPlaylist}) {
+
+	//const {songListFetching, songList, songListFetchError} = useSelector(state => state.songListReducer);
 
 	const [songIsPlaying, setsongIsPlaying] = React.useState(false);
 	const [songPlaybackInstance, setsongPlaybackInstance] = React.useState(null);

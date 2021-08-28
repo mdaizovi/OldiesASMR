@@ -1,32 +1,28 @@
-import React from 'react'
+import React, {useEffect} from 'react';
 import { StyleSheet, ActivityIndicator, Button, Text, View, Image,  Dimensions } from 'react-native'
-import { Audio, Video } from 'expo-av'
+import { Audio } from 'expo-av'
 import {useSelector, useDispatch, connect} from 'react-redux';
-import Slider from '@react-native-community/slider';
 import Screen from "../components/Screen";
-import AppPlayerButton from "../components/AppPlayerButton";
-import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import AppSoundComponent from "../components/AppSoundComponent";
 import AppSongComponent from "../components/AppSongComponent";
 import colors from "../config/colors";
 import settings from "../config/settings";
-import TextTicker from 'react-native-text-ticker'
-import logger from '../utilities/logger';  
-import stopAllAudio from '../redux/actions/actionsAudio';
+
+import {getSongList} from '../redux/actions/actionsSongList';
 
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
-export default class MainScreen extends React.Component {
-	state = {
-		masterPlaylist:null,
-		playListFetchError:null,
-		songIsLoading:true,
-	};
+export default function MainScreen() {
+	const {songListFetching, songList, songListFetchError} = useSelector(state => state.songListReducer);
+    console.log("songList ",songList)
+	const dispatch = useDispatch();
+    const fetchSongList = () => dispatch(getSongList());
 
-	async componentDidMount() {
+	useEffect(() => {
+		console.log("setUpAudio")
 		try {
-			await Audio.setAudioModeAsync({
+			Audio.setAudioModeAsync({
 				allowsRecordingIOS: false,
 				staysActiveInBackground: true,
 				interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -36,59 +32,33 @@ export default class MainScreen extends React.Component {
 				playInBackground:true,
 				playThroughEarpieceAndroid: true
 			})
-			await this.loadPlaylist()
-		} catch (e) {
-		}
-	}
-
-	loadPlaylist = async () => {
-		try {
-			let response = await fetch(
-				settings.apiUrl
-			);
-			if (response.status===200) {
-				let json = await response.json();
-				this.setState({
-					songIsLoading: false,
-					masterPlaylist: json,
-					playListFetchError: false
-				})
-				return await json;
-			} else {
-				this.setState({
-					playListFetchError: true,
-					songIsLoading: false,
-				})
-				return [];
-			}
+			console.log("about to fetch song list?")
+			fetchSongList();
+			console.log("song list fetched?")
+			console.log("---songList")
+			console.log(songList)
+			console.log("songList---")
 			
-		} catch (error) {
-			this.setState({
-				playListFetchError: true
-				})
-			logger.log(error);
-			return [];
+		} catch (e) {
+			console.log("problem")
+			console.log()
 		}
-	}
-
-
-	
-	render() {
-		
+	  }, []);
+	  
 		return (	
 			<Screen style={styles.container}>
 
-			{this.state.songIsLoading ? (
-				<ActivityIndicator animating={this.state.songIsLoading} size="large"/>
+			{!songList ? (
+				<ActivityIndicator animating={songListFetching} size="large"/>
 			) : (
 				<>
-				{this.state.playListFetchError ? (
+				{songListFetchError ? (
 					<>
 					<Text style={[styles.errorInfo]}>Couldn't load song playlist. Are you sure you're connected to the internet?</Text>
-					<Button title="Retry" onPress={this.loadPlaylist}/>
+					<Button title="Retry" onPress={fetchSongList}/>
 					</>
 					) : (				
-					<AppSongComponent masterPlaylist={this.state.masterPlaylist}
+					<AppSongComponent masterPlaylist={songList}
 					/>
 				)}
  			<AppSoundComponent/>
@@ -98,7 +68,6 @@ export default class MainScreen extends React.Component {
 
 		)
 	}
-}
 
 const styles = StyleSheet.create({
 	container: {
