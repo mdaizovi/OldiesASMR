@@ -5,11 +5,13 @@ export const SONGLIST_FETCH_COMPLETED = 'SONGLIST_FETCH_COMPLETED';
 export const SONGLIST_FETCH_FAILED = 'SONGLIST_FETCH_FAILED';
 
 export const getSongList = () => {
-  console.log("getSongLst");
+  console.log("getSongList");
     try {
-      // dispatch({ type: 'SONGLIST_FETCH_STARTED' })
-      // console.log("action SONGLIST_FETCH_STARTED");
       return async dispatch => {
+        // prob wrong place but does it work?
+        dispatch({ type: 'SONGLIST_FETCH_STARTED' })
+        console.log("action SONGLIST_FETCH_STARTED");
+        
         const res = await axios.get(settings.apiUrl);
         if (res.data) {
           dispatch({
@@ -24,7 +26,7 @@ export const getSongList = () => {
         }
       };
     } catch (error) {
-        console.log(error);
+        console.log("error: ",error);
         dispatch({
           type: SONGLIST_FETCH_FAILED,
         });

@@ -15,12 +15,11 @@ var deviceWidth = Dimensions.get('window').width; //full width
 
 export default function MainScreen() {
 	const {songListFetching, songList, songListFetchError} = useSelector(state => state.songListReducer);
-    console.log("songList ",songList)
 	const dispatch = useDispatch();
     const fetchSongList = () => dispatch(getSongList());
 
 	useEffect(() => {
-		console.log("setUpAudio")
+		console.log("running useEffect to set up audio first time")
 		try {
 			Audio.setAudioModeAsync({
 				allowsRecordingIOS: false,
@@ -32,19 +31,13 @@ export default function MainScreen() {
 				playInBackground:true,
 				playThroughEarpieceAndroid: true
 			})
-			console.log("about to fetch song list?")
 			fetchSongList();
-			console.log("song list fetched?")
-			console.log("---songList")
-			console.log(songList)
-			console.log("songList---")
-			
+			console.log("song list should be fetched")
 		} catch (e) {
-			console.log("problem")
-			console.log()
+			console.log("problem: ",e)
 		}
 	  }, []);
-	  
+
 		return (	
 			<Screen style={styles.container}>
 

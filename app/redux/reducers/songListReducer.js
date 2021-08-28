@@ -11,13 +11,13 @@ function songListReducer(state = initialState, action) {
   console.log("---songlist reducer---");
   switch (action.type) {
     case SONGLIST_FETCH_STARTED:
-      console.log("SONGLIST_FETCH_STARTED");
+      console.log("reducer: SONGLIST_FETCH_STARTED");
       return {...state, songListFetching: true,songListFetchError:false,};
     case SONGLIST_FETCH_COMPLETED:
-      console.log("SONGLIST_FETCH_completed");
+      console.log("reducer: SONGLIST_FETCH_COMPLETED");
       return {...state, songList: action.payload,songListFetching: false,songListFetchError: false,};
     case SONGLIST_FETCH_FAILED:
-      console.log("SONGLIST_FETCH_failed");
+      console.log("reducer: SONGLIST_FETCH_FAILED");
       return {
         ...state,
         songListFetching: false,songList: [],songListFetchError: true,
