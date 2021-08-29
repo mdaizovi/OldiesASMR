@@ -19,7 +19,6 @@ export default function MainScreen() {
     const fetchSongList = () => dispatch(getSongList());
 
 	useEffect(() => {
-		console.log("running useEffect to set up audio first time")
 		try {
 			Audio.setAudioModeAsync({
 				allowsRecordingIOS: false,
@@ -32,9 +31,8 @@ export default function MainScreen() {
 				playThroughEarpieceAndroid: true
 			})
 			fetchSongList();
-			console.log("song list should be fetched")
 		} catch (e) {
-			console.log("problem: ",e)
+			console.log("problem with useEffect in MainScreen: ",e)
 		}
 	  }, []);
 
@@ -51,8 +49,7 @@ export default function MainScreen() {
 					<Button title="Retry" onPress={fetchSongList}/>
 					</>
 					) : (				
-					<AppSongComponent
-					/>
+					<AppSongComponent/>
 				)}
  			<AppSoundComponent/>
 			</>
