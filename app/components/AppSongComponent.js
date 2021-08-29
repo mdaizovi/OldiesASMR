@@ -6,27 +6,83 @@ import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import colors from "../config/colors";
 
+import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong} from '../redux/actions/actionsSongPlay';
+
 var deviceWidth = Dimensions.get('window').width; //full width
 
-function AppSongComponent({masterPlaylist}) {
+function AppSongComponent() {
 
-	//const {songListFetching, songList, songListFetchError} = useSelector(state => state.songListReducer);
+	const {songList, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.songPlayReducer);
+	const dispatch = useDispatch();
+	const fetchSongList = () => dispatch(getSongList());
+	const dispatchedChangeSongVolume = value => dispatch(changeSongVolume(value));
+	const dispatchedPauseSong = () => dispatch(pauseSong());
+	const dispatchedPlaySong = () => dispatch(playSong());
+	const dispatchedloadSong = songplaybackInstance => dispatch(loadSong(songplaybackInstance));
+	const dispatchedloadSong = songplaybackInstance => dispatch(unloadSong(songplaybackInstance));
+	const dispatchedChangeSongIndex = value => dispatch(changeSongIndex(value));
+	
+	//used to be async. should be again?
+	handleSongVolume = async (value) => {
+	//const handleSongVolume = value => {
+		let songPlaybackInstance = state.songPlaybackInstance
+		if (songPlaybackInstance != null) {  
+		  songPlaybackInstance.setStatusAsync({ volume: action.payload })
+		}
+		dispatchedChangeSongVolume(value);
+	};
 
-	const [songIsPlaying, setsongIsPlaying] = React.useState(false);
-	const [songPlaybackInstance, setsongPlaybackInstance] = React.useState(null);
-	const [currentIndex, setcurrentIndex] = React.useState(0);
-	const [volume, setvolume] = React.useState(0.75);
-	const [isBuffering, setisBuffering] = React.useState(false);
 
+	handlePlayPause = async () => {
+		console.log("handlePlayPause");
+		let songPlaybackInstance = state.songPlaybackInstance
+		if (songPlaybackInstance===null) {
+			console.log("no song instance")
+			await loadAudio()
+		} else if (songIsPlaying) {
+			console.log("we have song instance and it's playing")
+			dispatchedPauseSong(songPlaybackInstance);
+		} else {
+			// we have songPlaybackInstance but it's not playing
+			console.log("we have song instance but it's paused")
+			dispatchedPlaySong(songPlaybackInstance);
+		}
 
-	  onPlaybackStatusUpdate = status => {
-		let { songPlaybackInstance, songIsPlaying} = this.state
+	}
 
-		this.setState({
-			isBuffering: status.isBuffering
-		})
+	handleNextSongIndex = async () => {
+		console.log("handleNextSongIndex");
+		let songList = state.songList
+		let currentIndex = state.currentIndex
+		if (currentIndex === songList.length - 1) {
+			//start over if currently on the last track of playlist
+			fetchSongList();
+			dispatchedChangeSongindex(0);
+		} else {
+			dispatchedChangeSongindex(currentIndex + 1);
+		}
+
+	}
+
+	handleNextTrack = async () => {
+		console.log("handleChangeSongIndex");
+		let songPlaybackInstance = state.songPlaybackInstance
+		//let song_id = songList[currentIndex].id;
+		// 	//await this.noteSkippedSong(song_id); 
+		// 	this.noteSkippedSong(song_id);  // do i need to await ?
+
+		if (songPlaybackInstance) {
+			// should prob have a song stopped dispatch? or no?
+			await songPlaybackInstance.unloadAsync()
+		}
+		handleNextSongIndex()
+		await loadAudio();
+		}
+	}
+
+	onPlaybackStatusUpdate = status => {
+		console.log("onPlaybackStatusUpdate")
 		didJustFinish = status.didJustFinish
-		
 		// // in case of sleep timer or stop button
 		// if (audioHasBeenStopped === true && songIsPlaying === true) {
 		// 	console.log("audio should not play and song is playing");
@@ -36,33 +92,32 @@ function AppSongComponent({masterPlaylist}) {
 		// 	})
 		// }
 		if (didJustFinish) {
-			loadAudio()
-		  }
-	}
+			console.log("song just finished")
+		  	// play next song. increment index, unload old song, load new song.
+			handleNextTrack()
+		}
+	  }
 
-	const loadAudio = async () => {
+	loadAudio = async () => {
 		console.log("loadAudio");
-		const { masterPlaylist, songplaybackInstance, songIsPlaying, volume } = this.state
-		var currentIndex = this.state.currentIndex
-
-		var playbackInstances = this.context.playbackInstances
-		var addNewPlaybackInstance = this.context.addNewPlaybackInstance
-
+		let songPlaybackInstance = state.songPlaybackInstance
+		// do these 2 ever run?
 		if (songplaybackInstance) {
-			await songplaybackInstance.unloadAsync()
-			var nextIndex = this.state.currentIndex + 1
-			currentIndex = nextIndex
+			console.log("there is a track, unloading");
+			dispatchedunloadSong(songplaybackInstance);
+			handleNextSongIndex();
 		}
-		if (masterPlaylist === null) {
-			var playlist = await this.loadPlaylist() 
-		} else {
-			var playlist = masterPlaylist 
+		if (songList === null) {
+			console.log("no song list, getting it");
+			await fetchSongList();
 		}
 
-		const {playListFetchError} = this.state
 		if (playListFetchError === false && playlist.length > 0) {
+			console.log("no playlist error and songs");
 			try {
 				const songplaybackInstance = new Audio.Sound()
+				let currentIndex = state.currentIndex
+				let  playlist= state.playlist
 				const source = {
 					uri: playlist[currentIndex].streaming_url
 				  }
@@ -70,83 +125,17 @@ function AppSongComponent({masterPlaylist}) {
 					shouldPlay: songIsPlaying,
 					volume: volume
 				}
-	
-				songplaybackInstance.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
+				songplaybackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
 				await songplaybackInstance.loadAsync(source, status, false)
-				await addNewPlaybackInstance("song", songplaybackInstance)
-				this.setState({
-					currentIndex,
-					songplaybackInstance
-				})
+				dispatchedloadSong(songplaybackInstance);
 			} catch (e) {
+				console.log(e)
 			}
-		} 
-	}
-
-	handlePlayPause = async () => {
-		console.log("handlePlayPause");
-		let { songIsPlaying, songPlaybackInstance} = this.state
-		if (songPlaybackInstance===null) {
-			console.log("songPlaybackInstance is null");
-		    await loadAudio()
-			console.log("think this wont run");
-		}
-		console.log("this wont run either");
-		songIsPlaying ? await songPlaybackInstance.pauseAsync() : await songPlaybackInstance.playAsync()
-		this.setState({
-			songIsPlaying: !songIsPlaying,
-		})
-
-	}
-
-	handleNextTrack = async () => {
-		let { masterPlaylist, songPlaybackInstance, currentIndex } = this.state
-
-		let song_id = masterPlaylist[currentIndex].id;
-		//await this.noteSkippedSong(song_id); 
-		this.noteSkippedSong(song_id);  // do i need to await ?
-
-		if (songPlaybackInstance) {
-		    await songPlaybackInstance.unloadAsync()
-		}
-
-		if (currentIndex === masterPlaylist.length - 1) {
-			//start over if currently on the last track of playlist
-			var playlist = await this.loadPlaylist()
-			this.setState({
-				currentIndex: -1,
-				masterPlaylist: playlist
-			})
-		} 
-		loadAudio()
-	  }
-
-	handleSongVolume = async (value) => {
-		const { songIsPlaying, songPlaybackInstance } = this.state
-		this.setState({
-			volume: value
-		})
-		if (songPlaybackInstance != null) {
-			songPlaybackInstance.setStatusAsync({ volume: value })
+		} else {
+			console.log("playlist error or no songs");
 		}
 	}
 
-	
-	noteSkippedSong = async (song_id) => {
-		/// Tells BE this song was skipped so we can know which songs everyone hates 
-
-		fetch(settings.skipUrl, {
-			method: 'POST',
-			headers: {
-			  Accept: 'application/json',
-			  'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-			  song: song_id,
-			})
-		  });
-
-	}
 
 
 	return (			
@@ -165,7 +154,7 @@ function AppSongComponent({masterPlaylist}) {
 					duration={20000}
 					loop
 				>
-				{masterPlaylist[currentIndex].citation_mla}
+				{songList[currentIndex].citation_mla}
 				</TextTicker>
 				</>
 						) : (
@@ -175,7 +164,7 @@ function AppSongComponent({masterPlaylist}) {
 				source={require('../assets/images/record.jpg') }
 					/>
 					<Text style={[styles.trackInfo, styles.trackInfoText]}>
-						{masterPlaylist[currentIndex].citation_mla}
+						{songList[currentIndex].citation_mla}
 					</Text>
 					</>
 				)}
@@ -188,7 +177,7 @@ function AppSongComponent({masterPlaylist}) {
 					https://stackoverflow.com/a/56883227
 					*/}
 			
-					{masterPlaylist ? (
+					{songList ? (
 						<AppPlayPauseButton onPress={handlePlayPause} songIsPlaying={songIsPlaying}/>
 						) : (
 						<ActivityIndicator animating={!songPlaybackInstance} color={colors.white} size="large"/>

@@ -8,13 +8,13 @@ import AppSongComponent from "../components/AppSongComponent";
 import colors from "../config/colors";
 import settings from "../config/settings";
 
-import {getSongList} from '../redux/actions/actionsSongList';
+import {getSongList} from '../redux/actions/actionsSongPlay';
 
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default function MainScreen() {
-	const {songListFetching, songList, songListFetchError} = useSelector(state => state.songListReducer);
+	const {songListFetching, songList, songListFetchError} = useSelector(state => state.songPlayReducer);
 	const dispatch = useDispatch();
     const fetchSongList = () => dispatch(getSongList());
 
@@ -51,7 +51,7 @@ export default function MainScreen() {
 					<Button title="Retry" onPress={fetchSongList}/>
 					</>
 					) : (				
-					<AppSongComponent masterPlaylist={songList}
+					<AppSongComponent
 					/>
 				)}
  			<AppSoundComponent/>
