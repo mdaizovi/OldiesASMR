@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Audio } from 'expo-av'
+import { Audio, Video } from 'expo-av'
 import {useSelector, useDispatch, connect} from 'react-redux';
-import { StyleSheet, ActivityIndicator, Button, Text, View, Image,  Video, Dimensions } from 'react-native'
+import { StyleSheet, ActivityIndicator, Button, Text, View, Image, Dimensions } from 'react-native'
 import Slider from '@react-native-community/slider';
 import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
@@ -14,7 +14,7 @@ var deviceWidth = Dimensions.get('window').width; //full width
 
 export default function AppSongComponent() {
 
-	const {songList, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.songPlayReducer);
+	const {songList, shouldPlay, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.songPlayReducer);
 	const dispatch = useDispatch();
 	const fetchSongList = () => dispatch(getSongList());
 	const dispatchedChangeSongVolume = value => dispatch(changeSongVolume(value));
@@ -78,8 +78,6 @@ export default function AppSongComponent() {
 	}
 
 	onPlaybackStatusUpdate = status => {
-		console.log("onPlaybackStatusUpdate")
-		console.log("-status ", status);
 		didJustFinish = status.didJustFinish;
 		// // in case of sleep timer or stop button
 		// if (audioHasBeenStopped === true && songIsPlaying === true) {
@@ -94,7 +92,6 @@ export default function AppSongComponent() {
 		  	// play next song. increment index, unload old song, load new song.
 			handleNextTrack()
 		}
-		console.log("end onPlaybackStatusUpdate")
 	  }
 
 	loadAudio = async () => {

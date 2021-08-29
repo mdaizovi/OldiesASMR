@@ -29,14 +29,16 @@ export const changeSongVolume = (value) => dispatch =>{
   dispatch({ type: 'SONG_VOLUME_CHANGED', payload: value});
 }
 
-export const pauseSong = (songPlaybackInstance) => dispatch =>{
+export const pauseSong = (songPlaybackInstance) => async dispatch =>{
   console.log("action pauseSong")
-  dispatch({ type: 'SONG_PAUSE_INITIATED', payload: songPlaybackInstance});
+  await songPlaybackInstance.pauseAsync();
+  dispatch({ type: 'SONG_PAUSE_INITIATED'});
 }
 
-export const playSong = (songPlaybackInstance) => dispatch =>{
+export const playSong = (songPlaybackInstance) => async dispatch =>{
   console.log("action playSong")
-  dispatch({ type: 'SONG_PLAY_INITIATED', payload: songPlaybackInstance});
+  await songPlaybackInstance.playAsync();
+  dispatch({ type: 'SONG_PLAY_INITIATED'});
 }
 
 export const loadSong = (songPlaybackInstance) => dispatch =>{
@@ -44,9 +46,10 @@ export const loadSong = (songPlaybackInstance) => dispatch =>{
   dispatch({ type: 'SONG_LOADED', payload: songPlaybackInstance});
 }
 
-export const unloadSong = (songPlaybackInstance) => dispatch =>{
+export const unloadSong = (songPlaybackInstance) => async dispatch =>{
   console.log("action unload song")
-  dispatch({ type: 'SONG_UNLOADED', payload: songPlaybackInstance});
+  await songPlaybackInstance.unloadAsync();
+  dispatch({ type: 'SONG_UNLOADED'});
 }
 
   export const getSongList = () => {
