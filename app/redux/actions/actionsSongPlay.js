@@ -14,32 +14,39 @@ export const SONG_UNLOADED = 'SONG_UNLOADED';
 export const SONG_VOLUME_CHANGED = 'SONG_VOLUME_CHANGED';
 export const SONG_INDEX_CHANGED = 'SONG_INDEX_CHANGED';
 
-export const changeSongIndex = (value) => {
-  dispatch({ type: 'SONG_INDEX_CHANGED', payload: value})
+
+// export const removeFavorite = movie => dispatch => {
+//   dispatch({
+//     type: REMOVE_FAVORITE_ITEM,
+//     payload: movie,
+//   });
+// };
+export const changeSongIndex = (value) => dispatch =>{
+  dispatch({ type: 'SONG_INDEX_CHANGED', payload: value});
 }
 
-export const changeSongVolume = (value) => {
-  dispatch({ type: 'SONG_VOLUME_CHANGED', payload: value})
+export const changeSongVolume = (value) => dispatch =>{
+  dispatch({ type: 'SONG_VOLUME_CHANGED', payload: value});
 }
 
-export const pauseSong = () => {
+export const pauseSong = (songPlaybackInstance) => dispatch =>{
   console.log("action pauseSong")
-  dispatch({ type: 'SONG_PAUSE_INITIATED'})
+  dispatch({ type: 'SONG_PAUSE_INITIATED', payload: songPlaybackInstance});
 }
 
-export const playSong = () => {
+export const playSong = (songPlaybackInstance) => dispatch =>{
   console.log("action playSong")
-  dispatch({ type: 'SONG_PLAY_INITIATED'})
+  dispatch({ type: 'SONG_PLAY_INITIATED', payload: songPlaybackInstance});
 }
 
-export const loadSong = (songplaybackInstance) => {
+export const loadSong = (songPlaybackInstance) => dispatch =>{
   console.log("action load song")
-  dispatch({ type: 'SONG_LOADED', payload: songplaybackInstance})
+  dispatch({ type: 'SONG_LOADED', payload: songPlaybackInstance});
 }
 
-export const unloadSong = (songplaybackInstance) => {
+export const unloadSong = (songPlaybackInstance) => dispatch =>{
   console.log("action unload song")
-  dispatch({ type: 'SONG_UNLOADED', payload: songplaybackInstance})
+  dispatch({ type: 'SONG_UNLOADED', payload: songPlaybackInstance});
 }
 
   export const getSongList = () => {
@@ -47,7 +54,7 @@ export const unloadSong = (songplaybackInstance) => {
       try {
         return async dispatch => {
           // prob wrong place but does it work?
-          dispatch({ type: 'SONGLIST_FETCH_STARTED' })
+          dispatch({ type: 'SONGLIST_FETCH_STARTED' });
           console.log("action SONGLIST_FETCH_STARTED");
           // end wrong place(?) disptch
           

@@ -1,31 +1,32 @@
 import React, { useState } from 'react';
+import { Audio } from 'expo-av'
 import {useSelector, useDispatch, connect} from 'react-redux';
-import { StyleSheet, ActivityIndicator, Button, Text, View, Image,  Dimensions } from 'react-native'
+import { StyleSheet, ActivityIndicator, Button, Text, View, Image,  Video, Dimensions } from 'react-native'
 import Slider from '@react-native-community/slider';
 import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import colors from "../config/colors";
+import TextTicker from 'react-native-text-ticker'
 
 import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong} from '../redux/actions/actionsSongPlay';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
-function AppSongComponent() {
+export default function AppSongComponent() {
 
-	const {songList, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.songPlayReducer);
+	const {songList, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.songPlayReducer);
 	const dispatch = useDispatch();
 	const fetchSongList = () => dispatch(getSongList());
 	const dispatchedChangeSongVolume = value => dispatch(changeSongVolume(value));
-	const dispatchedPauseSong = () => dispatch(pauseSong());
-	const dispatchedPlaySong = () => dispatch(playSong());
-	const dispatchedloadSong = songplaybackInstance => dispatch(loadSong(songplaybackInstance));
-	const dispatchedloadSong = songplaybackInstance => dispatch(unloadSong(songplaybackInstance));
+	const dispatchedPauseSong = songPlaybackInstance => dispatch(pauseSong(songPlaybackInstance));
+	const dispatchedPlaySong = songPlaybackInstance => dispatch(playSong(songPlaybackInstance));
+	const dispatchedloadSong = songPlaybackInstance => dispatch(loadSong(songPlaybackInstance));
+	const dispatchedunloadSong = songPlaybackInstance => dispatch(unloadSong(songPlaybackInstance));
 	const dispatchedChangeSongIndex = value => dispatch(changeSongIndex(value));
 	
 	//used to be async. should be again?
 	handleSongVolume = async (value) => {
 	//const handleSongVolume = value => {
-		let songPlaybackInstance = state.songPlaybackInstance
 		if (songPlaybackInstance != null) {  
 		  songPlaybackInstance.setStatusAsync({ volume: action.payload })
 		}
@@ -35,7 +36,6 @@ function AppSongComponent() {
 
 	handlePlayPause = async () => {
 		console.log("handlePlayPause");
-		let songPlaybackInstance = state.songPlaybackInstance
 		if (songPlaybackInstance===null) {
 			console.log("no song instance")
 			await loadAudio()
@@ -52,8 +52,6 @@ function AppSongComponent() {
 
 	handleNextSongIndex = async () => {
 		console.log("handleNextSongIndex");
-		let songList = state.songList
-		let currentIndex = state.currentIndex
 		if (currentIndex === songList.length - 1) {
 			//start over if currently on the last track of playlist
 			fetchSongList();
@@ -65,24 +63,24 @@ function AppSongComponent() {
 	}
 
 	handleNextTrack = async () => {
-		console.log("handleChangeSongIndex");
-		let songPlaybackInstance = state.songPlaybackInstance
+		console.log("handleNextTrack");
 		//let song_id = songList[currentIndex].id;
 		// 	//await this.noteSkippedSong(song_id); 
 		// 	this.noteSkippedSong(song_id);  // do i need to await ?
 
 		if (songPlaybackInstance) {
+			console.log("unloading");
 			// should prob have a song stopped dispatch? or no?
 			await songPlaybackInstance.unloadAsync()
 		}
 		handleNextSongIndex()
 		await loadAudio();
-		}
 	}
 
 	onPlaybackStatusUpdate = status => {
 		console.log("onPlaybackStatusUpdate")
-		didJustFinish = status.didJustFinish
+		console.log("-status ", status);
+		didJustFinish = status.didJustFinish;
 		// // in case of sleep timer or stop button
 		// if (audioHasBeenStopped === true && songIsPlaying === true) {
 		// 	console.log("audio should not play and song is playing");
@@ -96,15 +94,15 @@ function AppSongComponent() {
 		  	// play next song. increment index, unload old song, load new song.
 			handleNextTrack()
 		}
+		console.log("end onPlaybackStatusUpdate")
 	  }
 
 	loadAudio = async () => {
 		console.log("loadAudio");
-		let songPlaybackInstance = state.songPlaybackInstance
 		// do these 2 ever run?
-		if (songplaybackInstance) {
+		if (songPlaybackInstance) {
 			console.log("there is a track, unloading");
-			dispatchedunloadSong(songplaybackInstance);
+			dispatchedunloadSong(songPlaybackInstance);
 			handleNextSongIndex();
 		}
 		if (songList === null) {
@@ -112,25 +110,30 @@ function AppSongComponent() {
 			await fetchSongList();
 		}
 
-		if (playListFetchError === false && playlist.length > 0) {
+		if (songListFetchError === false && songList.length > 0) {
 			console.log("no playlist error and songs");
 			try {
-				const songplaybackInstance = new Audio.Sound()
-				let currentIndex = state.currentIndex
-				let  playlist= state.playlist
+				const songPlaybackInstance = new Audio.Sound()
 				const source = {
-					uri: playlist[currentIndex].streaming_url
+					uri: songList[currentIndex].streaming_url
 				  }
+				console.log("source: ",source);
 				const status = {
 					shouldPlay: songIsPlaying,
 					volume: volume
 				}
-				songplaybackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
-				await songplaybackInstance.loadAsync(source, status, false)
-				dispatchedloadSong(songplaybackInstance);
+				songPlaybackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
+				console.log("a");
+				await songPlaybackInstance.loadAsync(source, status, false)
+				console.log("b");
+				dispatchedloadSong(songPlaybackInstance);
+				console.log("c");
+				handlePlayPause();
+				console.log("c again");
 			} catch (e) {
 				console.log(e)
 			}
+		console.log("d");
 		} else {
 			console.log("playlist error or no songs");
 		}
@@ -215,9 +218,8 @@ function AppSongComponent() {
 
 		</View>
 	)
-	}
+}
 
-export default AppSongComponent;
 
 const styles = StyleSheet.create({
   	recordBackground: {

@@ -1,6 +1,6 @@
 import {
   SONGLIST_FETCH_STARTED, SONGLIST_FETCH_COMPLETED, SONGLIST_FETCH_FAILED,
-  SONG_PLAY_PAUSE_BUTTON_PRESSED,SONG_PLAY_INITIATED, SONG_PAUSE_INITIATED,
+  SONG_PLAY_INITIATED, SONG_PAUSE_INITIATED, 
   SONG_LOADED, SONG_UNLOADED,
   SONG_VOLUME_CHANGED, SONG_INDEX_CHANGED
 } from '../actions/actionsSongPlay';
@@ -18,7 +18,7 @@ const initialState = {
 
 
 function songPlayReducer(state = initialState, action) {
-  console.log("---song play reducer---");T
+  console.log("---song play reducer---");
   switch (action.type) {
     case SONGLIST_FETCH_STARTED:
       console.log("reducer: SONGLIST_FETCH_STARTED");
@@ -36,10 +36,10 @@ function songPlayReducer(state = initialState, action) {
 
     
 
-      
+
     case SONG_LOADED:
       console.log("reducer: SONG_LOADED");
-      return {...state, songPlaybackInstance:action.payload, songIsPlaying:true};
+      return {...state, songPlaybackInstance:action.payload};
       
 
 
@@ -47,15 +47,17 @@ function songPlayReducer(state = initialState, action) {
 
     case SONG_UNLOADED:
         console.log("reducer: SONG_UNLOADED");
-        await action.payload.unloadAsync()
+        action.payload.unloadAsync();
         return {...state, songPlaybackInstance:null, songIsPlaying:false};
-    case SONG_UNPAUSE_INITIATED:
-      console.log("reducer: UNPAUSE_INITIATED");
-      await action.payload.playAsync() 
+    case SONG_PLAY_INITIATED:
+      console.log("reducer: SONG_PLAY_INITIATED");
+      action.payload.playAsync();
+      console.log("playing?")
       return {...state, songIsPlaying:true};        
-      case SONG_PAUSE_INITIATED:
+    case SONG_PAUSE_INITIATED:
       console.log("reducer: SONG_PAUSE_INITIATED");
-      await action.payload.pauseAsync() 
+      action.payload.pauseAsync();
+      console.log("paused?")
       return {...state, songIsPlaying:false};      
     case SONG_INDEX_CHANGED:
       console.log("SONG_INDEX_CHANGED");
