@@ -13,6 +13,7 @@ export const SONG_UNLOADED = 'SONG_UNLOADED';
 export const SONG_VOLUME_CHANGED = 'SONG_VOLUME_CHANGED';
 export const SONG_INDEX_CHANGED = 'SONG_INDEX_CHANGED';
 
+export const AUDIO_STOP_REQUESTED = 'AUDIO_STOP_REQUESTED';
 
 export const changeSongIndex = (value) => dispatch =>{
   dispatch({ type: 'SONG_INDEX_CHANGED', payload: value});
@@ -41,6 +42,11 @@ export const unloadSong = (songPlaybackInstance) => async dispatch =>{
   dispatch({ type: 'SONG_UNLOADED'});
 }
 
+export const stopAllAudio = () => async dispatch =>{
+  dispatch({ type: 'AUDIO_STOP_REQUESTED'});
+}
+
+
   export const getSongList = () => {
       try {
         return async dispatch => {
@@ -55,15 +61,12 @@ export const unloadSong = (songPlaybackInstance) => async dispatch =>{
               payload: res.data,
             });
           } else {
-            console.log("action SONGLIST_FETCH_FAILED 1");
             dispatch({
               type: SONGLIST_FETCH_FAILED,
             });
           }
         };
       } catch (error) {
-        console.log("action SONGLIST_FETCH_FAILED 2");
-          console.log("error: ",error);
           dispatch({
             type: SONGLIST_FETCH_FAILED,
           });

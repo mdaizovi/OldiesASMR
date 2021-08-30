@@ -1,31 +1,56 @@
-import {AUDIO_STOP_REQUESTED} from '../actions/actionsAudio';
-
+import {
+  SONGLIST_FETCH_STARTED, SONGLIST_FETCH_COMPLETED, SONGLIST_FETCH_FAILED,
+  SONG_PLAY_INITIATED, SONG_PAUSE_INITIATED, 
+  SONG_LOADED, SONG_UNLOADED,
+  SONG_VOLUME_CHANGED, SONG_INDEX_CHANGED,
+  AUDIO_STOP_REQUESTED
+} from '../actions/audioActions';
 
 const initialState = {
-  audioHasBeenStopped: false
-};
+  songListFetching:false,
+  songList:null,
+  songListFetchError:false,
 
-//this tutorual has this as a const instead of a function
-// https://medium.com/swlh/a-basic-redux-setup-in-react-react-native-c1670005dd70
+  songIsPlaying: false,
+  songPlaybackInstance:null,
+  currentIndex:0,
+  volume:0.75,
+
+  audioStopRequested: false,
+}
+
+
 function audioReducer(state = initialState, action) {
-    switch (action.type) {
-      case AUDIO_STOP_REQUESTED:
-        console.log("action.payload");
-        console.log(action.payload);
-        return {
-          ...state, 
-          audioHasBeenStopped: action.payload
-        };
-        break
-      // case REMOVE_FAVORITE_ITEM:
-      //   return {
-      //     ...state,
-      //     favorites: state.favorites.filter(
-      //       movie => movie.id !== action.payload.id,
-      //     ),
-      //   };
-      default:
-        return state;
-    }
+  switch (action.type) {
+    case SONGLIST_FETCH_STARTED:
+      return {...state, songListFetching: true, songListFetchError:false,};
+    case SONGLIST_FETCH_COMPLETED:
+      return {...state, songList: action.payload, songListFetching: false, songListFetchError: false,};
+    case SONGLIST_FETCH_FAILED:
+      return {
+        ...state,
+        songListFetching: false,songList: [],songListFetchError: true,
+      };
+    case SONG_LOADED:
+      return {...state, songPlaybackInstance:action.payload};
+    case SONG_UNLOADED:
+        return {...state, songPlaybackInstance:null, songIsPlaying:false};
+    case SONG_PLAY_INITIATED:
+      return {...state, songIsPlaying:true, audioStopRequested:false};        
+    case SONG_PAUSE_INITIATED:
+      return {...state, songIsPlaying:false, };      
+    case SONG_INDEX_CHANGED:
+      return {...state, currentIndex: action.payload};
+    case SONG_VOLUME_CHANGED:
+      return {...state, volume: action.payload};
+
+    case AUDIO_STOP_REQUESTED:
+      return {
+        ...state, 
+        audioStopRequested: true
+      };      
+    default:
+      return state;
   }
+}
 export default audioReducer;

@@ -2,7 +2,7 @@ import colors from "../config/colors";
 
 import React, { Component, Section } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import AppStopButton from "../components/AppStopButton";
+//import AppStopButton from "../components/AppStopButton";
 import TimePicker from "../../submodules/react-native-super-timepicker";
 
 
@@ -30,11 +30,11 @@ class OptionsScreen extends Component {
       
       <View style={styles.container}>
 
-      <View style={styles.OptionsSegment}>
+      {/* <View style={styles.OptionsSegment}>
         <AppStopButton
           isPlaying={true}
         />
-        </View>
+        </View> */}
 
       <View style={styles.OptionsSegment}>
         <TouchableOpacity

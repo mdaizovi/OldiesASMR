@@ -11,13 +11,13 @@ import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import colors from "../config/colors";
 import TextTicker from 'react-native-text-ticker'
 
-import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong, changeSongIndex} from '../redux/actions/actionsSongPlay';
+import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong, changeSongIndex} from '../redux/actions/audioActions';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default function AppSongComponent() {
 
-	const {songList, shouldPlay, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.songPlayReducer);
+	const {songList, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.songPlayReducer);
 	const dispatch = useDispatch();
 	const fetchSongList = () => dispatch(getSongList());
 	const dispatchedChangeSongVolume = value => dispatch(changeSongVolume(value));
