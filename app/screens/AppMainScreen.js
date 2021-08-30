@@ -8,13 +8,13 @@ import AppSongComponent from "../components/AppSongComponent";
 import colors from "../config/colors";
 import settings from "../config/settings";
 
-import {getSongList} from '../redux/actions/actionsSongPlay';
+import {getSongList} from '../redux/actions/audioActions';
 
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default function MainScreen() {
-	const {songListFetching, songList, songListFetchError} = useSelector(state => state.songPlayReducer);
+	const {songListFetching, songList, songListFetchError} = useSelector(state => state.audioReducer);
 	const dispatch = useDispatch();
     const fetchSongList = () => dispatch(getSongList());
 
