@@ -1,51 +1,71 @@
 import React from 'react';
 import { Audio, Video  } from 'expo-av'
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector, useDispatch, useStore, connect} from 'react-redux';
 import { StyleSheet, ActivityIndicator, Button, Text, View, Image,Dimensions } from 'react-native'
 
 import Slider from '@react-native-community/slider';
 
+//import store from '../redux/store/store.js'; 
 import settings from "../config/settings";
 import AppPlayerButton from "../components/AppPlayerButton";
 import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import colors from "../config/colors";
 import TextTicker from 'react-native-text-ticker'
 
-import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong, changeSongIndex} from '../redux/actions/audioActions';
+import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong, changeSongIndex, audioAddedToSongList, audioAddedToSoundList} from '../redux/actions/audioActions';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default function AppSongComponent() {
 
-	const {songList, shouldPlay, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.audioReducer);
+	const {songList, audioHasBeenStopped, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.audioReducer);
+	const store = useStore();
 	const dispatch = useDispatch();
 	const fetchSongList = () => dispatch(getSongList());
 	const dispatchedChangeSongVolume = value => dispatch(changeSongVolume(value));
 	const dispatchedPauseSong = songPlaybackInstance => dispatch(pauseSong(songPlaybackInstance));
 	const dispatchedPlaySong = songPlaybackInstance => dispatch(playSong(songPlaybackInstance));
 	const dispatchedloadSong = songPlaybackInstance => dispatch(loadSong(songPlaybackInstance));
+	const dispatchedAddSong = songPlaybackInstance => dispatch(audioAddedToSongList(songPlaybackInstance));
+	const dispatchedAddSound = songPlaybackInstance => dispatch(audioAddedToSoundList(songPlaybackInstance));
 	const dispatchedunloadSong = songPlaybackInstance => dispatch(unloadSong(songPlaybackInstance));
 	const dispatchedChangeSongIndex = value => dispatch(changeSongIndex(value));
 	
 	//used to be async. should be again?
 	handleSongVolume = async (value) => {
-		if (songPlaybackInstance != null) {  
+		if (songPlaybackInstance != null) { 
 		  await songPlaybackInstance.setStatusAsync({volume: value })
 		}
+		//;} // what was that there for?
 		dispatchedChangeSongVolume(value);
 	};
 
-
 	handlePlayPause = async () => {
+		console.log("handlePlayPause");
 		if (songPlaybackInstance===null) {
 			await loadAudio()
 		} else if (songIsPlaying) {
 			dispatchedPauseSong(songPlaybackInstance);
 		} else {
-			// we have songPlaybackInstance but it's not playing
+			// use case: we have songPlaybackInstance but it's not playing
 			dispatchedPlaySong(songPlaybackInstance);
 		}
 
+	}
+
+	handleNextTrackButtonPush = async () => {
+		console.log("handleNextTrackButtonPush");
+		console.log("currentIndex: ",currentIndex);
+		let song_id = songList[currentIndex].id;
+		await noteSkippedSong(song_id); 
+		handleNextTrack();
+	}
+
+	handleNextTrack = async () => {
+		console.log("handle lext track");
+		dispatchedunloadSong(songPlaybackInstance);
+		handleNextSongIndex()
+		await loadAudio(); // i think i don't need this since it's triggered by did just finish
 	}
 
 	handleNextSongIndex = async () => {
@@ -58,50 +78,34 @@ export default function AppSongComponent() {
 		}
 	}
 
-	handleNextTrackButtonPush = async () => {
-		let song_id = songList[currentIndex].id;
-		await noteSkippedSong(song_id); 
-		handleNextTrack();
-	}
-
-	handleNextTrack = async () => {
-		if (songPlaybackInstance) {
-			dispatchedunloadSong(songPlaybackInstance);
-		}
-		handleNextSongIndex()
-		await loadAudio();
-	}
-
 	onPlaybackStatusUpdate = status => {
-		didJustFinish = status.didJustFinish;
-		// // in case of sleep timer or stop button
-		// if (audioHasBeenStopped === true && songIsPlaying === true) {
-		// 	console.log("audio should not play and song is playing");
-		// 	songPlaybackInstance.pauseAsync()
-		// 	this.setState({
-		// 		songIsPlaying: false,
-		// 	})
-		// }
-		if (didJustFinish) {
+		let didJustFinish = status.didJustFinish;
+		if (didJustFinish === true) {
+			console.log("didJustFinish is about to handle the next");
 		  	// play next song. increment index, unload old song, load new song.
 			handleNextTrack()
 		}
 	  }
 
 	loadAudio = async () => {
-		// do these 2 ever run?
-		if (songPlaybackInstance) {
-			dispatchedunloadSong(songPlaybackInstance);
-			handleNextSongIndex();
-		}
+		console.log("load audio");
+		
+		// if (songPlaybackInstance) {
+		// 	// this runs after handle next track has been clicked.
+		// 	console.log("unloading existing song");
+		// 	dispatchedunloadSong(songPlaybackInstance);
+		// 	handleNextSongIndex();
+		// }
 		if (songList === null) {
 			await fetchSongList();
 		}
 
 		if (songListFetchError === false && songList.length > 0) {
 			try {
+
+				console.log("time to load new song");
+				console.log("currentIndex: ", currentIndex);
 				const songPlaybackInstance = new Audio.Sound()
-				dispatchedloadSong(songPlaybackInstance);
 				const source = {
 					uri: songList[currentIndex].streaming_url
 				  }
@@ -111,7 +115,9 @@ export default function AppSongComponent() {
 				}
 				songPlaybackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
 				await songPlaybackInstance.loadAsync(source, status, false)
-				handlePlayPause();
+				dispatchedloadSong(songPlaybackInstance);
+				dispatchedAddSong(songPlaybackInstance);
+				dispatchedPlaySong(songPlaybackInstance);
 			} catch (e) {
 				console.log(e)
 			}
@@ -136,7 +142,7 @@ export default function AppSongComponent() {
 
 
 	return (			
-		<View>
+		<>
 			{songIsPlaying ? (
 				<>
 				<Video
@@ -210,7 +216,7 @@ export default function AppSongComponent() {
 				<View style={styles.separator}>
 				</View>
 
-		</View>
+		</>
 	)
 }
 
@@ -221,7 +227,7 @@ const styles = StyleSheet.create({
 		height:deviceWidth / 1.7778 // ratio of record image.
 	},
 	controls: {
-		flexDirection: 'row'
+		flexDirection: 'row',
 	},
 	button: {
 		flex: 1,

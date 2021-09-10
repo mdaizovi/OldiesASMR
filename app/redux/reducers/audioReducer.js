@@ -3,7 +3,8 @@ import {
   SONG_PLAY_INITIATED, SONG_PAUSE_INITIATED, 
   SONG_LOADED, SONG_UNLOADED,
   SONG_VOLUME_CHANGED, SONG_INDEX_CHANGED,
-  AUDIO_STOP_REQUESTED
+  AUDIO_STOP_REQUESTED, AUDIO_ADDED_TO_SONG_LIST , AUDIO_ADDED_TO_SOUND_LIST,
+  AUDIO_STOP_COMPLETED
 } from '../actions/audioActions';
 
 const initialState = {
@@ -16,7 +17,9 @@ const initialState = {
   currentIndex:0,
   volume:0.75,
 
-  audioHasBeenStopped: false
+  audioHasBeenStopped: false,
+  activeSongsArray: [],
+  activeSoundsArray: [],
 }
 
 
@@ -34,7 +37,7 @@ function audioReducer(state = initialState, action) {
     case SONG_LOADED:
       return {...state, songPlaybackInstance:action.payload};
     case SONG_UNLOADED:
-        return {...state, songPlaybackInstance:null, songIsPlaying:false};
+        return {...state, songPlaybackInstance:null};
     case SONG_PLAY_INITIATED:
       return {...state, songIsPlaying:true, audioHasBeenStopped:false};        
     case SONG_PAUSE_INITIATED:
@@ -43,13 +46,30 @@ function audioReducer(state = initialState, action) {
       return {...state, currentIndex: action.payload};
     case SONG_VOLUME_CHANGED:
       return {...state, volume: action.payload};
+    
     case AUDIO_STOP_REQUESTED:
       return {
         ...state, 
         audioHasBeenStopped: true
       };
-
-    default:
+    case AUDIO_ADDED_TO_SONG_LIST:
+      return {
+        ...state, activeSongsArray: [...state.activeSongsArray, action.payload]
+      };    
+    case AUDIO_ADDED_TO_SOUND_LIST:
+      return {
+        ...state,  activeSoundsArray: state.activeSoundsArray.concat(action.payload)
+      };
+     //note the 2 methods of adding a sound item to a sounf/song array should be the same, i just tried 2 different ways, don't know why.    
+     case AUDIO_STOP_COMPLETED:
+      return {
+        ...state, 
+        songIsPlaying: false,
+        activeSongsArray: [],
+        activeSoundsArray: [],
+      };
+    
+     default:
       return state;
 
   }
