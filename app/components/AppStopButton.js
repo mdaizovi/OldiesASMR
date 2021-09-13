@@ -2,21 +2,28 @@ import React, {useContext}  from "react";
 import { Ionicons } from '@expo/vector-icons' 
 import { StyleSheet, TouchableOpacity, Text} from "react-native";
 import colors from "../config/colors";
-import {stopAllAudio} from '../redux/actions/audioActions';
+import {unloadSong} from '../redux/actions/audioActions';
 import {useDispatch, useSelector} from 'react-redux';
 
-export default AppStopButton = () => {
-  const {songIsPlaying, activeSongsArray, activeSoundsArray} = useSelector(state => state.audioReducer);
+export default function AppStopButton() {
+  const {songIsPlaying, songPlaybackInstance, activeSoundsArray,  audioHasBeenStopped} = useSelector(state => state.audioReducer);
   const dispatch = useDispatch();
 
 
-  const dispatchedStopAllAudio = () => {
-    dispatch(stopAllAudio(activeSongsArray, activeSoundsArray))
+  const dispatchedUnloadSong = () => {
+    dispatch(unloadSong(songPlaybackInstance))
   };
 
+  handleStopButtonPush = async () => {
+    // stop song
+		dispatchedUnloadSong();
+    // stop sounds 
+    // TBD
+	}
+
   return (
-    <TouchableOpacity style={styles.control}  onPress={dispatchedStopAllAudio}>
-      {songIsPlaying ? (
+    <TouchableOpacity style={styles.control}  onPress={handleStopButtonPush}>
+      {!audioHasBeenStopped ? (
         <>
         <Ionicons name='ios-stop-circle' size={48} color={colors.red} />
         <Text style={[styles.stopButtonText]}>

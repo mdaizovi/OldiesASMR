@@ -14,9 +14,7 @@ export const SONG_VOLUME_CHANGED = 'SONG_VOLUME_CHANGED';
 export const SONG_INDEX_CHANGED = 'SONG_INDEX_CHANGED';
 
 export const AUDIO_STOP_REQUESTED = 'AUDIO_STOP_REQUESTED';
-export const AUDIO_ADDED_TO_SONG_LIST = 'AUDIO_ADDED_TO_SONG_LIST'
 export const AUDIO_ADDED_TO_SOUND_LIST = 'AUDIO_ADDED_TO_SOUND_LIST'
-export const AUDIO_STOP_COMPLETED = 'AUDIO_STOP_COMPLETED'
 
 
 export const changeSongIndex = (value) => dispatch =>{
@@ -43,42 +41,41 @@ export const loadSong = (songPlaybackInstance) => dispatch =>{
 }
 
 export const unloadSong = (songPlaybackInstance) => async dispatch =>{
-  console.log("ACTION unloading a song")
+  console.log("ACTION unloadSong");
   await songPlaybackInstance.stopAsync();
   await songPlaybackInstance.unloadAsync();
   dispatch({ type: 'SONG_UNLOADED'});
 }
 
-export const stopAllAudio = (activeSongsArray, activeSoundsArray) => async dispatch => {
+export const stopAllAudio = (songPlaybackInstance, activeSoundsArray) => async dispatch => {
+  console.log("stopAllAudio");
   dispatch({ type: 'AUDIO_STOP_REQUESTED'});
-  console.log("AUDIO_STOP_REQUESTED");
-  var songListLength = activeSongsArray.length;
-  console.log("songListLength: ", songListLength);
-  for (var i = 0; i < songListLength; i++) {
-      dispatch({
-        type: 'SONG_UNLOADED',
-        payload: activeSongsArray[i],
-      });
-  }
-  var soundListLength = activeSoundsArray.length;
-  console.log("soundListLength: ", soundListLength);
-  // shit i didn't realize i didn't do any of this for sounds.
-
-dispatch({ type: 'AUDIO_STOP_COMPLETED'});
+  console.log("a");
+  await unloadSong(songPlaybackInstance);
+  console.log("b");
+    // kept so i cna do for sounds
+    //var songListLength = activeSongsArray.length;
+  // for (var i = 0; i < songListLength; i++) {
+  //     dispatch({
+  //       type: 'SONG_UNLOADED',
+  //       payload: activeSongsArray[i],
+  //     });
+  // }
+  // var soundListLength = activeSoundsArray.length;
 };
 
-export const audioAddedToSongList = (songPlaybackInstance) => dispatch => {
-  dispatch({ type: 'AUDIO_ADDED_TO_SONG_LIST', payload: songPlaybackInstance});
-};
+// export const audioAddedToSongList = (songPlaybackInstance) => dispatch => {
+//   dispatch({ type: 'AUDIO_ADDED_TO_SONG_LIST', payload: songPlaybackInstance});
+// };
 
-export const audioRemovedFromSongList = (activeSongsArray, songPlaybackInstance) => dispatch => {
-  const songArray = activeSongsArray;
-  var index = songArray.indexOf(songPlaybackInstance);
-  if (index > -1) {
-    songArray.splice(index, 1);
-  }
-  dispatch({ type: 'AUDIO_REMOVED_FROM_SONG_LIST', payload: activeSongsArray});
-};
+// export const audioRemovedFromSongList = (activeSongsArray, songPlaybackInstance) => dispatch => {
+//   const songArray = activeSongsArray;
+//   var index = songArray.indexOf(songPlaybackInstance);
+//   if (index > -1) {
+//     songArray.splice(index, 1);
+//   }
+//   dispatch({ type: 'AUDIO_REMOVED_FROM_SONG_LIST', payload: activeSongsArray});
+// };
 
 export const audioAddedToSoundList = (songPlaybackInstance) => dispatch => {
   dispatch({ type: 'AUDIO_ADDED_TO_SOUND_LIST', payload: songPlaybackInstance});

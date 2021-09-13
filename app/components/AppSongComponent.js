@@ -12,13 +12,13 @@ import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import colors from "../config/colors";
 import TextTicker from 'react-native-text-ticker'
 
-import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong, changeSongIndex, audioAddedToSongList, audioAddedToSoundList, audioRemovedFromSongList} from '../redux/actions/audioActions';
+import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong, changeSongIndex, audioAddedToSoundList} from '../redux/actions/audioActions';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default function AppSongComponent() {
 
-	const {songList, activeSongsArray, audioHasBeenStopped, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.audioReducer);
+	const {songList, audioHasBeenStopped, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.audioReducer);
 	const store = useStore();
 	const dispatch = useDispatch();
 	const fetchSongList = () => dispatch(getSongList());
@@ -26,8 +26,7 @@ export default function AppSongComponent() {
 	const dispatchedPauseSong = songPlaybackInstance => dispatch(pauseSong(songPlaybackInstance));
 	const dispatchedPlaySong = songPlaybackInstance => dispatch(playSong(songPlaybackInstance));
 	const dispatchedloadSong = songPlaybackInstance => dispatch(loadSong(songPlaybackInstance));
-	const dispatchedAddSong = songPlaybackInstance => dispatch(audioAddedToSongList(songPlaybackInstance));
-	const dispatchedAddSound = songPlaybackInstance => dispatch(audioAddedToSoundList(songPlaybackInstance));
+	//const dispatchedAddSound = songPlaybackInstance => dispatch(audioAddedToSoundList(songPlaybackInstance));
 	const dispatchedunloadSong = songPlaybackInstance => dispatch(unloadSong(songPlaybackInstance));
 	const dispatchedChangeSongIndex = value => dispatch(changeSongIndex(value));
 	
@@ -116,15 +115,6 @@ export default function AppSongComponent() {
 				dispatchedunloadSong(songPlaybackInstance);
 			} 
 
-
-			const songListLength = activeSongsArray.length;
-			console.log("activeSongsArray ",songListLength)
-			for (var i = 0; i < songListLength; i++) {
-				console.log("need to unload song number ",i)
-				unloadSong(activeSongsArray[i]);
-				console.log("was it unloaded?")
-			}
-
 			try {
 
 				console.log("time to load new song");
@@ -140,7 +130,6 @@ export default function AppSongComponent() {
 				newSongPlaybackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
 				await newSongPlaybackInstance.loadAsync(source, status, false)
 				dispatchedloadSong(newSongPlaybackInstance);
-				dispatchedAddSong(newSongPlaybackInstance);
 				dispatchedPlaySong(newSongPlaybackInstance);
 
 			} catch (e) {
