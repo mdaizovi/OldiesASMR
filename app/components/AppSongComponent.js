@@ -12,13 +12,13 @@ import AppPlayPauseButton from "../components/AppPlayPauseButton";
 import colors from "../config/colors";
 import TextTicker from 'react-native-text-ticker'
 
-import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong, changeSongIndex, audioAddedToSongList, audioAddedToSoundList} from '../redux/actions/audioActions';
+import {getSongList, changeSongVolume, playSong, pauseSong, loadSong, unloadSong, changeSongIndex, audioAddedToSongList, audioAddedToSoundList, audioRemovedFromSongList} from '../redux/actions/audioActions';
 
 var deviceWidth = Dimensions.get('window').width; //full width
 
 export default function AppSongComponent() {
 
-	const {songList, audioHasBeenStopped, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.audioReducer);
+	const {songList, activeSongsArray, audioHasBeenStopped, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.audioReducer);
 	const store = useStore();
 	const dispatch = useDispatch();
 	const fetchSongList = () => dispatch(getSongList());
@@ -43,29 +43,44 @@ export default function AppSongComponent() {
 	handlePlayPause = async () => {
 		console.log("handlePlayPause");
 		if (songPlaybackInstance===null) {
+			console.log("need to load audio");
 			await loadAudio()
 		} else if (songIsPlaying) {
+			console.log("need to pause active song");
 			dispatchedPauseSong(songPlaybackInstance);
 		} else {
 			// use case: we have songPlaybackInstance but it's not playing
-			dispatchedPlaySong(songPlaybackInstance);
+			console.log("need to play song");
+			handlePlaySong(songPlaybackInstance);
 		}
 
 	}
 
+	handlePlaySong = async (songPlaybackInstance) => {
+		console.log("handlePlaySong");
+		if (audioHasBeenStopped === false) {
+			dispatchedPlaySong(songPlaybackInstance);
+		}
+	}
+
 	handleNextTrackButtonPush = async () => {
-		console.log("handleNextTrackButtonPush");
-		console.log("currentIndex: ",currentIndex);
 		let song_id = songList[currentIndex].id;
-		await noteSkippedSong(song_id); 
-		handleNextTrack();
+		let songStatus = await songPlaybackInstance.getStatusAsync()
+		// .then(function(result) {
+		//   console.log(result.durationMillis);
+		//   console.log(result);
+		// })
+		//OMG finally a splution to multiple songs playing at once!
+		if (songStatus.isLoaded === true) {
+			await noteSkippedSong(song_id); 
+			handleNextTrack();
+		}
 	}
 
 	handleNextTrack = async () => {
-		console.log("handle lext track");
-		dispatchedunloadSong(songPlaybackInstance);
+		//dispatchedunloadSong(songPlaybackInstance);
 		handleNextSongIndex()
-		await loadAudio(); // i think i don't need this since it's triggered by did just finish
+		await loadAudio(); 
 	}
 
 	handleNextSongIndex = async () => {
@@ -90,37 +105,48 @@ export default function AppSongComponent() {
 	loadAudio = async () => {
 		console.log("load audio");
 		
-		// if (songPlaybackInstance) {
-		// 	// this runs after handle next track has been clicked.
-		// 	console.log("unloading existing song");
-		// 	dispatchedunloadSong(songPlaybackInstance);
-		// 	handleNextSongIndex();
-		// }
 		if (songList === null) {
 			await fetchSongList();
 		}
 
 		if (songListFetchError === false && songList.length > 0) {
+
+			if (songPlaybackInstance) {
+				console.log("unloading existing song");
+				dispatchedunloadSong(songPlaybackInstance);
+			} 
+
+
+			const songListLength = activeSongsArray.length;
+			console.log("activeSongsArray ",songListLength)
+			for (var i = 0; i < songListLength; i++) {
+				console.log("need to unload song number ",i)
+				unloadSong(activeSongsArray[i]);
+				console.log("was it unloaded?")
+			}
+
 			try {
 
 				console.log("time to load new song");
 				console.log("currentIndex: ", currentIndex);
-				const songPlaybackInstance = new Audio.Sound()
+				const newSongPlaybackInstance = new Audio.Sound()
 				const source = {
 					uri: songList[currentIndex].streaming_url
-				  }
+				}
 				const status = {
 					shouldPlay: songIsPlaying,
 					volume: volume
 				}
-				songPlaybackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
-				await songPlaybackInstance.loadAsync(source, status, false)
-				dispatchedloadSong(songPlaybackInstance);
-				dispatchedAddSong(songPlaybackInstance);
-				dispatchedPlaySong(songPlaybackInstance);
+				newSongPlaybackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
+				await newSongPlaybackInstance.loadAsync(source, status, false)
+				dispatchedloadSong(newSongPlaybackInstance);
+				dispatchedAddSong(newSongPlaybackInstance);
+				dispatchedPlaySong(newSongPlaybackInstance);
+
 			} catch (e) {
 				console.log(e)
 			}
+
 		} else {
 			console.log("playlist error or no songs");
 		}

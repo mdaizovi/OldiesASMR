@@ -37,9 +37,10 @@ function audioReducer(state = initialState, action) {
     case SONG_LOADED:
       return {...state, songPlaybackInstance:action.payload};
     case SONG_UNLOADED:
-        return {...state, songPlaybackInstance:null};
+        console.log("reducer song unladed");
+        return {...state};
     case SONG_PLAY_INITIATED:
-      return {...state, songIsPlaying:true, audioHasBeenStopped:false};        
+      return {...state, songPlaybackInstance:action.payload, songIsPlaying:true, audioHasBeenStopped:false};        
     case SONG_PAUSE_INITIATED:
       return {...state, songIsPlaying:false};      
     case SONG_INDEX_CHANGED:
@@ -60,6 +61,10 @@ function audioReducer(state = initialState, action) {
       return {
         ...state,  activeSoundsArray: state.activeSoundsArray.concat(action.payload)
       };
+    // case AUDIO_REMOVED_FROM_SONG_LIST:
+    //   return {
+    //     ...state, activeSongsArray: action.payload
+    //   };  
      //note the 2 methods of adding a sound item to a sounf/song array should be the same, i just tried 2 different ways, don't know why.    
      case AUDIO_STOP_COMPLETED:
       return {

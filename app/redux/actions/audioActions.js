@@ -34,7 +34,8 @@ export const pauseSong = (songPlaybackInstance) => async dispatch =>{
 
 export const playSong = (songPlaybackInstance) => async dispatch =>{
   await songPlaybackInstance.playAsync();
-  dispatch({ type: 'SONG_PLAY_INITIATED'});
+  dispatch({ type: 'SONG_PLAY_INITIATED', payload: songPlaybackInstance});
+
 }
 
 export const loadSong = (songPlaybackInstance) => dispatch =>{
@@ -42,7 +43,8 @@ export const loadSong = (songPlaybackInstance) => dispatch =>{
 }
 
 export const unloadSong = (songPlaybackInstance) => async dispatch =>{
-
+  console.log("ACTION unloading a song")
+  await songPlaybackInstance.stopAsync();
   await songPlaybackInstance.unloadAsync();
   dispatch({ type: 'SONG_UNLOADED'});
 }
@@ -53,7 +55,6 @@ export const stopAllAudio = (activeSongsArray, activeSoundsArray) => async dispa
   var songListLength = activeSongsArray.length;
   console.log("songListLength: ", songListLength);
   for (var i = 0; i < songListLength; i++) {
-      await activeSongsArray[i].stopAsync(); // need to make it's own action
       dispatch({
         type: 'SONG_UNLOADED',
         payload: activeSongsArray[i],
@@ -68,6 +69,15 @@ dispatch({ type: 'AUDIO_STOP_COMPLETED'});
 
 export const audioAddedToSongList = (songPlaybackInstance) => dispatch => {
   dispatch({ type: 'AUDIO_ADDED_TO_SONG_LIST', payload: songPlaybackInstance});
+};
+
+export const audioRemovedFromSongList = (activeSongsArray, songPlaybackInstance) => dispatch => {
+  const songArray = activeSongsArray;
+  var index = songArray.indexOf(songPlaybackInstance);
+  if (index > -1) {
+    songArray.splice(index, 1);
+  }
+  dispatch({ type: 'AUDIO_REMOVED_FROM_SONG_LIST', payload: activeSongsArray});
 };
 
 export const audioAddedToSoundList = (songPlaybackInstance) => dispatch => {
