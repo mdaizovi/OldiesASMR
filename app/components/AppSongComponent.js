@@ -18,7 +18,7 @@ var deviceWidth = Dimensions.get('window').width; //full width
 
 export default function AppSongComponent() {
 
-	const {songList, audioHasBeenStopped, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.audioReducer);
+	const {songList, audioHasBeenStopped, songCanBePaused, songListFetchError, songIsPlaying, songPlaybackInstance, currentIndex, volume} = useSelector(state => state.audioReducer);
 	const store = useStore();
 	const dispatch = useDispatch();
 	const fetchSongList = () => dispatch(getSongList());
@@ -40,25 +40,25 @@ export default function AppSongComponent() {
 	};
 
 	handlePlayPause = async () => {
-		console.log("handlePlayPause");
+		
 		if (songPlaybackInstance===null) {
 			console.log("need to load audio");
 			await loadAudio()
-		} else if (songIsPlaying) {
-			console.log("need to pause active song");
-			dispatchedPauseSong(songPlaybackInstance);
 		} else {
-			// use case: we have songPlaybackInstance but it's not playing
-			console.log("need to play song");
-			handlePlaySong(songPlaybackInstance);
-		}
-
-	}
-
-	handlePlaySong = async (songPlaybackInstance) => {
-		console.log("handlePlaySong");
-		if (audioHasBeenStopped === false) {
-			dispatchedPlaySong(songPlaybackInstance);
+			let songStatus = await songPlaybackInstance.getStatusAsync();
+			if (songStatus.isLoaded === true) {
+				// ignore play/pause if song is not loaded yet.
+				if (songIsPlaying) {
+					console.log("need to pause active song");
+					dispatchedPauseSong(songPlaybackInstance);
+				} else {
+					// use case: we have songPlaybackInstance but it's not playing
+					if (audioHasBeenStopped === false) {
+						console.log("we have a song but it's not playing");
+						dispatchedPlaySong(songPlaybackInstance);
+					}
+				}
+			}
 		}
 	}
 
@@ -69,7 +69,8 @@ export default function AppSongComponent() {
 		//   console.log(result.durationMillis);
 		//   console.log(result);
 		// })
-		//OMG finally a splution to multiple songs playing at once!
+		// OMG finally a solution to multiple songs playing at once!
+		// Just ignore those clicks if next song is not even loaded yet
 		if (songStatus.isLoaded === true) {
 			await noteSkippedSong(song_id); 
 			handleNextTrack();
@@ -77,7 +78,6 @@ export default function AppSongComponent() {
 	}
 
 	handleNextTrack = async () => {
-		//dispatchedunloadSong(songPlaybackInstance);
 		handleNextSongIndex()
 		await loadAudio(); 
 	}
@@ -116,7 +116,6 @@ export default function AppSongComponent() {
 			} 
 
 			try {
-
 				console.log("time to load new song");
 				console.log("currentIndex: ", currentIndex);
 				const newSongPlaybackInstance = new Audio.Sound()
@@ -196,7 +195,7 @@ export default function AppSongComponent() {
 					*/}
 			
 					{songList ? (
-						<AppPlayPauseButton onPress={handlePlayPause} songIsPlaying={songIsPlaying}/>
+						<AppPlayPauseButton onPress={handlePlayPause} songCanBePaused={songCanBePaused}/>
 						) : (
 						<ActivityIndicator animating={!songPlaybackInstance} color={colors.white} size="large"/>
 						)}

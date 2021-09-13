@@ -3,10 +3,10 @@ import { Ionicons } from '@expo/vector-icons'
 import { StyleSheet, TouchableOpacity } from "react-native";
 import colors from "../config/colors";
 
-function AppPlayPauseButton({ onPress, songIsPlaying }) {
+function AppPlayPauseButton({ onPress, songCanBePaused }) {
   return (
     <TouchableOpacity style={styles.control}  onPress={onPress}>
-    {songIsPlaying ? (
+    {songCanBePaused ? (
       <Ionicons name='ios-pause' size={48} color={colors.active} />
     ) : (
       <Ionicons name='ios-play-circle' size={48} color={colors.active} />

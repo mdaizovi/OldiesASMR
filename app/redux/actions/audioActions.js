@@ -26,14 +26,20 @@ export const changeSongVolume = (value) => dispatch =>{
 }
 
 export const pauseSong = (songPlaybackInstance) => async dispatch =>{
-  await songPlaybackInstance.pauseAsync();
-  dispatch({ type: 'SONG_PAUSE_INITIATED'});
+  // maybe shouls say if is loaded nad if is playing?
+  let songStatus = await songPlaybackInstance.getStatusAsync();
+  if (songStatus.isLoaded === true && songStatus.isPlaying == true) {
+    await songPlaybackInstance.pauseAsync();
+    dispatch({ type: 'SONG_PAUSE_INITIATED'});
+  }
 }
 
 export const playSong = (songPlaybackInstance) => async dispatch =>{
-  await songPlaybackInstance.playAsync();
-  dispatch({ type: 'SONG_PLAY_INITIATED', payload: songPlaybackInstance});
-
+  let songStatus = await songPlaybackInstance.getStatusAsync();
+  if (songStatus.isLoaded === true && songStatus.isPlaying == false) {
+    await songPlaybackInstance.playAsync();
+    dispatch({ type: 'SONG_PLAY_INITIATED', payload: songPlaybackInstance});
+  }
 }
 
 export const loadSong = (songPlaybackInstance) => dispatch =>{
@@ -47,12 +53,8 @@ export const unloadSong = (songPlaybackInstance) => async dispatch =>{
   dispatch({ type: 'SONG_UNLOADED'});
 }
 
-export const stopAllAudio = (songPlaybackInstance, activeSoundsArray) => async dispatch => {
-  console.log("stopAllAudio");
+export const initiateStopAudio = () => dispatch => {
   dispatch({ type: 'AUDIO_STOP_REQUESTED'});
-  console.log("a");
-  await unloadSong(songPlaybackInstance);
-  console.log("b");
     // kept so i cna do for sounds
     //var songListLength = activeSongsArray.length;
   // for (var i = 0; i < songListLength; i++) {

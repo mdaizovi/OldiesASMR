@@ -15,6 +15,7 @@ const initialState = {
   songPlaybackInstance:null,
   currentIndex:0,
   volume:0.75,
+  songCanBePaused:false,
 
   audioHasBeenStopped: false,
   activeSoundsArray: [],
@@ -35,12 +36,11 @@ function audioReducer(state = initialState, action) {
     case SONG_LOADED:
       return {...state, songPlaybackInstance:action.payload};
     case SONG_UNLOADED:
-        console.log("reducer song unladed");
         return {...state, songIsPlaying: false, songPlaybackInstance:null};
     case SONG_PLAY_INITIATED:
-      return {...state, songPlaybackInstance:action.payload, songIsPlaying:true, audioHasBeenStopped:false};        
+      return {...state, songCanBePaused:true, songPlaybackInstance:action.payload, songIsPlaying:true, audioHasBeenStopped:false};        
     case SONG_PAUSE_INITIATED:
-      return {...state, songIsPlaying:false};      
+      return {...state, songCanBePaused:false, songIsPlaying:false};      
     case SONG_INDEX_CHANGED:
       return {...state, currentIndex: action.payload};
     case SONG_VOLUME_CHANGED:
@@ -49,7 +49,7 @@ function audioReducer(state = initialState, action) {
     case AUDIO_STOP_REQUESTED:
       return {
         ...state, 
-        audioHasBeenStopped: true
+        audioHasBeenStopped: true, songCanBePaused:false
       };   
     case AUDIO_ADDED_TO_SOUND_LIST:
       return {

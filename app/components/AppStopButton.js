@@ -2,21 +2,24 @@ import React, {useContext}  from "react";
 import { Ionicons } from '@expo/vector-icons' 
 import { StyleSheet, TouchableOpacity, Text} from "react-native";
 import colors from "../config/colors";
-import {unloadSong} from '../redux/actions/audioActions';
+import {unloadSong, initiateStopAudio} from '../redux/actions/audioActions';
 import {useDispatch, useSelector} from 'react-redux';
 
 export default function AppStopButton() {
   const {songIsPlaying, songPlaybackInstance, activeSoundsArray,  audioHasBeenStopped} = useSelector(state => state.audioReducer);
   const dispatch = useDispatch();
-
-
+  
   const dispatchedUnloadSong = () => {
     dispatch(unloadSong(songPlaybackInstance))
   };
+  const dispatchInitiateStopAudio = () => dispatch(initiateStopAudio());
 
-  handleStopButtonPush = async () => {
+  handleStopButtonPush = async (songPlaybackInstance) => {
+    // i don't know why i have to do these seperately and can't dispatch unload song from stop audio
+ 
     // stop song
-		dispatchedUnloadSong();
+    dispatchInitiateStopAudio();
+		dispatchedUnloadSong(songPlaybackInstance);
     // stop sounds 
     // TBD
 	}
