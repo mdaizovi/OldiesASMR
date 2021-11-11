@@ -53,8 +53,9 @@ export default function AppSongComponent() {
 					dispatchedPauseSong(songPlaybackInstance);
 				} else {
 					// use case: we have songPlaybackInstance but it's not playing
+					console.log("not songIsPlaying");
 					if (audioHasBeenStopped === false) {
-						console.log("we have a song but it's not playing");
+						console.log("audioHasBeenStopped === false");
 						dispatchedPlaySong(songPlaybackInstance);
 					}
 				}
@@ -63,7 +64,9 @@ export default function AppSongComponent() {
 	}
 
 	handleNextTrackButtonPush = async () => {
+		console.log("start handleNextTrackButtonPush");
 		let song_id = songList[currentIndex].id;
+		console.log("song_id: "+song_id);
 		let songStatus = await songPlaybackInstance.getStatusAsync()
 		// .then(function(result) {
 		//   console.log(result.durationMillis);
@@ -72,9 +75,11 @@ export default function AppSongComponent() {
 		// OMG finally a solution to multiple songs playing at once!
 		// Just ignore those clicks if next song is not even loaded yet
 		if (songStatus.isLoaded === true) {
+			console.log("song is loaded");	
 			await noteSkippedSong(song_id); 
 			handleNextTrack();
 		}
+		console.log("end handleNextTrackButtonPush");	
 	}
 
 	handleNextTrack = async () => {

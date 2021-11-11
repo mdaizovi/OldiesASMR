@@ -6,7 +6,7 @@ import {unloadSong, initiateStopAudio} from '../redux/actions/audioActions';
 import {useDispatch, useSelector} from 'react-redux';
 
 export default function AppStopButton() {
-  const {songIsPlaying, songPlaybackInstance, activeSoundsArray,  audioHasBeenStopped} = useSelector(state => state.audioReducer);
+  const {songPlaybackInstance, activeSoundsArray,  audioHasBeenStopped} = useSelector(state => state.audioReducer);
   const dispatch = useDispatch();
   
   const dispatchedUnloadSong = () => {
